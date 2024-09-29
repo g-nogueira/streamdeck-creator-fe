@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 
 export interface Icon {
   id: string;
-  label: string | null;
+  label: string;
 }
 
 /// <summary>
@@ -10,7 +10,7 @@ export interface Icon {
 /// </summary>
 export interface StylizedIcon extends Icon {
   id: string;
-  label: string | null;
+  label: string;
   labelVisible: boolean;
   labelColor: string;
   labelTypeface: string;
