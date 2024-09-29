@@ -3,32 +3,42 @@
   import { icons } from '../stores';
   import type { Icon } from '../stores';
 
-  async function fetchIconDetails(icon: Icon): Promise<Icon> {
-    const response = await fetch(`http://localhost:5199/icons/${icon.id}`);
-    const blob = await response.blob();
-    const fullPath = URL.createObjectURL(blob);
-    return icon;
-  }
-
   onMount(async () => {
     const response = await fetch('http://localhost:5199/icons');
     const data: Icon[] = await response.json();
-    const detailedIcons = await Promise.all(data.map(fetchIconDetails));
-    icons.set(detailedIcons);
+    icons.set(data);
   });
 </script>
 
-<div class="icon-list">
+<div class="icon-grid">
   {#each $icons as icon}
-    <img src={`http://localhost:5199/icons/${icon.id}`} alt={icon.label} />
+    <div class="icon-card">
+      <img src={`http://localhost:5199/icons/${icon.id}`} alt={icon.label} />
+      <p>{icon.label}</p>
+    </div>
   {/each}
 </div>
 
 <style>
-  .icon-list {
-    flex: 2;
+  .icon-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
+  }
+  .icon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .icon-card img {
+    max-width: 100%;
+    height: auto;
+  }
+  .icon-card p {
+    margin-top: 10px;
+    color: white;
   }
 </style>
