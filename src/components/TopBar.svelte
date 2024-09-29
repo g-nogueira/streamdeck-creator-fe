@@ -1,13 +1,11 @@
 <script lang="ts">
+  import SearchBar from './SearchBar.svelte';
+
   let searchTerm = '';
 </script>
 
 <div class="top-bar">
-  <img src="/path/to/logo.png" alt="StreamDeck Studio Logo" class="logo" />
-  <input type="text" bind:value={searchTerm} placeholder="Search for 'train' or something else..." />
-  <button class="search-button">
-    <i class="fa fa-search"></i>
-  </button>
+  <SearchBar />
 </div>
 
 <style>

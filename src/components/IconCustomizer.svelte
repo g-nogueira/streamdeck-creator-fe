@@ -2,6 +2,8 @@
   import { selectedIcon, customizedIcons, type StylizedIcon } from '../stores';
   import { onMount } from 'svelte';
 
+  export let classNames: string = '';
+
   let glyphColor = 'sky-400';
   let canvasColor = 'sky-600';
   let labelColor = 'white';
@@ -65,16 +67,16 @@
   }
 </script>
 
-<div class="sidebar">
+<div class={`bg-gray-800 p-4 text-white flex flex-col ${classNames}`}>
   {#if $selectedIcon}
-    <div class="header">
-      <input type="text" bind:value={labelText} placeholder="My Icon" class="label-input" />
-      <div class="button download" on:click={saveIcon}>Download</div>
-      <div class="button save" on:click={saveIcon}>Add to Collection</div>
+    <div class="flex items-center border-b border-gray-700 h-12 relative">
+      <input type="text" bind:value={labelText} placeholder="My Icon" class="flex-grow bg-transparent text-center p-2 border-none text-white" />
+      <div class="w-12 text-center cursor-pointer absolute left-0 border-r border-gray-700" on:click={saveIcon}>Download</div>
+      <div class="w-12 text-center cursor-pointer absolute right-0 border-l border-gray-700" on:click={saveIcon}>Add to Collection</div>
     </div>
-    <div class="icon-preview">
-      <div class="canvas" style="background-color: {useAdvancedColorUi ? advancedColor.canvas : canvasColor};" class:pt-4={labelVisible} class:pt-6={!labelVisible}>
-        <div class="glyph" style="color: {useAdvancedColorUi ? advancedColor.glyph : glyphColor};">
+    <div class="my-4 flex justify-center">
+      <div class="relative w-36 h-36 flex flex-col items-center justify-center rounded-full shadow-lg" style="background-color: {useAdvancedColorUi ? advancedColor.canvas : canvasColor};" class:pt-4={labelVisible} class:pt-6={!labelVisible}>
+        <div class="flex-grow p-5" style="color: {useAdvancedColorUi ? advancedColor.glyph : glyphColor};">
           {#if isSvg}
             {@html iconContent}
           {:else}
@@ -82,135 +84,35 @@
           {/if}
         </div>
         {#if labelVisible}
-          <div class="label" style="color: {useAdvancedColorUi ? advancedColor.label : labelColor}; font-family: {typeface};">
+          <div class="text-center uppercase text-xl mt-2" style="color: {useAdvancedColorUi ? advancedColor.label : labelColor}; font-family: {typeface};">
             {labelText}
           </div>
         {/if}
-        <div class="spacer">&nbsp;</div>
+        <div class="h-8 text-xl text-center opacity-0">&nbsp;</div>
       </div>
     </div>
-    <div class="options">
-      <div class="label-edit">
-        <input type="text" bind:value={labelText} placeholder="Label Text" />
-        <select bind:value={typeface}>
+    <div class="border-t border-gray-700 pt-4">
+      <div class="flex flex-col mb-4">
+        <input type="text" bind:value={labelText} placeholder="Label Text" class="mb-2 p-2 border-none rounded w-full" />
+        <select bind:value={typeface} class="mb-2 p-2 border-none rounded w-full">
           <option value="VT323">VT323</option>
           <option value="Geo">Geo</option>
         </select>
-        <label>
-          <input type="checkbox" bind:checked={labelVisible} /> Show Label
+        <label class="flex items-center">
+          <input type="checkbox" bind:checked={labelVisible} class="mr-2" /> Show Label
         </label>
       </div>
-      <div class="color-options">
-        <label>
-          Glyph Color: <input type="color" bind:value={glyphColor} />
+      <div class="flex flex-col">
+        <label class="mb-2">
+          Glyph Color: <input type="color" bind:value={glyphColor} class="ml-2" />
         </label>
-        <label>
-          Canvas Color: <input type="color" bind:value={canvasColor} />
+        <label class="mb-2">
+          Canvas Color: <input type="color" bind:value={canvasColor} class="ml-2" />
         </label>
-        <label>
-          Label Color: <input type="color" bind:value={labelColor} />
+        <label class="mb-2">
+          Label Color: <input type="color" bind:value={labelColor} class="ml-2" />
         </label>
       </div>
     </div>
   {/if}
 </div>
-
-<style>
-  .sidebar {
-    width: 25%;
-    background-color: #333;
-    padding: 16px;
-    color: white;
-    display: flex;
-    flex-direction: column;
-  }
-  .header {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #444;
-    height: 50px;
-    position: relative;
-  }
-  .label-input {
-    flex-grow: 1;
-    background: transparent;
-    text-align: center;
-    padding: 8px;
-    border: none;
-    color: white;
-  }
-  .button {
-    width: 50px;
-    text-align: center;
-    cursor: pointer;
-  }
-  .download {
-    position: absolute;
-    left: 0;
-    border-right: 1px solid #444;
-  }
-  .save {
-    position: absolute;
-    right: 0;
-    border-left: 1px solid #444;
-  }
-  .icon-preview {
-    margin: 16px 0;
-    display: flex;
-    justify-content: center;
-  }
-  .canvas {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 45px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  }
-  .glyph {
-    flex-grow: 1;
-    padding: 20px;
-  }
-  .label {
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 1.5rem;
-    margin-top: 8px;
-  }
-  .spacer {
-    height: 32px;
-    font-size: 1.5rem;
-    text-align: center;
-    opacity: 0;
-  }
-  .options {
-    border-top: 1px solid #444;
-    padding-top: 16px;
-  }
-  .label-edit {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 16px;
-  }
-  .label-edit input,
-  .label-edit select {
-    margin-bottom: 8px;
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    width: 100%;
-  }
-  .color-options {
-    display: flex;
-    flex-direction: column;
-  }
-  .color-options label {
-    margin-bottom: 8px;
-  }
-  .display-none {
-    display: none;
-  }
-</style>
