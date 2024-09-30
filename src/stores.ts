@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-export interface Icon {
+export interface IconDto {
   id: string;
   label: string;
 }
@@ -8,7 +8,7 @@ export interface Icon {
 /// <summary>
 ///     An Icon with styles applied
 /// </summary>
-export interface StylizedIcon extends Icon {
+export interface StylizedIconDto extends IconDto {
   id: string;
   label: string;
   labelVisible: boolean;

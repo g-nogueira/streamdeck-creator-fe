@@ -1,18 +1,18 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { icons, selectedIcon } from '../stores';
-  import type { Icon } from '../stores';
+  import type { IconDto } from '../stores';
   import IconItem from './IconItem.svelte';
 
   export let classNames: string = '';
 
-  function selectIcon(icon: Icon) {
+  function selectIcon(icon: IconDto) {
     selectedIcon.set(icon);
   }
 
   onMount(async () => {
     const response = await fetch('http://localhost:5199/icons?page=1&pageSize=20');
-    const data: Icon[] = await response.json();
+    const data: IconDto[] = await response.json();
     icons.set(data);
   });
 </script>

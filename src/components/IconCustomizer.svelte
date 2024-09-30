@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { customizedIcons, selectedIcon, type StylizedIcon } from '../stores';
+  import { customizedIcons, selectedIcon, type StylizedIconDto } from '../stores';
   import IconSettings from './IconSettings.svelte';
   import IconPreview from './IconPreview.svelte';
   import domtoimage from 'dom-to-image-more';
@@ -80,9 +80,9 @@
 
   // Save the customized icon
   function saveIcon() {
-    customizedIcons.update((icons: StylizedIcon[]) => [
+    customizedIcons.update((icons: StylizedIconDto[]) => [
       ...icons,
-      { ...$selectedIcon, ...state } as StylizedIcon
+      { ...$selectedIcon, ...state } as StylizedIconDto
     ]);
   }
 

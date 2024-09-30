@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { Icon } from '../stores';
+  import type { IconDto } from '../stores';
 
-  export let icon: Icon;
-  export let onClick: (icon: Icon) => void;
+  export let icon: IconDto;
+  export let onClick: (icon: IconDto) => void;
 </script>
 
 <div class="flex col-span-1" on:click={() => onClick(icon)}>
