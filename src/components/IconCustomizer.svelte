@@ -1,5 +1,6 @@
 <script lang="ts">
   import { customizedIcons, selectedIcon, type StylizedIcon } from '../stores';
+  import domtoimage from 'dom-to-image-more';
 
   export let classNames: string = '';
 
@@ -102,17 +103,36 @@
       { ...$selectedIcon, glyphColor, canvasColor, labelColor, labelText, labelVisible, labelTypeface: typeface, backgroundColor: canvasColor } as StylizedIcon
     ]);
   }
+
+  function downloadIcon() {
+    const node = document.querySelector(`#iconToCapture`);
+    if (!node) {
+      console.error('No icon found to download');
+      return;
+    }
+
+    domtoimage.toPng(node, { copyDefaultStyles: false })
+      .then((dataUrl: string) => {
+        let img = new Image();
+        img.src = dataUrl;
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `${labelText}.png`;
+        a.click();
+      })
+      .catch((err: string) => console.error('Error downloading icon:', err));
+  }
 </script>
 
 <aside class={`flex flex-col w-500px border-l ${classNames}`}>
   {#if $selectedIcon}
     <div class="flex items-center border-b border-gray-700 h-12 relative">
       <input type="text" bind:value={labelText} placeholder="My Icon" class="flex-grow bg-transparent text-center p-2 border-none text-white" />
-      <div class="w-12 text-center cursor-pointer absolute left-0 border-r border-gray-700" on:click={saveIcon}>Download</div>
+      <div class="w-12 text-center cursor-pointer absolute left-0 border-r border-gray-700" on:click={downloadIcon}>Download</div>
       <div class="w-12 text-center cursor-pointer absolute right-0 border-l border-gray-700" on:click={saveIcon}>Add to Collection</div>
     </div>
     <div class="m-16 w-[371px] h-[371px] flex justify-center">
-      <div class="relative w-full h-full">
+      <div id="iconToCapture" class="relative w-full h-full">
         <div class="relative w-full h-full shadow-lg rounded-[45px]" style="background-color: {useAdvancedColorUi ? advancedColor.canvas : canvasColor};">
           <!-- Icon -->
           <div class="flex-grow p-5 w-full h-full max-h-[223px] flex justify-center" style="color: {useAdvancedColorUi ? advancedColor.glyph : glyphColor}; transform: scale({scale}) translate({imgX}px, {imgY}px);">
