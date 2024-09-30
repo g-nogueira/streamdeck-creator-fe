@@ -2,43 +2,114 @@
 	export let state;
 
 	const updateColor = (key: string, value: string) => {
-		console.log(key, value);
 		state[key] = value;
 	};
 </script>
 
-<div class="border-t border-gray-700 pt-4">
+<div class="icon-settings">
 	<!-- Resizing Slider -->
-	<label class="mb-2">
-		Icon Scale: <input type="range" min="0.5" max="3" step="0.1" bind:value={state.scale} class="ml-2" />
-	</label>
+	<div class="setting-group">
+		<label>Icon Scale:</label>
+		<input type="range" list="scaleMarkers" min="0" max="3" step="0.1" bind:value={state.scale} class="slider" />
+	</div>
+
+	<datalist id="scaleMarkers">
+		<option value="0"></option>
+		<option value="0.5"></option>
+		<option value="1"></option>
+		<option value="1.5"></option>
+		<option value="2"></option>
+		<option value="2.5"></option>
+		<option value="3"></option>
+	</datalist>
+
 	<!-- Color Pickers -->
-	<label class="mb-2">
-		Glyph Color: <input type="color" bind:value={state.glyphColor} class="ml-2" on:change={(e) => updateColor('glyphColor', e.target?.value)} />
-	</label>
-	<label class="mb-2">
-		Canvas Color: <input type="color" bind:value={state.backgroundColor} class="ml-2" on:change={(e) => updateColor('canvasColor', e.target?.value)} />
-	</label>
-	<label class="mb-2">
-		Label Color: <input type="color" bind:value={state.labelColor} class="ml-2" on:change={(e) => updateColor('labelColor', e.target?.value)} />
-	</label>
-	<!-- Positioning -->
-	<div class="flex flex-col">
-		<label class="mb-2">
-			Image X Position: <input type="range" min="-100" max="100" bind:value={state.imgX} class="ml-2" />
-		</label>
-		<label class="mb-2">
-			Image Y Position: <input type="range" min="-100" max="100" bind:value={state.imgY} class="ml-2" />
-		</label>
-		<label class="mb-2">
-			Label X Position: <input type="range" min="-100" max="100" bind:value={state.labelX} class="ml-2" />
-		</label>
-		<label class="mb-2">
-			Label Y Position: <input type="range" min="-100" max="100" bind:value={state.labelY} class="ml-2" />
-		</label>
+	<div class="setting-group">
+		<label>Glyph Color:</label>
+		<input type="color" bind:value={state.glyphColor} class="color-picker" on:change={(e) => updateColor('glyphColor', e.target?.value)} />
+	</div>
+	<div class="setting-group">
+		<label>Canvas Color:</label>
+		<input type="color" bind:value={state.backgroundColor} class="color-picker" on:change={(e) => updateColor('canvasColor', e.target?.value)} />
+	</div>
+	<div class="setting-group">
+		<label>Label Color:</label>
+		<input type="color" bind:value={state.labelColor} class="color-picker" on:change={(e) => updateColor('labelColor', e.target?.value)} />
+	</div>
+
+	<!-- Positioning Sliders -->
+	<div class="setting-group">
+		<label>Image X Position:</label>
+		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.imgX} class="slider" />
+	</div>
+	<div class="setting-group">
+		<label>Image Y Position:</label>
+		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.imgY} class="slider" />
+	</div>
+	<div class="setting-group">
+		<label>Label X Position:</label>
+		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.labelX} class="slider" />
+	</div>
+	<div class="setting-group">
+		<label>Label Y Position:</label>
+		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.labelY} class="slider" />
 	</div>
 </div>
 
-<style>
+<datalist id="posMarkers">
+	<option value="-100"></option>
+	<option value="-75"></option>
+	<option value="-50"></option>
+	<option value="-25"></option>
+	<option value="0"></option>
+	<option value="25"></option>
+	<option value="50"></option>
+	<option value="75"></option>
+	<option value="100"></option>
+</datalist>
 
+<style>
+    .icon-settings {
+        padding: 20px;
+        border-top: 1px solid #ccc;
+    }
+
+    .setting-group {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .setting-group label {
+        font-weight: 500;
+        flex-grow: 1;
+    }
+
+    .slider {
+        width: 150px;
+    }
+
+    .color-picker {
+        width: 50px;
+        height: 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    input[type="range"] {
+        height: 4px;
+        border-radius: 5px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        background: #38bdf8;
+        border-radius: 50%;
+        cursor: pointer;
+    }
 </style>

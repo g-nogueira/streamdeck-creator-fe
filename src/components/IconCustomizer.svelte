@@ -107,7 +107,7 @@
 
 <aside class={`flex flex-col w-[500px] border-l ${classNames}`}>
   {#if $selectedIcon}
-    <IconHeader bind:state onDownload={downloadIcon} onSave={saveIcon} />
+    <IconHeader bind:labelText={state.labelText} onDownload={downloadIcon} onSave={saveIcon} />
     <IconPreview bind:state />
     <IconSettings bind:state />
   {/if}
