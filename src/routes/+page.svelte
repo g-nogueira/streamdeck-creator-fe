@@ -27,7 +27,7 @@
 
 <main class="h-screen w-screen flex flex-col font-sans antialiased bg-gray-50 dark:bg-neutral-800 text-slate-600 dark:text-white overflow-hidden">
   <TopBar />
-  <div class="flex flex-1">
+  <div class="flex flex-1 h-full">
     <IconList classNames="w-3/4" />
     <IconCustomizer classNames="w-1/4" />
   </div>
