@@ -1,62 +1,39 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { collections, selectedCollection } from '../stores';
-	import type { CollectionDto } from '../stores';
-	import { mkEmptyUuid } from '$lib';
+	import { collections, selectCollection, selectedCollection, upsertUserIconCollections, UserIconCollectionService, type UserIconCollection } from '../stores';
+	import { UUID } from '$lib';
 
 	export let classNames: string = '';
 
 
-	function selectCollection(collection: CollectionDto) {
-		selectedCollection.set(collection);
-	}
-
 	async function createCollection() {
 		const newCollection = {
-			id: mkEmptyUuid(),
+			id: UUID.empty,
 			name: 'New Collection',
 			icons: [],
-		} as CollectionDto;
+		} as UserIconCollection;
 
-		const response = await fetch(`http://localhost:5199/collections`, {
-			method: 'POST',
-			headers: {
-			'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(newCollection),
-		});
+		newCollection.id = await UserIconCollectionService.create(newCollection);
 
-		if (!response.ok) {
-			console.error('Failed to create collection');
-			throw new Error('Failed to create collection');
-		}
-
-		newCollection.id = await response.json();
-
-		collections.update((collections) => {
-			collections.push(newCollection);
-			return collections;
-		});
-
-		selectedCollection.set(newCollection);
+		upsertUserIconCollections(newCollection);
+		selectCollection(newCollection);
 	}
 
 	onMount(async () => {
-		const response = await fetch('http://localhost:5199/collections');
-		const data: CollectionDto[] = await response.json();
+		const collectionsResponse = await UserIconCollectionService.fetchList();
 
 		// Create new collection if there are no collections
-		if (data.length === 0) {
+		if (collectionsResponse.length === 0) {
 			createCollection();
 			return;
 		}
 
-		// Select the first collection if there is only one
-		if (data.length === 1) {
-			selectedCollection.set(data[0]);
+		// Select the first collectiCollections only one
+		if (collectionsResponse.length === 1) {
+			selectCollection(collectionsResponse[0]);
 		}
 
-		collections.set(data);
+		collections.set(collectionsResponse);
 	});
 
 </script>

@@ -1,12 +1,14 @@
 <script lang="ts">
-	export let state;
+	import type { UIState } from "../stores";
+
+	export let state: UIState;
 </script>
 
 <div class="icon-settings">
 	<!-- Resizing Slider -->
 	<div class="setting-group">
 		<label>Icon Scale:</label>
-		<input type="range" list="scaleMarkers" min="0" max="3" step="0.1" bind:value={state.stylizedIcon.iconScale} class="slider" />
+		<input type="range" list="scaleMarkers" min="0" max="3" step="0.1" bind:value={state.styles.iconScale} class="slider" />
 	</div>
 
 	<datalist id="scaleMarkers">
@@ -22,33 +24,33 @@
 	<!-- Color Pickers -->
 	<div class="setting-group">
 		<label>Glyph Color:</label>
-		<input type="color" bind:value={state.stylizedIcon.glyphColor} class="color-picker" />
+		<input type="color" bind:value={state.styles.glyphColor} class="color-picker" />
 	</div>
 	<div class="setting-group">
 		<label>Canvas Color:</label>
-		<input type="color" bind:value={state.stylizedIcon.backgroundColor} class="color-picker" />
+		<input type="color" bind:value={state.styles.backgroundColor} class="color-picker" />
 	</div>
 	<div class="setting-group">
 		<label>Label Color:</label>
-		<input type="color" bind:value={state.stylizedIcon.labelColor} class="color-picker" />
+		<input type="color" bind:value={state.styles.labelColor} class="color-picker" />
 	</div>
 
 	<!-- Positioning Sliders -->
 	<div class="setting-group">
 		<label>Image X Position:</label>
-		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.stylizedIcon.imgX} class="slider" />
+		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.styles.imgX} class="slider" />
 	</div>
 	<div class="setting-group">
 		<label>Image Y Position:</label>
-		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.stylizedIcon.imgY} class="slider" />
+		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.styles.imgY} class="slider" />
 	</div>
 	<div class="setting-group">
 		<label>Label X Position:</label>
-		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.stylizedIcon.labelX} class="slider" />
+		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.styles.labelX} class="slider" />
 	</div>
 	<div class="setting-group">
 		<label>Label Y Position:</label>
-		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.stylizedIcon.labelY} class="slider" />
+		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.styles.labelY} class="slider" />
 	</div>
 </div>
 

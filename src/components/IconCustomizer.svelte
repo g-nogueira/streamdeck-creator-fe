@@ -1,200 +1,230 @@
 <script lang="ts">
-  import { collections, selectedIcon, selectedCollection, type StylizedIconDto, icons, type CollectionDto, type IconDto, selectStylizedIcon } from '../stores';
-  import IconSettings from './IconSettings.svelte';
-  import IconPreview from './IconPreview.svelte';
-  import domtoimage from 'dom-to-image-more';
-  import IconHeader from './IconHeader.svelte';
-  import CollectionList from './CollectionList.svelte';
+	import {
+		selectedIcon,
+		selectedCollection,
+		type UserIconCollection,
+		IconService,
+		type UserIcon,
+		addIconToSelectedCollection,
+		upsertUserIconCollections,
+		type SelectedIcon,
+		mkSelectedIconFromUserIcon,
+		selectIcon,
+		type UIState
+	} from '../stores';
+	import IconSettings from './IconSettings.svelte';
+	import IconPreview from './IconPreview.svelte';
+
+	import IconHeader from './IconHeader.svelte';
+	import CollectionList from './CollectionList.svelte';
 	import CollectionIcons from './CollectionIcons.svelte';
-	import { mkEmptyUuid } from '$lib';
+	import { ImageProcessing, UUID } from '$lib';
 
-  export let classNames: string = '';
+	export let classNames: string = '';
 
-  let state = {
+	let state: UIState = {
+		styles: {
+			glyphColor: '#38bdf8', // sky-400
+			backgroundColor: '#0284c7', // sky-600
+			labelColor: '#ffffff', // white
+			label: 'Label Text',
+			labelVisible: true,
+			labelTypeface: 'VT323',
+			iconScale: 1, // Scale factor for resizing the icon
 
-    stylizedIcon: {
-      id:  mkEmptyUuid(),
-      originalIconId: mkEmptyUuid(),
-      glyphColor: '#38bdf8',  // sky-400
-      backgroundColor: '#0284c7', // sky-600
-      labelColor: '#ffffff', // white
-      label: 'Label Text',
-      labelVisible: true,
-      labelTypeface: 'VT323',
-      iconScale: 1,  // Scale factor for resizing the icon
+			imgX: 0,
+			imgY: 0,
+			labelX: 0,
+			labelY: 0,
 
-      imgX: 0,
-      imgY: 0,
-      labelX: 0,
-      labelY: 0,
+			pngData: ''
+		},
 
-      pngData: '',
+		/** The SVG string content of the icon */
+		svgContent: '',
+		/** The URL of the icon image */
+		imageUrl: ''
+	};
 
-      isStylizedIconDto: true,
-    } as StylizedIconDto,
+	$: if ($selectedIcon) {
+		// Has userIconId and isn't empty uuid?
+		// Then fetches the userIcon from the server and updates the state.styles
+		if ($selectedIcon.userIconId && $selectedIcon.userIconId !== UUID.empty) {
+			(async () => {
+				try {
+					let userIcon = await IconService.fetchUserIcon($selectedIcon.userIconCollectionId, $selectedIcon.userIconId)
+					let [iconContent, contentType] = await IconService.fetchIconWithContentType(userIcon.originalIconId);
+					
+					state.styles = mkStateStyles(userIcon);
+					
+					if (isContentTypeSvg(contentType)) {
+						state.svgContent = cleanSvgContent(iconContent);
+					} else {
+						state.imageUrl = IconService.mkIconUrl(userIcon.originalIconId);
+					}
+				} catch (error: any) {
+					throw new Error('Error fetching user icon', error);
+				}
+			})();
+		}
+		// Has iconId and userIconId is empty uuid?
+		// Then keeps the state.styles as it is, so that the user can reuse the previous styles
+		else if ($selectedIcon.iconId) {
+			IconService.fetchIconWithContentType($selectedIcon.iconId).then(
+				([iconContent, contentType]) => {
+					state.styles.pngData = '';
+					state.styles.label = $selectedIcon.label;
 
-    isSvg: false,
-    useAdvancedColorUi: true,
-    iconContent: '',
-  }
+					if (isContentTypeSvg(contentType)) {
+						state.svgContent = cleanSvgContent(iconContent);
+					} else {
+						state.imageUrl = IconService.mkIconUrl($selectedIcon.iconId);
+					}
+				}
+			)
+			.catch((error) => {
+				throw new Error('Error fetching icon', error);
+			});
+		}
+	}
 
-  // Check if object is a StylizedIconDto
-  function isStylizedIconDto(obj: any): obj is StylizedIconDto {
-    return obj && obj.isStylizedIconDto;
-  }
+	$: if (state.svgContent) {
+		state.svgContent = injectColorIntoSvg(state.svgContent, state.styles.glyphColor);
+	}
 
-  // Check if object is a IconDto
-  function isIconDto(obj: any): obj is IconDto {
-    return obj && obj.isIconDto;
-  }
+	function mkStateStyles(userIcon: UserIcon) {
+		return {
+			glyphColor: userIcon.glyphColor,
+			backgroundColor: userIcon.backgroundColor,
+			labelColor: userIcon.labelColor,
+			label: userIcon.label,
+			labelVisible: userIcon.labelVisible,
+			labelTypeface: userIcon.labelTypeface,
+			iconScale: userIcon.iconScale,
+			imgX: userIcon.imgX,
+			imgY: userIcon.imgY,
+			labelX: userIcon.labelX,
+			labelY: userIcon.labelY,
+			pngData: userIcon.pngData
+		};
+	}
 
-  // Fetch icon content when selected icon changes
-  $: if ($selectedIcon && isStylizedIconDto($selectedIcon)) {
-    state.stylizedIcon = $selectedIcon;
-    fetchSelectedIcon($selectedIcon.originalIconId);
-  } else if ($selectedIcon && isIconDto($selectedIcon)) {
-    state.stylizedIcon.label = $selectedIcon.label;
-    state.stylizedIcon.originalIconId = $selectedIcon.id;
-    fetchSelectedIcon($selectedIcon.id);
-  }
+	function isContentTypeSvg(contentType: string): boolean {
+		return contentType === 'image/svg+xml';
+	}
 
-  $: if (state.isSvg) {
-    state.iconContent = injectColorIntoSvg(removeFillAttributes(state.iconContent), state.stylizedIcon.glyphColor);
-  }
+	/**
+	 * Injects the color into the SVG content
+	 * @param svgContent
+	 * @param color
+	 */
+	function injectColorIntoSvg(svgContent: string, color: string): string {
+		if (typeof window === 'undefined') {
+			console.error('Trying to use DomParser on the server side. Returning the SVG content as is.');
+            return svgContent;
+		}
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(svgContent, 'image/svg+xml');
+		const svgElement = doc.querySelector('svg');
+		if (svgElement) {
+			svgElement.setAttribute('fill', color);
+		}
+		return new XMLSerializer().serializeToString(doc);
+	}
 
-  // Fetch icon content from the server
-  async function fetchSelectedIcon(iconId: string) {
-    const response = await fetch(`http://localhost:5199/icons/${iconId}`);
-    const contentType = response.headers.get('Content-Type');
+	/**
+	 * Process SVG content by removing fill attributes and injecting color
+	 * @param svgContent
+	 */
+	function cleanSvgContent(svgContent: string): string {
+		// Remove fill attributes from SVG content
+		const removeFillAttributes = (svgContent: string): string => {
+			return svgContent.replace(/fill="[^"]*"/g, '');
+		};
 
-    if (contentType === 'image/svg+xml') {
-      state.isSvg = true;
-      let svgContent = await response.text();
-      state.iconContent = processSvgContent(svgContent);
-    } else {
-      state.isSvg = false;
-      state.iconContent = `http://localhost:5199/icons/${iconId}`;
-    }
-  }
+		return injectColorIntoSvg(removeFillAttributes(svgContent), state.styles.glyphColor);
+	}
 
-  // Process SVG content by removing fill attributes and injecting color
-  function processSvgContent(svgContent: string): string {
-    return injectColorIntoSvg(removeFillAttributes(svgContent), state.stylizedIcon.glyphColor);
-  }
+	// Save the customized icon
+	async function addIconToCollection(
+		selectedIcon: SelectedIcon,
+		selectedCollection: UserIconCollection | null
+	) {
+		if (!selectedCollection) {
+			console.error('No collection selected to save the icon');
+			return;
+		}
 
-  // Remove fill attributes from SVG content
-  function removeFillAttributes(svgContent: string): string {
-    return svgContent.replace(/fill="[^"]*"/g, '');
-  }
+		const node = document.querySelector(`#iconToCapture`);
 
-  // Inject color into SVG content
-  function injectColorIntoSvg(svgContent: string, color: string): string {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(svgContent, 'image/svg+xml');
-    const svgElement = doc.querySelector('svg');
-    if (svgElement) {
-      svgElement.setAttribute('fill', color);
-    }
-    return new XMLSerializer().serializeToString(doc);
-  }
+		if (!node) {
+			throw new Error('No HTML element #iconToCapture found to save');
+		}
 
-  // Save the customized icon
-  async function addIconToCollection() {
-    if (!$selectedCollection) {
-      console.error('No collection selected to save the icon');
-      return;
-    }
+		let iconPng = await ImageProcessing.NodeToBase64Png(node);
 
-    let iconPng = await mkPngAsync();
+		state.styles.pngData = iconPng;
 
-    state.stylizedIcon.pngData = iconPng;
+		const userIcon = {
+			id: UUID.empty,
+			originalIconId: selectedIcon.iconId,
+			glyphColor: state.styles.glyphColor,
+			backgroundColor: state.styles.backgroundColor,
+			labelColor: state.styles.labelColor,
+			label: state.styles.label,
+			labelVisible: state.styles.labelVisible,
+			labelTypeface: state.styles.labelTypeface,
+			iconScale: state.styles.iconScale,
+			imgX: state.styles.imgX,
+			imgY: state.styles.imgY,
+			labelX: state.styles.labelX,
+			labelY: state.styles.labelY,
+			pngData: state.styles.pngData
+		} as UserIcon;
 
-    selectedCollection.update((collection: CollectionDto | null) => {
-      if (collection) {
-        state.stylizedIcon.id = mkEmptyUuid();
-        collection.icons = [...collection.icons, state.stylizedIcon];
-      }
-      return collection; 
-    });
+		addIconToSelectedCollection(userIcon);
+		upsertUserIconCollections(selectedCollection);
+	}
 
-    collections.update((collections: CollectionDto[]) => [
-      ...collections.filter(collection => collection.id !== $selectedCollection?.id),
-      $selectedCollection
-    ]);
-  }
+	// Download the customized icon as a PNG
+	function downloadIcon() {
+		const node = document.querySelector(`#iconToCapture`);
 
-  async function updateIconFromCollection() {
-    if (!$selectedCollection) {
-      console.error('No collection selected to save the icon');
-      return;
-    }
+		if (!node) {
+			throw new Error('No HTML element #iconToCapture found to save');
+		}
 
-    let iconPng = await mkPngAsync();
+		ImageProcessing.DownloadIcon(node, state.styles.label);
+	}
 
-    state.stylizedIcon.pngData = iconPng;
+	function selectUserIcon(icon: UserIcon, collection: UserIconCollection | null) {
+		if (collection === null) {
+			throw new Error('No collection selected. An user icon must belong to a collection.');
+		}
 
-    selectedCollection.update((collection: CollectionDto | null) => {
-      if (collection) {
-        collection.icons = [...collection.icons.filter(icon => icon.id !== state.stylizedIcon.id), state.stylizedIcon];
-      }
-      return collection; 
-    });
-
-    collections.update((collections: CollectionDto[]) => [
-      ...collections.filter(collection => collection.id !== $selectedCollection?.id),
-      $selectedCollection
-    ]);
-  }
-
-  function mkPngAsync() : Promise<string> {
-    const node = document.querySelector(`#iconToCapture`);
-    if (!node) {
-      console.error('No icon found to download');
-      return Promise.reject('No icon found to download');
-    }
-
-    return new Promise ((resolve, reject) => {
-      domtoimage.toPng(node, { copyDefaultStyles: false })
-        .then((dataUrl: string) => {
-          resolve(dataUrl);
-        })
-        .catch((err: string) => {
-          console.error('Error downloading icon:', err);
-          reject(err);
-        });
-    });
-  }
-
-  // Download the customized icon as a PNG
-  function downloadIcon() {
-    const node = document.querySelector(`#iconToCapture`);
-    if (!node) {
-      console.error('No icon found to download');
-      return;
-    }
-
-    domtoimage.toPng(node, { copyDefaultStyles: false })
-      .then((dataUrl: string) => {
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = `${state.stylizedIcon.label}.png`;
-        a.click();
-      })
-      .catch((err: string) => console.error('Error downloading icon:', err));
-  }
+		let selectedIcon = mkSelectedIconFromUserIcon(icon, collection.id);
+		selectIcon(selectedIcon);
+	}
 </script>
 
 <aside class={`flex flex-col w-[500px] border-l ${classNames}`}>
-  {#if $selectedIcon}
-    <IconHeader bind:labelText={state.stylizedIcon.label} onDownload={downloadIcon} onSave={addIconToCollection} />
-    <IconPreview bind:state />
-    <IconSettings bind:state />
+	{#if $selectedIcon}
+		<IconHeader
+			bind:labelText={state.styles.label}
+			onDownload={downloadIcon}
+			onSave={() => {
+				addIconToCollection($selectedIcon, $selectedCollection);
+			}}
+		/>
+		<IconPreview bind:state />
+	<div class="overflow-y-scroll">
+		<IconSettings bind:state />
 
-    {#if $selectedCollection}
-    <CollectionIcons onIconSelect={selectStylizedIcon} />
-    {:else}
-    <CollectionList/>
-    {/if}
-
-  {/if}
+		{#if $selectedCollection}
+			<CollectionIcons onIconSelect={(icon) => selectUserIcon(icon, $selectedCollection)} />
+		{:else}
+			<CollectionList />
+		{/if}
+	</div>
+	{/if}
 </aside>

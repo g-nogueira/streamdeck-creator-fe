@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { icons } from '../stores';
-  import type { IconDto } from '../stores';
+  import { icons, type UserIcon } from '../stores';
   import { debounce } from 'lodash-es';
 
   let searchTerm = '';
@@ -22,7 +21,7 @@
       if (!response.ok) {
         throw new Error('Failed to fetch search results');
       }
-      const data: IconDto[] = await response.json();
+      const data: UserIcon[] = await response.json();
       icons.set(data);
     } catch (err) {
       error = err.message;
