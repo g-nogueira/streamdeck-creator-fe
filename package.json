@@ -43,6 +43,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"colortranslator": "^4.1.0",
 		"dom-to-image-more": "^3.4.5"
 	}
 }

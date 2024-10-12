@@ -1,5 +1,6 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
+    import { ColorTranslator } from 'colortranslator';
 
     interface Stop {
         position: number; // 0 to 100
@@ -14,12 +15,51 @@
     let gradientType = 'linear'; // 'linear' or 'radial'
     let angle = 90; // default angle for linear gradient
 
-    // Add a new stop on gradient click
+    // Function to get the color at a specific position
+    function getColorAtPosition(position: number): string {
+        // Create a temporary canvas
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        
+        canvas.width = 1;  // Only need 1 pixel wide
+        canvas.height = 30; // Height can match the height of the gradient bar
+        
+        // Create a linear gradient that fills the entire height of the canvas
+        const gradient = ctx!.createLinearGradient(0, 0, 0, canvas.height);
+        
+        // Populate the gradient with your stops
+        $stops.forEach(stop => {
+            gradient.addColorStop(stop.position / 100, stop.color);
+        });
+        
+        // Fill the gradient onto the canvas
+        ctx!.fillStyle = gradient;
+        ctx!.fillRect(0, 0, 1, canvas.height); // Fill the 1xHeight rectangle
+    
+        // Get the color from the canvas at the specified position
+        const y = position / 100 * canvas.height; // Convert to canvas height
+        const imageData = ctx!.getImageData(0, y, 1, 1).data;
+        const color = `rgba(${imageData[0]}, ${imageData[1]}, ${imageData[2]}, ${imageData[3] / 255})`;
+    
+        return color;
+    }
+
+
+    // Modify the addStop function to set the new stop's color
     function addStop(event: MouseEvent) {
         const bar = event.currentTarget as HTMLDivElement;
         const clickPosition = (event.offsetX / bar.clientWidth) * 100;
-        stops.update(s => [...s, { position: clickPosition, color: '#ffffff' }].sort((a, b) => a.position - b.position));
-        return false; // Return false to reset flag
+
+        // Get the color at the click position
+        const colorAtClick = getColorAtPosition(clickPosition);
+
+        // Convert the color to hex
+        const colorAtClickHex = ColorTranslator.toHEX(colorAtClick);
+        
+        stops.update(s => [
+            ...s,
+            { position: clickPosition, color: colorAtClickHex }
+        ].sort((a, b) => a.position - b.position));
     }
 
     // Update position of stop on drag
@@ -58,7 +98,7 @@
         height: 30px;
         position: relative;
         background: linear-gradient(to right, #fc466b, #3f5efb);
-        cursor: pointer;
+        cursor: copy;
         border-radius: 4px;
         margin: 10px 0;
     }
@@ -142,7 +182,7 @@
         {#each $stops as stop, index}
             <div>
                 <input class="bg-transparent" type="color" bind:value={stop.color}>
-                <input class="bg-transparent" type="number" min="0" max="100" bind:value={stop.position} on:input={(e) => updatePosition(index, e.target.value)} />
+                <input class="bg-transparent" type="number" min="0" max="100" bind:value={stop.position} />
                 <button on:click={() => removeStop(index)}>Remove</button>
             </div>
         {/each}
