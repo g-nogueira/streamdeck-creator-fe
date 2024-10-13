@@ -1,5 +1,10 @@
+export type GradientStop = {
+    position: number;
+    color: string;
+}
+
 export type UserIconGradient = {
-    stops: { position: number; color: string }[];
+    stops: GradientStop[];
     type: 'linear' | 'radial';
     angle: number;
     cssStyle: string;

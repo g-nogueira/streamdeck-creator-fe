@@ -1,17 +1,12 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
     import { ColorTranslator } from 'colortranslator';
-	import type { UserIconGradient } from '../models/UserIconGradient';
+	import type { GradientStop, UserIconGradient } from '../models/UserIconGradient';
 	import type { UIState } from '../models/UIState';
 
     export let state: UIState;
     
-    interface Stop {
-        position: number; // 0 to 100
-        color: string;    // hex or rgba
-    }
-
-    let stops = writable<Stop[]>([
+    let stops = writable<GradientStop[]>([
         { position: 0, color: '#fc466b' },
         { position: 100, color: '#3f5efb' }
     ]);
@@ -145,7 +140,7 @@
         width: 100%;
         height: 30px;
         position: relative;
-        background: linear-gradient(to right, #fc466b, #3f5efb);
+        background: linear-gradient(90deg, #45fc8b 0%, #212a54 100%);
         cursor: copy;
         border-radius: 4px;
         margin: 10px 0;
@@ -205,7 +200,7 @@
             if (event.target !== event.currentTarget) return;
             addStop(event);
         }}
-        style="background: {$gradientType === 'linear' ? `linear-gradient(${angle}deg, ${$stops.map(s => `${s.color} ${s.position}%`).join(', ')})` : 'radial-gradient(circle, ' + $stops.map(s => `${s.color} ${s.position}%`).join(', ') + ')' }"
+        style="background: {mkCssStyle({stops: $stops, type: $gradientType, angle: $angle, cssStyle: '' })}"
     >
         {#each $stops as stop, index}
             <div
