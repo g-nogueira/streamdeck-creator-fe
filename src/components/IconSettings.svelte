@@ -73,7 +73,7 @@
 	</div>
 </div>
 
-<GradientGenerator bind:state/>
+<GradientGenerator bind:state={state.styles}/>
 
 <style>
     .icon-settings {

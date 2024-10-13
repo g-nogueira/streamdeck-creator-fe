@@ -1,5 +1,6 @@
 import type { UserIcon } from "../../models/UserIcon";
 import type { UserIconGradientDto } from "./UserIconGradientDto";
+import * as _userIconGradientDto from "./UserIconGradientDto";
 
 export interface UserIconDto {
   id: string;
@@ -37,12 +38,7 @@ export function toUserIcon(userIconDto: UserIconDto): UserIcon {
     labelY: userIconDto.labelY,
     pngData: userIconDto.pngData,
     useGradient: userIconDto.useGradient,
-    gradient: userIconDto.gradient ? {
-      stops: userIconDto.gradient.stops,
-      type: userIconDto.gradient.type,
-      angle: userIconDto.gradient.angle,
-      cssStyle: userIconDto.gradient.cssStyle,
-    } : null,
+    gradient: userIconDto.gradient ? _userIconGradientDto.toDomain(userIconDto.gradient) : null,
         
   };
 }
@@ -64,11 +60,6 @@ export function fromUserIcon(userIcon: UserIcon): UserIconDto {
     labelY: userIcon.labelY,
     pngData: userIcon.pngData,
     useGradient: userIcon.useGradient,
-    gradient: userIcon.gradient ? {
-      stops: userIcon.gradient.stops,
-      type: userIcon.gradient.type,
-      angle: userIcon.gradient.angle,
-      cssStyle: userIcon.gradient.cssStyle,
-    } : null,
+    gradient: userIcon.gradient ? _userIconGradientDto.fromDomain(userIcon.gradient) : null,
   };
 }

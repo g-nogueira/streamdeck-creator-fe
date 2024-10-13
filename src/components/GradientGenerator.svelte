@@ -4,7 +4,7 @@
 	import type { GradientStop, UserIconGradient } from '../models/UserIconGradient';
 	import type { UIState } from '../models/UIState';
 
-    export let state: UIState;
+    export let state: UIState['styles'];
     
     let stops = writable<GradientStop[]>([
         { position: 0, color: '#fc466b' },
@@ -15,31 +15,31 @@
     let angle = writable<number>(90); // default angle for linear gradient
     
     stops.subscribe(value => {
-        state.styles.gradient = state.styles.gradient || mkDefaultGradinet();
-        state.styles.gradient.stops = value;
-        state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+        state.gradient = state.gradient || mkDefaultGradinet();
+        state.gradient.stops = value;
+        state.gradient.cssStyle = mkCssStyle(state.gradient);
     });
     gradientType.subscribe(value => {
-        state.styles.gradient = state.styles.gradient || mkDefaultGradinet();
-        state.styles.gradient.type = value;
-        state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+        state.gradient = state.gradient || mkDefaultGradinet();
+        state.gradient.type = value;
+        state.gradient.cssStyle = mkCssStyle(state.gradient);
     });
     angle.subscribe(value => {
-        state.styles.gradient = state.styles.gradient || mkDefaultGradinet();
-        state.styles.gradient.angle = value;
-        state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+        state.gradient = state.gradient || mkDefaultGradinet();
+        state.gradient.angle = value;
+        state.gradient.cssStyle = mkCssStyle(state.gradient);
     });
 
-    $: if (state.styles.gradient?.stops && state.styles.gradient?.stops !== $stops) {
-        stops.set(state.styles.gradient.stops);
+    $: if (state.gradient?.stops && state.gradient?.stops !== $stops) {
+        stops.set(state.gradient.stops);
     }
 
-    $: if (state.styles.gradient?.type && state.styles.gradient.type !== $gradientType) {
-        gradientType.set(state.styles.gradient.type);
+    $: if (state.gradient?.type && state.gradient.type !== $gradientType) {
+        gradientType.set(state.gradient.type);
     }
 
-    $: if (state.styles.gradient?.angle && state.styles.gradient.angle !== $angle) {
-        angle.set(state.styles.gradient.angle);
+    $: if (state.gradient?.angle && state.gradient.angle !== $angle) {
+        angle.set(state.gradient.angle);
     }
 
     function mkDefaultGradinet(): UserIconGradient {
