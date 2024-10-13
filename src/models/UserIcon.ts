@@ -21,6 +21,7 @@ export type UserIcon = {
     labelX: number;
     labelY: number;
   
+    useGradient: boolean;
     gradient: UserIconGradient | null;
   
     /** Base64 encoded PNG data */

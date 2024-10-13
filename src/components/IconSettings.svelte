@@ -53,19 +53,25 @@
 		<label>Label Y Position:</label>
 		<input type="range" list="posMarkers" min="-100" max="100" bind:value={state.styles.labelY} class="slider" />
 	</div>
-</div>
+	
+	<datalist id="posMarkers">
+		<option value="-100"></option>
+		<option value="-75"></option>
+		<option value="-50"></option>
+		<option value="-25"></option>
+		<option value="0"></option>
+		<option value="25"></option>
+		<option value="50"></option>
+		<option value="75"></option>
+		<option value="100"></option>
+	</datalist>
 
-<datalist id="posMarkers">
-	<option value="-100"></option>
-	<option value="-75"></option>
-	<option value="-50"></option>
-	<option value="-25"></option>
-	<option value="0"></option>
-	<option value="25"></option>
-	<option value="50"></option>
-	<option value="75"></option>
-	<option value="100"></option>
-</datalist>
+	<!-- Use Gradient  -->
+	<div class="setting-group">
+		<label>Use Gradient:</label>
+		<input type="checkbox" bind:checked={state.styles.useGradient} />
+	</div>
+</div>
 
 <GradientGenerator bind:state/>
 

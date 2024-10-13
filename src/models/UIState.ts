@@ -17,6 +17,7 @@ export type UIState = {
   
       pngData: string;
   
+      useGradient: boolean;
       gradient: UserIconGradient | null;
     },
     /** The SVG string content of the icon */

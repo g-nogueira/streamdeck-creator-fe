@@ -4,7 +4,7 @@
 	export let state: UIState;
 	let backgroundStyle = "";
 
-	$: if (state.styles.gradient) {
+	$: if (state.styles.useGradient && state.styles.gradient) {
 		backgroundStyle = `background: ${state.styles.gradient.cssStyle};`;
 	} else {
 		backgroundStyle = `background: ${state.styles.backgroundColor};`;

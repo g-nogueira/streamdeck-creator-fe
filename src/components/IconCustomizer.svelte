@@ -36,6 +36,7 @@
 
 			pngData: '',
 
+			useGradient: false,
 			gradient: null
 		},
 
@@ -106,6 +107,7 @@
 			labelX: userIcon.labelX,
 			labelY: userIcon.labelY,
 			pngData: userIcon.pngData,
+			useGradient: userIcon.useGradient,
 			gradient: userIcon.gradient ? {
 				stops: userIcon.gradient.stops,
 				type: userIcon.gradient.type,
@@ -186,6 +188,7 @@
 			labelX: state.styles.labelX,
 			labelY: state.styles.labelY,
 			pngData: state.styles.pngData,
+			useGradient: state.styles.useGradient,
 			gradient: state.styles.gradient,
 		} as UserIcon;
 

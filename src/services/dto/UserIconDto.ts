@@ -16,6 +16,7 @@ export interface UserIconDto {
   labelX: number;
   labelY: number;
   pngData: string;
+  useGradient: boolean;
   gradient: UserIconGradientDto | null;
 }
 
@@ -35,6 +36,7 @@ export function toUserIcon(userIconDto: UserIconDto): UserIcon {
     labelX: userIconDto.labelX,
     labelY: userIconDto.labelY,
     pngData: userIconDto.pngData,
+    useGradient: userIconDto.useGradient,
     gradient: userIconDto.gradient ? {
       stops: userIconDto.gradient.stops,
       type: userIconDto.gradient.type,
@@ -61,6 +63,7 @@ export function fromUserIcon(userIcon: UserIcon): UserIconDto {
     labelX: userIcon.labelX,
     labelY: userIcon.labelY,
     pngData: userIcon.pngData,
+    useGradient: userIcon.useGradient,
     gradient: userIcon.gradient ? {
       stops: userIcon.gradient.stops,
       type: userIcon.gradient.type,
