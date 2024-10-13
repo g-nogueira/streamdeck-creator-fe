@@ -10,7 +10,10 @@
 		type SelectedIcon,
 		mkSelectedIconFromUserIcon,
 		selectIcon,
-		type UIState
+		type UIState,
+
+		UserIconCollectionService
+
 	} from '../stores';
 	import IconSettings from './IconSettings.svelte';
 	import IconPreview from './IconPreview.svelte';
@@ -205,6 +208,14 @@
 		let selectedIcon = mkSelectedIconFromUserIcon(icon, collection.id);
 		selectIcon(selectedIcon);
 	}
+
+	function donwloadUserCollection() {
+		if ($selectedCollection === null) {
+			throw new Error('No collection selected to download');
+		}
+
+		UserIconCollectionService.download($selectedCollection.id);
+	}
 </script>
 
 <aside class={`flex flex-col w-[500px] border-l ${classNames}`}>
@@ -221,7 +232,7 @@
 		<IconSettings bind:state />
 
 		{#if $selectedCollection}
-			<CollectionIcons onIconSelect={(icon) => selectUserIcon(icon, $selectedCollection)} />
+			<CollectionIcons onIconSelect={(icon) => selectUserIcon(icon, $selectedCollection)} onDownload={donwloadUserCollection}/>
 		{:else}
 			<CollectionList />
 		{/if}

@@ -447,4 +447,25 @@ export class UserIconCollectionService {
       throw error;
     }
   }
+
+  static async download(userIconCollectionId: string): Promise<void> {
+    try {
+      const response = await fetch(`${userCollectionEndpoint}/${userIconCollectionId}/download`);
+
+      if (!response.ok) {
+        throw new Error('Failed to download UserIconCollection with id: ' + userIconCollectionId);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'user-icon-collection.zip';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading user icon collection:', error);
+      throw error;
+    }
+  }
 }
