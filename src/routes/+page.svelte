@@ -4,6 +4,9 @@
   import IconCustomizer from '../components/IconCustomizer.svelte';
   import Footer from '../components/Footer.svelte';
   import "../app.css";
+	import { startUserIconCollectionsSync } from '$lib/sync-manager';
+
+  startUserIconCollectionsSync();
 
   // Add dark mode class based on localStorage or system preference
   if (typeof localStorage !== 'undefined') {

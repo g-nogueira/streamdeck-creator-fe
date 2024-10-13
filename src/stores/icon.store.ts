@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { Icon } from "../stores";
+import type { Icon } from "../models/Icon";
 
 // export const icons = writable<Icon[]>([]);
 function createIconStore() {

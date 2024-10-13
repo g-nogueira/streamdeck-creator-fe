@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Icon } from "../stores";
+	import type { Icon } from "../models/Icon";
 
   export let icon: Icon;
   export let onClick: (icon: Icon) => void;
