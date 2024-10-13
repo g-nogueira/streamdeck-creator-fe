@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { icons, selectIcon, type Icon } from '../stores';
-  import { selectedIcon as _selectedIcon } from '../models/SelectedIcon';
+  import * as _selectedIcon from '../models/SelectedIcon';
 	import IconItem from './IconItem.svelte';
 
   export let classNames: string = '';

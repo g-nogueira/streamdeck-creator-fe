@@ -16,10 +16,11 @@
 	import CollectionIcons from './CollectionIcons.svelte';
 	import { ImageProcessing, UUID } from '$lib';
 	import type { UserIcon } from '../models/UserIcon';
-	import { selectedIcon as _selectedIcon, SelectedIcon } from '../models/SelectedIcon';
+	import type { SelectedIcon } from '../models/SelectedIcon';
 	import type { UIState } from '../models/UIState';
 	import type { UserIconCollection } from '../models/UserIconCollection';
 	import { userIconCollections } from '../stores/UserIconCollection.Store';
+	import * as _selectedIcon from '../models/SelectedIcon';
 
 	export let classNames: string = '';
 

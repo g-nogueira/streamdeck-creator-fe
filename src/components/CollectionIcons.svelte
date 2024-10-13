@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { selectedCollection, type UserIcon } from '../stores';
+	import type { UserIcon } from '../models/UserIcon';
+	import { selectedCollection } from '../stores';
 
 	export let onIconSelect: (icon: UserIcon) => void;
 	export let onDownload: () => void;

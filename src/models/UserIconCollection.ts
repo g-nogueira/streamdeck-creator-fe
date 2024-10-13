@@ -1,18 +1,16 @@
 import { UUID } from "$lib";
 import type { UserIcon } from "./UserIcon";
 
-export interface UserIconCollection {
+export type UserIconCollection = {
     id: string;
     name: string;
     icons: UserIcon[];
 }
 
-export const userIconCollection = {
-    mkEmpty(): UserIconCollection {
-        return {
-            id: UUID.empty,
-            name: 'New Collection',
-            icons: [],
-        };
-    }
-};
+export function mkEmpty(): UserIconCollection {
+    return {
+        id: UUID.empty,
+        name: 'New Collection',
+        icons: [],
+    };
+}

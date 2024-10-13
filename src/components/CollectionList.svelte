@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { selectCollection, selectedCollection, UserIconCollectionService } from '../stores';
-	import  { userIconCollection } from '../models/UserIconCollection';
+	import { selectCollection, UserIconCollectionService } from '../stores';
+	import  * as _userIconCollection from '../models/UserIconCollection';
 	import { userIconCollections } from '../stores/UserIconCollection.Store';
 
 	export let classNames: string = '';
@@ -11,7 +11,7 @@
 
 		// Create new collection if there are no collections
 		if (collectionsResponse.length === 0) {
-			let newCollection = userIconCollection.mkEmpty();
+			let newCollection = _userIconCollection.mkEmpty();
 		
 			newCollection.id = await UserIconCollectionService.create(newCollection);
 		

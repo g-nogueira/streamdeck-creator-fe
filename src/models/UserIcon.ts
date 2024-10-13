@@ -3,7 +3,7 @@ import type { UserIconGradient } from "./UserIconGradient";
 /**
  * Represents a user-created icon.
  */
-export interface UserIcon {
+export type UserIcon = {
     id: string;
   
     originalIconId: string;

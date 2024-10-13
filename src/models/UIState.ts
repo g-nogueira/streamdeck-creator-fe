@@ -1,6 +1,6 @@
 import type { UserIconGradient } from "./UserIconGradient";
 
-export interface UIState {
+export type UIState = {
     styles: {
       glyphColor: string;
       backgroundColor: string;

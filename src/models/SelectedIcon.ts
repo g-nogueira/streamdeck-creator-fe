@@ -5,7 +5,7 @@ import type { UserIconGradient } from "./UserIconGradient";
 /**
  * Represents an icon, either user-created or original, that has been selected for modification in the app.
  */
-export interface SelectedIcon {
+export type SelectedIcon = {
     iconId: string;
     userIconId: string;
     userIconCollectionId: string;
@@ -28,58 +28,56 @@ export interface SelectedIcon {
     pngData: string;
 }
 
-export const selectedIcon = {
-    mkEmpty(): SelectedIcon {
-        return {
-            iconId: UUID.empty,
-            userIconId: UUID.empty,
-            userIconCollectionId: UUID.empty,
+export function mkEmpty(): SelectedIcon {
+    return {
+        iconId: UUID.empty,
+        userIconId: UUID.empty,
+        userIconCollectionId: UUID.empty,
 
-            label: '',
-            labelVisible: false,
-            labelColor: '',
-            labelTypeface: '',
-            glyphColor: '',
-            backgroundColor: '',
+        label: '',
+        labelVisible: false,
+        labelColor: '',
+        labelTypeface: '',
+        glyphColor: '',
+        backgroundColor: '',
 
-            iconScale: 1,
-            imgX: 0,
-            imgY: 0,
-            labelX: 0,
-            labelY: 0,
+        iconScale: 1,
+        imgX: 0,
+        imgY: 0,
+        labelX: 0,
+        labelY: 0,
 
-            pngData: '',
+        pngData: '',
 
-            gradient: null,
-        };
-    },
-    fromUserIcon(userIcon: UserIcon, collectionId: string): SelectedIcon {
-        return {
-            iconId: userIcon.originalIconId,
-            userIconId: userIcon.id,
-            userIconCollectionId: collectionId,
-
-            label: userIcon.label,
-            labelVisible: userIcon.labelVisible,
-            labelColor: userIcon.labelColor,
-            labelTypeface: userIcon.labelTypeface,
-            glyphColor: userIcon.glyphColor,
-            backgroundColor: userIcon.backgroundColor,
-
-            iconScale: userIcon.iconScale,
-            imgX: userIcon.imgX,
-            imgY: userIcon.imgY,
-            labelX: userIcon.labelX,
-            labelY: userIcon.labelY,
-
-            pngData: userIcon.pngData,
-
-            gradient: userIcon.gradient ? {
-                stops: userIcon.gradient.stops,
-                type: userIcon.gradient.type,
-                angle: userIcon.gradient.angle,
-                cssStyle: userIcon.gradient.cssStyle,
-            } : null,
-        };
-    }
+        gradient: null,
+    };
 };
+export function fromUserIcon(userIcon: UserIcon, collectionId: string): SelectedIcon {
+    return {
+        iconId: userIcon.originalIconId,
+        userIconId: userIcon.id,
+        userIconCollectionId: collectionId,
+
+        label: userIcon.label,
+        labelVisible: userIcon.labelVisible,
+        labelColor: userIcon.labelColor,
+        labelTypeface: userIcon.labelTypeface,
+        glyphColor: userIcon.glyphColor,
+        backgroundColor: userIcon.backgroundColor,
+
+        iconScale: userIcon.iconScale,
+        imgX: userIcon.imgX,
+        imgY: userIcon.imgY,
+        labelX: userIcon.labelX,
+        labelY: userIcon.labelY,
+
+        pngData: userIcon.pngData,
+
+        gradient: userIcon.gradient ? {
+            stops: userIcon.gradient.stops,
+            type: userIcon.gradient.type,
+            angle: userIcon.gradient.angle,
+            cssStyle: userIcon.gradient.cssStyle,
+        } : null,
+    };
+}

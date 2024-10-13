@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
-import type { UserIconCollection, userIconCollection } from "../models/UserIconCollection";
+import type { UserIconCollection } from "../models/UserIconCollection";
 import type { UserIcon } from "../models/UserIcon";
+import * as _userIconCollection from "../models/UserIconCollection";
 
 // export const collections = writable<UserIconCollection[]>([]);
 
@@ -9,6 +10,7 @@ function createCollectionsStore() {
 
     return {
         subscribe,
+        mkEmpty: () => _userIconCollection.mkEmpty(),
         addIcon: (collectionId: string, icon: UserIcon) => update(collections => {
             const collection = collections.find(c => c.id === collectionId);
 
