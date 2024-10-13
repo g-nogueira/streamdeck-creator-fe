@@ -1,7 +1,10 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
     import { ColorTranslator } from 'colortranslator';
+	import type { IconGradient, UIState } from '../stores';
 
+    export let state: UIState;
+    
     interface Stop {
         position: number; // 0 to 100
         color: string;    // hex or rgba
@@ -12,8 +15,52 @@
         { position: 100, color: '#3f5efb' }
     ]);
 
-    let gradientType = 'linear'; // 'linear' or 'radial'
-    let angle = 90; // default angle for linear gradient
+    let gradientType = writable<'linear' | 'radial'>('linear'); // 'linear' or 'radial'
+    let angle = writable<number>(90); // default angle for linear gradient
+    
+    stops.subscribe(value => {
+        state.styles.gradient = state.styles.gradient || mkDefaultGradinet();
+        state.styles.gradient.stops = value;
+        state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+    });
+    gradientType.subscribe(value => {
+        state.styles.gradient = state.styles.gradient || mkDefaultGradinet();
+        state.styles.gradient.type = value;
+        state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+    });
+    angle.subscribe(value => {
+        state.styles.gradient = state.styles.gradient || mkDefaultGradinet();
+        state.styles.gradient.angle = value;
+        state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+    });
+
+    $: if (state.styles.gradient?.stops && state.styles.gradient?.stops !== $stops) {
+        stops.set(state.styles.gradient.stops);
+    }
+
+    $: if (state.styles.gradient?.type && state.styles.gradient.type !== $gradientType) {
+        gradientType.set(state.styles.gradient.type);
+    }
+
+    $: if (state.styles.gradient?.angle && state.styles.gradient.angle !== $angle) {
+        angle.set(state.styles.gradient.angle);
+    }
+
+    function mkDefaultGradinet(): IconGradient {
+        return {
+            stops: [
+                { position: 0, color: '#fc466b' },
+                { position: 100, color: '#3f5efb' }
+            ],
+            type: 'linear',
+            angle: 90,
+            cssStyle: 'linear-gradient(90deg, #fc466b 0%, #3f5efb 100%)'
+        };
+    }
+
+    function mkCssStyle({ stops, type, angle }: IconGradient): string {
+        return type === 'linear' ? `linear-gradient(${angle}deg, ${stops.map(s => `${s.color} ${s.position}%`).join(', ')})` : 'radial-gradient(circle, ' + stops.map(s => `${s.color} ${s.position}%`).join(', ') + ')';
+    }
 
     // Function to get the color at a specific position
     function getColorAtPosition(position: number): string {
@@ -79,8 +126,8 @@
     }
 
     // Toggle gradient type
-    function toggleGradientType(type: string) {
-        gradientType = type;
+    function toggleGradientType(type: 'linear' | 'radial') {
+        gradientType.set(type);
     }
 </script>
 
@@ -140,10 +187,10 @@
                 <input class="bg-transparent" type="radio" name="gradientType" value="radial" on:change={() => toggleGradientType('radial')} /> Radial
             </label>
         </div>
-        {#if gradientType === 'linear'}
+        {#if $gradientType === 'linear'}
             <label>
                 Angle:
-                <input class="bg-transparent angle-input" type="number" bind:value={angle} min="0" max="360" />°
+                <input class="bg-transparent angle-input" type="number" bind:value={$angle} min="0" max="360" />°
             </label>
         {/if}
     </div>
@@ -157,7 +204,7 @@
             if (event.target !== event.currentTarget) return;
             addStop(event);
         }}
-        style="background: {gradientType === 'linear' ? `linear-gradient(${angle}deg, ${$stops.map(s => `${s.color} ${s.position}%`).join(', ')})` : 'radial-gradient(circle, ' + $stops.map(s => `${s.color} ${s.position}%`).join(', ') + ')' }"
+        style="background: {$gradientType === 'linear' ? `linear-gradient(${angle}deg, ${$stops.map(s => `${s.color} ${s.position}%`).join(', ')})` : 'radial-gradient(circle, ' + $stops.map(s => `${s.color} ${s.position}%`).join(', ') + ')' }"
     >
         {#each $stops as stop, index}
             <div

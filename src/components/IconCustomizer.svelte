@@ -40,7 +40,9 @@
 			labelX: 0,
 			labelY: 0,
 
-			pngData: ''
+			pngData: '',
+
+			gradient: null
 		},
 
 		/** The SVG string content of the icon */
@@ -81,6 +83,7 @@
 					if (isContentTypeSvg(contentType)) {
 						state.svgContent = cleanSvgContent(iconContent);
 					} else {
+						state.svgContent = '';
 						state.imageUrl = IconService.mkIconUrl($selectedIcon.iconId);
 					}
 				}
@@ -108,7 +111,13 @@
 			imgY: userIcon.imgY,
 			labelX: userIcon.labelX,
 			labelY: userIcon.labelY,
-			pngData: userIcon.pngData
+			pngData: userIcon.pngData,
+			gradient: userIcon.gradient ? {
+				stops: userIcon.gradient.stops,
+				type: userIcon.gradient.type,
+				angle: userIcon.gradient.angle,
+				cssStyle: userIcon.gradient.cssStyle
+			} : null
 		};
 	}
 
@@ -142,7 +151,7 @@
 	function cleanSvgContent(svgContent: string): string {
 		// Remove fill attributes from SVG content
 		const removeFillAttributes = (svgContent: string): string => {
-			return svgContent.replace(/fill="[^"]*"/g, '');
+			return svgContent.replace(/fill="(?!none")[^"]*"/g, '');
 		};
 
 		return injectColorIntoSvg(removeFillAttributes(svgContent), state.styles.glyphColor);
@@ -167,7 +176,7 @@
 		let iconPng = await ImageProcessing.NodeToBase64Png(node);
 
 		state.styles.pngData = iconPng;
-
+		
 		const userIcon = {
 			id: UUID.empty,
 			originalIconId: selectedIcon.iconId,
@@ -182,7 +191,8 @@
 			imgY: state.styles.imgY,
 			labelX: state.styles.labelX,
 			labelY: state.styles.labelY,
-			pngData: state.styles.pngData
+			pngData: state.styles.pngData,
+			gradient: state.styles.gradient,
 		} as UserIcon;
 
 		addIconToSelectedCollection(userIcon);

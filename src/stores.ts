@@ -10,6 +10,13 @@ export interface Icon {
   label: string;
 }
 
+export interface IconGradient {
+  stops: { position: number; color: string }[];
+  type: 'linear' | 'radial';
+  angle: number;
+  cssStyle: string;
+}
+
 /// <summary>
 ///     An Icon with styles applied
 /// </summary>
@@ -30,6 +37,8 @@ export interface UserIcon {
   imgY: number;
   labelX: number;
   labelY: number;
+
+  gradient: IconGradient | null;
 
   /** Base64 encoded PNG data */
   pngData: string;
@@ -52,6 +61,8 @@ export interface SelectedIcon {
   imgY: number;
   labelX: number;
   labelY: number;
+
+  gradient: IconGradient | null;
 
   pngData: string;
 }
@@ -76,6 +87,8 @@ export function mkEmptySelectedIcon(): SelectedIcon {
     labelY: 0,
 
     pngData: '',
+
+    gradient: null,
   };
 }
 
@@ -99,6 +112,13 @@ export function mkSelectedIconFromUserIcon(userIcon: UserIcon, collectionId: str
     labelY: userIcon.labelY,
 
     pngData: userIcon.pngData,
+
+    gradient: userIcon.gradient ? {
+      stops: userIcon.gradient.stops,
+      type: userIcon.gradient.type,
+      angle: userIcon.gradient.angle,
+      cssStyle: userIcon.gradient.cssStyle,
+    } : null,
   };
 }
 
@@ -231,6 +251,7 @@ collections.subscribe(async (newCollections) => {
 });
 
 /////////////////////// UI State ///////////////////////
+
 export interface UIState {
   styles: {
     glyphColor: string;
@@ -247,6 +268,8 @@ export interface UIState {
     labelY: number;
 
     pngData: string;
+
+    gradient: IconGradient | null;
   },
   /** The SVG string content of the icon */
   svgContent: string;
@@ -255,6 +278,13 @@ export interface UIState {
 }
 
 /////////////////////// Endpoints and Dtos ///////////////////////
+interface IconGradientDto {
+  stops: { position: number; color: string }[];
+  type: 'linear' | 'radial';
+  angle: number;
+  cssStyle: string;
+}
+
 interface UserIconDto {
   id: string;
   iconId: string;
@@ -270,6 +300,7 @@ interface UserIconDto {
   labelX: number;
   labelY: number;
   pngData: string;
+  gradient: IconGradientDto | null;
 }
 
 function toUserIcon(userIconDto: UserIconDto): UserIcon {
@@ -287,7 +318,14 @@ function toUserIcon(userIconDto: UserIconDto): UserIcon {
     imgY: userIconDto.imgY,
     labelX: userIconDto.labelX,
     labelY: userIconDto.labelY,
-    pngData: userIconDto.pngData
+    pngData: userIconDto.pngData,
+    gradient: userIconDto.gradient ? {
+      stops: userIconDto.gradient.stops,
+      type: userIconDto.gradient.type,
+      angle: userIconDto.gradient.angle,
+      cssStyle: userIconDto.gradient.cssStyle,
+    } : null,
+        
   };
 }
 
@@ -306,7 +344,13 @@ function fromUserIcon(userIcon: UserIcon): UserIconDto {
     imgY: userIcon.imgY,
     labelX: userIcon.labelX,
     labelY: userIcon.labelY,
-    pngData: userIcon.pngData
+    pngData: userIcon.pngData,
+    gradient: userIcon.gradient ? {
+      stops: userIcon.gradient.stops,
+      type: userIcon.gradient.type,
+      angle: userIcon.gradient.angle,
+      cssStyle: userIcon.gradient.cssStyle,
+    } : null,
   };
 }
 

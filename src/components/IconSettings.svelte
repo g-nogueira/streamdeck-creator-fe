@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { UIState } from "../stores";
+	import GradientGenerator from "./GradientGenerator.svelte";
 
 	export let state: UIState;
 </script>
@@ -65,6 +66,8 @@
 	<option value="75"></option>
 	<option value="100"></option>
 </datalist>
+
+<GradientGenerator bind:state/>
 
 <style>
     .icon-settings {
