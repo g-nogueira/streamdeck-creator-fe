@@ -1,5 +1,10 @@
 import { UUID } from '$lib';
 import { readable, writable } from 'svelte/store';
+import type { UserIcon } from './models/UserIcon';
+import type { selectedIcon } from './models/SelectedIcon';
+import type { userIconCollection } from './models/UserIconCollection';
+import type { UserIconGradient } from './models/UserIconGradient';
+import { userIconCollections } from './stores/UserIconCollection.Store';
 
 const baseUrl = 'http://localhost:5199';
 const userCollectionEndpoint = `${baseUrl}/user-icon-collections`;
@@ -10,132 +15,10 @@ export interface Icon {
   label: string;
 }
 
-export interface IconGradient {
-  stops: { position: number; color: string }[];
-  type: 'linear' | 'radial';
-  angle: number;
-  cssStyle: string;
-}
-
-/// <summary>
-///     An Icon with styles applied
-/// </summary>
-export interface UserIcon {
-  id: string;
-
-  originalIconId: string;
-
-  label: string;
-  labelVisible: boolean;
-  labelColor: string;
-  labelTypeface: string;
-  glyphColor: string;
-  backgroundColor: string;
-
-  iconScale: number;
-  imgX: number;
-  imgY: number;
-  labelX: number;
-  labelY: number;
-
-  gradient: IconGradient | null;
-
-  /** Base64 encoded PNG data */
-  pngData: string;
-}
-
-export interface SelectedIcon {
-  iconId: string;
-  userIconId: string;
-  userIconCollectionId: string;
-
-  label: string;
-  labelVisible: boolean;
-  labelColor: string;
-  labelTypeface: string;
-  glyphColor: string;
-  backgroundColor: string;
-
-  iconScale: number;
-  imgX: number;
-  imgY: number;
-  labelX: number;
-  labelY: number;
-
-  gradient: IconGradient | null;
-
-  pngData: string;
-}
-
-export function mkEmptySelectedIcon(): SelectedIcon {
-  return {
-    iconId: UUID.empty,
-    userIconId: UUID.empty,
-    userIconCollectionId: UUID.empty,
-
-    label: '',
-    labelVisible: false,
-    labelColor: '',
-    labelTypeface: '',
-    glyphColor: '',
-    backgroundColor: '',
-
-    iconScale: 1,
-    imgX: 0,
-    imgY: 0,
-    labelX: 0,
-    labelY: 0,
-
-    pngData: '',
-
-    gradient: null,
-  };
-}
-
-export function mkSelectedIconFromUserIcon(userIcon: UserIcon, collectionId: string): SelectedIcon {
-  return {
-    iconId: userIcon.originalIconId,
-    userIconId: userIcon.id,
-    userIconCollectionId: collectionId,
-
-    label: userIcon.label,
-    labelVisible: userIcon.labelVisible,
-    labelColor: userIcon.labelColor,
-    labelTypeface: userIcon.labelTypeface,
-    glyphColor: userIcon.glyphColor,
-    backgroundColor: userIcon.backgroundColor,
-
-    iconScale: userIcon.iconScale,
-    imgX: userIcon.imgX,
-    imgY: userIcon.imgY,
-    labelX: userIcon.labelX,
-    labelY: userIcon.labelY,
-
-    pngData: userIcon.pngData,
-
-    gradient: userIcon.gradient ? {
-      stops: userIcon.gradient.stops,
-      type: userIcon.gradient.type,
-      angle: userIcon.gradient.angle,
-      cssStyle: userIcon.gradient.cssStyle,
-    } : null,
-  };
-}
-
-// export interface StylizedIcon extends StylizedIcon {
-//   pngData: string;
-// }
-
-export interface UserIconCollection {
-  id: string;
-  name: string;
-  icons: UserIcon[];
-}
-
 export const icons = writable<Icon[]>([]);
 export const selectedIcon = writable<SelectedIcon | null>(null);
 export const selectedCollection = writable<UserIconCollection | null>(null);
-export const collections = writable<UserIconCollection[]>([]);
+// export const collections = writable<UserIconCollection[]>([]);
 
 export function selectIcon(icon: SelectedIcon) {
   selectedIcon.set(icon);
@@ -201,17 +84,11 @@ export function updateIconFromSelectedCollection(icon: UserIcon) {
   });
 }
 
-export function upsertUserIconCollections(collection: UserIconCollection) {
-  collections.update((collections) => [
-    ...collections.filter(collection => collection.id !== collection.id),
-    collection
-  ]);
-}
-
 // Helper function to detect changes in collections
 let previousCollections: UserIconCollection[] = [];
 
-collections.subscribe(async (newCollections) => {
+// Subscribe to changes in the collections store
+userIconCollections.subscribe(async (newCollections) => {
   const updatedCollection = newCollections.find((newCollection, index) => {
     return JSON.stringify(newCollection) !== JSON.stringify(previousCollections[index]);
   });
@@ -250,35 +127,8 @@ collections.subscribe(async (newCollections) => {
   previousCollections = JSON.parse(JSON.stringify(newCollections));
 });
 
-/////////////////////// UI State ///////////////////////
-
-export interface UIState {
-  styles: {
-    glyphColor: string;
-    backgroundColor: string;
-    labelColor: string;
-    label: string;
-    labelVisible: boolean;
-    labelTypeface: string;
-    iconScale: number;
-
-    imgX: number;
-    imgY: number;
-    labelX: number;
-    labelY: number;
-
-    pngData: string;
-
-    gradient: IconGradient | null;
-  },
-  /** The SVG string content of the icon */
-  svgContent: string;
-  /** The URL of the icon image */
-  imageUrl: string;
-}
-
 /////////////////////// Endpoints and Dtos ///////////////////////
-interface IconGradientDto {
+interface UserIconGradientDto {
   stops: { position: number; color: string }[];
   type: 'linear' | 'radial';
   angle: number;
@@ -300,7 +150,7 @@ interface UserIconDto {
   labelX: number;
   labelY: number;
   pngData: string;
-  gradient: IconGradientDto | null;
+  gradient: UserIconGradientDto | null;
 }
 
 function toUserIcon(userIconDto: UserIconDto): UserIcon {

@@ -1,7 +1,8 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
     import { ColorTranslator } from 'colortranslator';
-	import type { IconGradient, UIState } from '../stores';
+	import type { UserIconGradient } from '../models/UserIconGradient';
+	import type { UIState } from '../models/UIState';
 
     export let state: UIState;
     
@@ -46,7 +47,7 @@
         angle.set(state.styles.gradient.angle);
     }
 
-    function mkDefaultGradinet(): IconGradient {
+    function mkDefaultGradinet(): UserIconGradient {
         return {
             stops: [
                 { position: 0, color: '#fc466b' },
@@ -58,7 +59,7 @@
         };
     }
 
-    function mkCssStyle({ stops, type, angle }: IconGradient): string {
+    function mkCssStyle({ stops, type, angle }: UserIconGradient): string {
         return type === 'linear' ? `linear-gradient(${angle}deg, ${stops.map(s => `${s.color} ${s.position}%`).join(', ')})` : 'radial-gradient(circle, ' + stops.map(s => `${s.color} ${s.position}%`).join(', ') + ')';
     }
 

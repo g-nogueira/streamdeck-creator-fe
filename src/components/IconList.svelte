@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { icons, mkEmptySelectedIcon, selectIcon, type Icon } from '../stores';
+  import { icons, selectIcon, type Icon } from '../stores';
+  import { selectedIcon as _selectedIcon } from '../models/SelectedIcon';
 	import IconItem from './IconItem.svelte';
 
   export let classNames: string = '';
@@ -12,7 +13,7 @@
   });
 
   function useIcon (icon: Icon) {
-    let selectedIcon = mkEmptySelectedIcon();
+    let selectedIcon = _selectedIcon.mkEmpty();
 
     selectedIcon.iconId = icon.id;
     selectedIcon.label = icon.label;

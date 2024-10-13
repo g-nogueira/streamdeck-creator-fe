@@ -2,16 +2,9 @@
 	import {
 		selectedIcon,
 		selectedCollection,
-		type UserIconCollection,
 		IconService,
-		type UserIcon,
 		addIconToSelectedCollection,
-		upsertUserIconCollections,
-		type SelectedIcon,
-		mkSelectedIconFromUserIcon,
 		selectIcon,
-		type UIState,
-
 		UserIconCollectionService
 
 	} from '../stores';
@@ -22,6 +15,11 @@
 	import CollectionList from './CollectionList.svelte';
 	import CollectionIcons from './CollectionIcons.svelte';
 	import { ImageProcessing, UUID } from '$lib';
+	import type { UserIcon } from '../models/UserIcon';
+	import { selectedIcon as _selectedIcon, SelectedIcon } from '../models/SelectedIcon';
+	import type { UIState } from '../models/UIState';
+	import type { UserIconCollection } from '../models/UserIconCollection';
+	import { userIconCollections } from '../stores/UserIconCollection.Store';
 
 	export let classNames: string = '';
 
@@ -196,7 +194,7 @@
 		} as UserIcon;
 
 		addIconToSelectedCollection(userIcon);
-		upsertUserIconCollections(selectedCollection);
+		userIconCollections.upsertCollection(selectedCollection);
 	}
 
 	// Download the customized icon as a PNG
@@ -215,7 +213,7 @@
 			throw new Error('No collection selected. An user icon must belong to a collection.');
 		}
 
-		let selectedIcon = mkSelectedIconFromUserIcon(icon, collection.id);
+		let selectedIcon = _selectedIcon.fromUserIcon(icon, collection.id);
 		selectIcon(selectedIcon);
 	}
 

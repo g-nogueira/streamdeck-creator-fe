@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { icons, type UserIcon } from '../stores';
+  import { icons } from '../stores';
   import { debounce } from 'lodash-es';
+	import type { UserIcon } from '../models/UserIcon';
 
   let searchTerm = '';
   let placeholder = '';
