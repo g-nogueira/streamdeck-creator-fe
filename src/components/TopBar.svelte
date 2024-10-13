@@ -1,7 +1,5 @@
 <script lang="ts">
   import SearchBar from './SearchBar.svelte';
-
-  let searchTerm = '';
 </script>
 
 <div class="top-bar">

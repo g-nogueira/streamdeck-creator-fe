@@ -1,11 +1,4 @@
 <script lang="ts">
-	import {
-		selectedIcon,
-		selectedCollection,
-		addIconToSelectedCollection,
-		selectIcon,
-
-	} from '../stores';
 	import IconSettings from './IconSettings.svelte';
 	import IconPreview from './IconPreview.svelte';
 
@@ -17,10 +10,12 @@
 	import type { SelectedIcon } from '../models/SelectedIcon';
 	import type { UIState } from '../models/UIState';
 	import type { UserIconCollection } from '../models/UserIconCollection';
-	import { userIconCollections } from '../stores/UserIconCollection.Store';
+	import { userIconCollections } from '../stores/user-icon-collection.store';
 	import * as _selectedIcon from '../models/SelectedIcon';
 	import { IconService } from '../services/icon.service';
 	import { UserIconCollectionService } from '../services/user-icon-collection.service';
+	import { selectedIcon } from '../stores/selected-icon.store';
+	import { selectedCollection } from '../stores/selected-collection.store';
 
 	export let classNames: string = '';
 
@@ -159,9 +154,9 @@
 	// Save the customized icon
 	async function addIconToCollection(
 		selectedIcon: SelectedIcon,
-		selectedCollection: UserIconCollection | null
+		collection: UserIconCollection | null
 	) {
-		if (!selectedCollection) {
+		if (!collection) {
 			console.error('No collection selected to save the icon');
 			return;
 		}
@@ -194,8 +189,8 @@
 			gradient: state.styles.gradient,
 		} as UserIcon;
 
-		addIconToSelectedCollection(userIcon);
-		userIconCollections.upsertCollection(selectedCollection);
+		selectedCollection.addIconToSelectedCollection(userIcon);
+		userIconCollections.upsertCollection(collection);
 	}
 
 	// Download the customized icon as a PNG
@@ -214,8 +209,8 @@
 			throw new Error('No collection selected. An user icon must belong to a collection.');
 		}
 
-		let selectedIcon = _selectedIcon.fromUserIcon(icon, collection.id);
-		selectIcon(selectedIcon);
+		let newSelectedIcon = _selectedIcon.fromUserIcon(icon, collection.id);
+		selectedIcon.selectIcon(newSelectedIcon);
 	}
 
 	function donwloadUserCollection() {

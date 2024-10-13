@@ -2,82 +2,13 @@ import { UUID } from '$lib';
 import { readable, writable } from 'svelte/store';
 import type { UserIcon } from './models/UserIcon';
 import type { UserIconCollection } from './models/UserIconCollection';
-import { userIconCollections } from './stores/UserIconCollection.Store';
+import { userIconCollections } from './stores/user-icon-collection.store';
 import type { SelectedIcon } from './models/SelectedIcon';
 import { userCollectionEndpoint } from './constants';
 
 export interface Icon {
   id: string;
   label: string;
-}
-
-export const icons = writable<Icon[]>([]);
-export const selectedIcon = writable<SelectedIcon | null>(null);
-export const selectedCollection = writable<UserIconCollection | null>(null);
-// export const collections = writable<UserIconCollection[]>([]);
-
-export function selectIcon(icon: SelectedIcon) {
-  selectedIcon.set(icon);
-}
-
-export function selectCollection(collection: UserIconCollection) {
-  selectedCollection.set(collection);
-}
-
-export function addIconToCollection(icon: UserIcon) {
-  selectedCollection.update((collection) => {
-    if (!collection) {
-      throw new Error('No collection selected');
-    }
-
-    collection.icons.push(icon);
-    return collection;
-  });
-}
-
-export function updateIconFromCollection(icon: UserIcon) {
-  selectedCollection.update((collection) => {
-    if (!collection) {
-      throw new Error('No collection selected');
-    }
-
-    const index = collection.icons.findIndex((i) => i.id === icon.id);
-
-    if (index === -1) {
-      throw new Error('Icon not found in collection');
-    }
-
-    collection.icons[index] = icon;
-    return collection;
-  });
-}
-
-export function addIconToSelectedCollection(icon: UserIcon) {
-  selectedCollection.update((collection) => {
-    if (!collection) {
-      throw new Error('No collection selected');
-    }
-
-    collection.icons.push(icon);
-    return collection;
-  });
-}
-
-export function updateIconFromSelectedCollection(icon: UserIcon) {
-  selectedCollection.update((collection) => {
-    if (!collection) {
-      throw new Error('No collection selected');
-    }
-
-    const index = collection.icons.findIndex((i) => i.id === icon.id);
-
-    if (index === -1) {
-      throw new Error('Icon not found in collection');
-    }
-
-    collection.icons[index] = icon;
-    return collection;
-  });
 }
 
 // Helper function to detect changes in collections

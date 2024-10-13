@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { selectCollection } from '../stores';
 	import  * as _userIconCollection from '../models/UserIconCollection';
-	import { userIconCollections } from '../stores/UserIconCollection.Store';
+	import { userIconCollections } from '../stores/user-icon-collection.store';
 	import { UserIconCollectionService } from '../services/user-icon-collection.service';
+	import { selectedCollection } from '../stores/selected-collection.store';
 
 	export let classNames: string = '';
 
@@ -17,13 +17,13 @@
 			newCollection.id = await UserIconCollectionService.create(newCollection);
 		
 			userIconCollections.upsertCollection(newCollection);
-			selectCollection(newCollection);
+			selectedCollection.selectCollection(newCollection);
 			return;
 		}
 
 		// Select the first collectiCollections only one
 		if (collectionsResponse.length === 1) {
-			selectCollection(collectionsResponse[0]);
+			selectedCollection.selectCollection(collectionsResponse[0]);
 		}
 
 		userIconCollections.set(collectionsResponse);
@@ -35,7 +35,7 @@
 	<div class={`py-8 px-4 grid grid-cols-4 gap-y-8 ${classNames}`}>
 		<!-- Vertical list of collections -->
 		{#each $userIconCollections as collection}
-		<button type="button" class="flex items-center border-b border-gray-700 h-12" on:click={() => selectCollection(collection)} aria-label="Select collection {collection.name}">
+		<button type="button" class="flex items-center border-b border-gray-700 h-12" on:click={() => selectedCollection.selectCollection(collection)} aria-label="Select collection {collection.name}">
 			{collection.name}
 		</button>
 		{/each}

@@ -40,10 +40,7 @@ function createCollectionsStore() {
             collection.icons[iconIndex] = updatedIcon;
             return collections;
         }),
-        addCollection: (newCollection: UserIconCollection) => update(collections => {
-            collections.push(newCollection);
-            return collections;
-        }),
+        addCollection: (newCollection: UserIconCollection) => update(collections => [...collections, newCollection]),
         updateCollection: (updatedCollection: UserIconCollection) => update(collections => {
             const collectionIndex = collections.findIndex(c => c.id === updatedCollection.id);
 
@@ -52,9 +49,7 @@ function createCollectionsStore() {
             collections[collectionIndex] = updatedCollection;
             return collections;
         }),
-        removeCollection: (collectionId: string) => update(collections => {
-            return collections.filter(c => c.id !== collectionId);
-        }),
+        removeCollection: (collectionId: string) => update(collections => collections.filter(c => c.id !== collectionId)),
         upsertCollection: (collection: UserIconCollection) => update(collections => {
             const collectionIndex = collections.findIndex(c => c.id === collection.id);
 

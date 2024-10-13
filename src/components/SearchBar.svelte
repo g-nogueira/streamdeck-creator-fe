@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { icons } from '../stores';
   import { debounce } from 'lodash-es';
-	import type { UserIcon } from '../models/UserIcon';
+	import { icons } from '../stores/icon.store';
+	import { IconService } from '../services/icon.service';
 
   let searchTerm = '';
   let placeholder = '';
@@ -18,14 +18,10 @@
     isLoading = true;
     error = '';
     try {
-      const response = await fetch(`http://localhost:5199/icons/search?searchTerm=${searchTerm}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch search results');
-      }
-      const data: UserIcon[] = await response.json();
-      icons.set(data);
-    } catch (err) {
-      error = err.message;
+      const response = await IconService.searchIcons(searchTerm);
+      icons.set(response);
+    } catch (e: any) {
+      error = e.message;
     } finally {
       isLoading = false;
     }
