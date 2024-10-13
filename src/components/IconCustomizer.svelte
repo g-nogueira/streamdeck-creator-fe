@@ -2,10 +2,8 @@
 	import {
 		selectedIcon,
 		selectedCollection,
-		IconService,
 		addIconToSelectedCollection,
 		selectIcon,
-		UserIconCollectionService
 
 	} from '../stores';
 	import IconSettings from './IconSettings.svelte';
@@ -21,6 +19,8 @@
 	import type { UserIconCollection } from '../models/UserIconCollection';
 	import { userIconCollections } from '../stores/UserIconCollection.Store';
 	import * as _selectedIcon from '../models/SelectedIcon';
+	import { IconService } from '../services/icon.service';
+	import { UserIconCollectionService } from '../services/user-icon-collection.service';
 
 	export let classNames: string = '';
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { UIState } from "../stores";
+	import type { UIState } from "../models/UIState";
 	import GradientGenerator from "./GradientGenerator.svelte";
 
 	export let state: UIState;

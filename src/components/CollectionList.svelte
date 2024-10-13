@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { selectCollection, UserIconCollectionService } from '../stores';
+	import { selectCollection } from '../stores';
 	import  * as _userIconCollection from '../models/UserIconCollection';
 	import { userIconCollections } from '../stores/UserIconCollection.Store';
+	import { UserIconCollectionService } from '../services/user-icon-collection.service';
 
 	export let classNames: string = '';
 
