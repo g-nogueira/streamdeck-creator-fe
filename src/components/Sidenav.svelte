@@ -27,7 +27,7 @@
             <p class="opacity-20">(Content)</p>
         </div> -->
     </div>
-    <div class="flex flex-col w-[375px] h-full p-3 gap-3">
+    <div class="flex flex-col w-[375px] h-full p-3 gap-3 preset-filled-surface-50-950 border-surface-100-900 border-[1px]">
         <IconSearch/>
     </div>
 </div>

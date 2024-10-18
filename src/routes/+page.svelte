@@ -6,6 +6,8 @@
 	import '../app.css';
 	import { startUserIconCollectionsSync } from '$lib/sync-manager';
 	import Sidenav from '../components/Sidenav.svelte';
+	import IconPreview from '../components/IconPreview.svelte';
+	import { state } from '../stores/ui-state.store';
 
 	startUserIconCollectionsSync();
 
@@ -29,18 +31,24 @@
 </svelte:head>
 <div class="flex h-full">
 	<Sidenav />
-	<main class="flex h-screen w-screen flex-col overflow-hidden bg-gray-50 font-sans text-slate-600 antialiased dark:bg-neutral-800 dark:text-white" >
-		<TopBar />
-		<div class="flex h-full flex-1">
-			<IconList classNames="w-3/4" />
+	<main class="flex h-screen w-screen flex-col overflow-hidden">
+		<div class="flex h-full w-full items-center justify-center">
 			<IconCustomizer classNames="w-1/4" />
+			<IconPreview bind:state={$state} />
 		</div>
 		<Footer />
 	</main>
 </div>
 
-<!-- <style lang="postcss">
-  :global(html) {
-    background-color: theme(colors.gray.100);
-  }
-</style> -->
+<style lang="postcss">
+	:global(html) {
+		height: 100%;
+	}
+	:global(body) {
+		height: 100%;
+		background-image: 
+			radial-gradient(at 70% 50%, rgba(39 56 95 / 0.5) 0px, transparent 75% ),
+			radial-gradient(at 50% 0%, rgba(255 3 238 / 0.15) 0px, transparent 75% ),
+			radial-gradient(at 100% 0%, rgba(255 3 238 / 0.15) 0px, transparent 50%);
+	}
+</style>

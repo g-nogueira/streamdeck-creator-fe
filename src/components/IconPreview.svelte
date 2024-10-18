@@ -12,7 +12,7 @@
 </script>
 
 <div class="m-16 min-w-[371px] min-h-[371px] max-w-[371px] max-h-[371px] flex justify-center">
-    <div id="iconToCapture" class="relative w-full h-full">
+    <div id="iconToCapture" class="relative w-[371px] h-[371px]">
         <div class="relative w-full h-full shadow-lg rounded-[45px]" style="{backgroundStyle}">
             <!-- Icon -->
             <div class="flex-grow p-5 w-full max-h-[223px] flex justify-center" style="color: {state.styles.glyphColor}; transform: scale({state.styles.iconScale}) translate({state.styles.imgX}px, {state.styles.imgY}px);">
