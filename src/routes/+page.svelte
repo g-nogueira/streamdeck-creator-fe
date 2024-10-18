@@ -1,5 +1,5 @@
 <script>
-	import TopBar from '../components/TopBar.svelte';
+	import TopBar from '../components/Archived/TopBar.svelte';
 	import IconList from '../components/IconList.svelte';
 	import IconCustomizer from '../components/IconCustomizer.svelte';
 	import Footer from '../components/Footer.svelte';
@@ -8,6 +8,7 @@
 	import Sidenav from '../components/Sidenav.svelte';
 	import IconPreview from '../components/IconPreview.svelte';
 	import { state } from '../stores/ui-state.store';
+	import Toolbar from '../components/Toolbar/Toolbar.svelte';
 
 	startUserIconCollectionsSync();
 
@@ -36,8 +37,9 @@
 			<IconCustomizer classNames="w-1/4" />
 			<IconPreview bind:state={$state} />
 		</div>
-		<Footer />
+		<!-- <Footer /> -->
 	</main>
+	<Toolbar />
 </div>
 
 <style lang="postcss">

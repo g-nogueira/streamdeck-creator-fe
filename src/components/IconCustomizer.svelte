@@ -1,5 +1,5 @@
 <script lang="ts">
-	import IconSettings from './IconSettings.svelte';
+	import IconSettings from './Archived/IconSettings.svelte';
 	import IconPreview from './IconPreview.svelte';
 
 	import IconHeader from './IconHeader.svelte';

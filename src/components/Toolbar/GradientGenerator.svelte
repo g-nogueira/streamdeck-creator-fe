@@ -1,8 +1,8 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
     import { ColorTranslator } from 'colortranslator';
-	import type { GradientStop, UserIconGradient } from '../models/UserIconGradient';
-	import type { UIState } from '../models/UIState';
+	import type { GradientStop, UserIconGradient } from '../../models/UserIconGradient';
+	import type { UIState } from '../../models/UIState';
 
     export let state: UIState['styles'];
     
@@ -122,16 +122,18 @@
     }
 
     // Toggle gradient type
-    function toggleGradientType(type: 'linear' | 'radial') {
+    function toggleGradientType(type: string) {
+        // Throw an error if the type is not 'linear' or 'radial'
+        if (type !== 'linear' && type !== 'radial') {
+            throw new Error('Invalid gradient type');
+        }
+
         gradientType.set(type);
     }
 </script>
 
 <style>
     .gradient-generator {
-        margin: 20px;
-        background-color: #1e1e1e;
-        padding: 20px;
         border-radius: 8px;
         color: #ffffff;
     }
@@ -174,20 +176,13 @@
 </style>
 
 <div class="gradient-generator">
-    <div class="controls">
-        <div>
-            <label>
-                <input class="bg-transparent" type="radio" name="gradientType" value="linear" checked on:change={() => toggleGradientType('linear')} /> Linear
-            </label>
-            <label>
-                <input class="bg-transparent" type="radio" name="gradientType" value="radial" on:change={() => toggleGradientType('radial')} /> Radial
-            </label>
-        </div>
+    <div class="flex flex-row gap-10 justify-between">
+        <select class="select bg-surface-800" on:change={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}>
+            <option value="linear">Linear</option>
+            <option value="radial">Radial</option>
+        </select>
         {#if $gradientType === 'linear'}
-            <label>
-                Angle:
-                <input class="bg-transparent angle-input" type="number" bind:value={$angle} min="0" max="360" />°
-            </label>
+            <input class="input bg-surface-800" type="number" min="0" max="360" placeholder="90°" bind:value={$angle}/>
         {/if}
     </div>
 
@@ -206,7 +201,7 @@
             <div
                 class="stop"
                 style="left: {stop.position}%; background-color: {stop.color};"
-                on:mousedown={event => {
+                on:mousedown={_ => {
                     const moveHandler = (e: MouseEvent) => {
                         updatePosition(index, e);
                     };
