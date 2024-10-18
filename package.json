@@ -21,6 +21,7 @@
 		"@sveltejs/adapter-node": "^5.2.7",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
+		"@tailwindcss/forms": "^0.5.9",
 		"@types/dom-to-image": "^2.6.7",
 		"@types/eslint": "^9.6.0",
 		"@types/lodash": "^4.17.9",
@@ -48,6 +49,7 @@
 	"type": "module",
 	"dependencies": {
 		"colortranslator": "^4.1.0",
-		"dom-to-image-more": "^3.4.5"
+		"dom-to-image-more": "^3.4.5",
+		"lucide-svelte": "^0.453.0"
 	}
 }
