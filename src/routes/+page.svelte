@@ -7,7 +7,7 @@
 	import { startUserIconCollectionsSync } from '$lib/sync-manager';
 	import Sidenav from '../components/Sidenav.svelte';
 	import IconPreview from '../components/IconPreview.svelte';
-	import { state } from '../stores/ui-state.store';
+	import { uiState } from '../stores/ui-state.store';
 	import Toolbar from '../components/Toolbar/Toolbar.svelte';
 
 	startUserIconCollectionsSync();
@@ -35,7 +35,7 @@
 	<main class="flex h-screen w-screen flex-col overflow-hidden">
 		<div class="flex h-full w-full items-center justify-center">
 			<IconCustomizer classNames="w-1/4" />
-			<IconPreview bind:state={$state} />
+			<IconPreview bind:state={$uiState} />
 		</div>
 		<!-- <Footer /> -->
 	</main>

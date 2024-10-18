@@ -27,4 +27,4 @@ let emptyState: UIState = {
     /** The URL of the icon image */
     imageUrl: ''
 };
-export const state = writable(emptyState);
+export const uiState = writable(emptyState);

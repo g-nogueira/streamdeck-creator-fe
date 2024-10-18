@@ -3,7 +3,7 @@
 	import IconPreview from './IconPreview.svelte';
 
 	import IconHeader from './IconHeader.svelte';
-	import CollectionList from './CollectionList.svelte';
+	import CollectionList from './Sidebar/CollectionList.svelte';
 	import CollectionIcons from './CollectionIcons.svelte';
 	import { ImageProcessing, UUID } from '$lib';
 	import type { UserIcon } from '../models/UserIcon';
@@ -16,7 +16,7 @@
 	import { UserIconCollectionService } from '../services/user-icon-collection.service';
 	import { selectedIcon } from '../stores/selected-icon.store';
 	import { selectedCollection } from '../stores/selected-collection.store';
-	import { state } from '../stores/ui-state.store';
+	import { uiState } from '../stores/ui-state.store';
 
 	export let classNames: string = '';
 
@@ -29,12 +29,12 @@
 					let userIcon = await IconService.fetchUserIcon($selectedIcon.userIconCollectionId, $selectedIcon.userIconId)
 					let [iconContent, contentType] = await IconService.fetchIconWithContentType(userIcon.originalIconId);
 					
-					$state.styles = mkStateStyles(userIcon);
+					$uiState.styles = mkStateStyles(userIcon);
 					
 					if (isContentTypeSvg(contentType)) {
-						$state.svgContent = cleanSvgContent(iconContent);
+						$uiState.svgContent = cleanSvgContent(iconContent);
 					} else {
-						$state.imageUrl = IconService.mkIconUrl(userIcon.originalIconId);
+						$uiState.imageUrl = IconService.mkIconUrl(userIcon.originalIconId);
 					}
 				} catch (error: any) {
 					throw new Error('Error fetching user icon', error);
@@ -46,14 +46,14 @@
 		else if ($selectedIcon.iconId) {
 			IconService.fetchIconWithContentType($selectedIcon.iconId).then(
 				([iconContent, contentType]) => {
-					$state.styles.pngData = '';
-					$state.styles.label = $selectedIcon.label;
+					$uiState.styles.pngData = '';
+					$uiState.styles.label = $selectedIcon.label;
 
 					if (isContentTypeSvg(contentType)) {
-						$state.svgContent = cleanSvgContent(iconContent);
+						$uiState.svgContent = cleanSvgContent(iconContent);
 					} else {
-						$state.svgContent = '';
-						$state.imageUrl = IconService.mkIconUrl($selectedIcon.iconId);
+						$uiState.svgContent = '';
+						$uiState.imageUrl = IconService.mkIconUrl($selectedIcon.iconId);
 					}
 				}
 			)
@@ -63,8 +63,8 @@
 		}
 	}
 
-	$: if ($state.svgContent) {
-		$state.svgContent = injectColorIntoSvg($state.svgContent, $state.styles.glyphColor);
+	$: if ($uiState.svgContent) {
+		$uiState.svgContent = injectColorIntoSvg($uiState.svgContent, $uiState.styles.glyphColor);
 	}
 
 	function mkStateStyles(userIcon: UserIcon) {
@@ -124,7 +124,7 @@
 			return svgContent.replace(/fill="(?!none")[^"]*"/g, '');
 		};
 
-		return injectColorIntoSvg(removeFillAttributes(svgContent), $state.styles.glyphColor);
+		return injectColorIntoSvg(removeFillAttributes(svgContent), $uiState.styles.glyphColor);
 	}
 
 	// Save the customized icon
@@ -145,25 +145,25 @@
 
 		let iconPng = await ImageProcessing.NodeToBase64Png(node);
 
-		$state.styles.pngData = iconPng;
+		$uiState.styles.pngData = iconPng;
 		
 		const userIcon = {
 			id: UUID.empty,
 			originalIconId: selectedIcon.iconId,
-			glyphColor: $state.styles.glyphColor,
-			backgroundColor: $state.styles.backgroundColor,
-			labelColor: $state.styles.labelColor,
-			label: $state.styles.label,
-			labelVisible: $state.styles.labelVisible,
-			labelTypeface: $state.styles.labelTypeface,
-			iconScale: $state.styles.iconScale,
-			imgX: $state.styles.imgX,
-			imgY: $state.styles.imgY,
-			labelX: $state.styles.labelX,
-			labelY: $state.styles.labelY,
-			pngData: $state.styles.pngData,
-			useGradient: $state.styles.useGradient,
-			gradient: $state.styles.gradient,
+			glyphColor: $uiState.styles.glyphColor,
+			backgroundColor: $uiState.styles.backgroundColor,
+			labelColor: $uiState.styles.labelColor,
+			label: $uiState.styles.label,
+			labelVisible: $uiState.styles.labelVisible,
+			labelTypeface: $uiState.styles.labelTypeface,
+			iconScale: $uiState.styles.iconScale,
+			imgX: $uiState.styles.imgX,
+			imgY: $uiState.styles.imgY,
+			labelX: $uiState.styles.labelX,
+			labelY: $uiState.styles.labelY,
+			pngData: $uiState.styles.pngData,
+			useGradient: $uiState.styles.useGradient,
+			gradient: $uiState.styles.gradient,
 		} as UserIcon;
 
 		selectedCollection.addIconToSelectedCollection(userIcon);
@@ -178,7 +178,7 @@
 			throw new Error('No HTML element #iconToCapture found to save');
 		}
 
-		ImageProcessing.DownloadIcon(node, $state.styles.label);
+		ImageProcessing.DownloadIcon(node, $uiState.styles.label);
 	}
 
 	function selectUserIcon(icon: UserIcon, collection: UserIconCollection | null) {
