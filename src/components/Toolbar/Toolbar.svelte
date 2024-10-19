@@ -4,6 +4,7 @@
     import IconPaint from "lucide-svelte/icons/paint-bucket";
     import IconSprayCan from "lucide-svelte/icons/spray-can";
     import ToolbarSection from "./ToolbarSection.svelte";
+	import Tooltip from "../Tooltip.svelte";
 
     function toggleUseGradient(value: boolean) {
         uiState.update(s => {
@@ -54,11 +55,15 @@
     <hr class="hr" />
     <ToolbarSection title="Fill">
         <div class="flex flex-row gap-3">
-            <button type="button" on:click={() => toggleUseGradient(false)} class="{$uiState.styles.useGradient ? "" : "bg-secondary-950"} btn btn-sm btn-icon rounded-md w-auto p-2 h-auto">
-                <IconPaint size={20}/>
+            <button type="button" on:click={() => toggleUseGradient(false)} class="{$uiState.styles.useGradient ? "" : "bg-secondary-950"} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
+                <Tooltip text="Solid Fill">
+                    <IconPaint size={20}/>
+                </Tooltip>
             </button>
-            <button type="button" on:click={() => toggleUseGradient(true)} class="{!$uiState.styles.useGradient ? "" : "bg-secondary-950"} btn btn-sm btn-icon rounded-md w-auto p-2 h-auto">
-                <IconSprayCan size={20}/>
+            <button type="button" on:click={() => toggleUseGradient(true)} class="{!$uiState.styles.useGradient ? "" : "bg-secondary-950"} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
+                <Tooltip text="Gradient Fill">
+                    <IconSprayCan size={20}/>
+                </Tooltip>
             </button>
         </div>
         {#if $uiState.styles.useGradient}
