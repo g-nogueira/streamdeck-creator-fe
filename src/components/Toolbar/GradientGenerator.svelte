@@ -3,6 +3,7 @@
     import { ColorTranslator } from 'colortranslator';
 	import type { GradientStop, UserIconGradient } from '../../models/UserIconGradient';
 	import type { UIState } from '../../models/UIState';
+    import DeleteIcon from 'lucide-svelte/icons/trash';
 
     export let state: UIState['styles'];
     
@@ -177,12 +178,12 @@
 
 <div class="gradient-generator">
     <div class="flex flex-row gap-10 justify-between">
-        <select class="select bg-surface-800" on:change={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}>
+        <select class="select select-toolbar bg-surface-800" on:change={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}>
             <option value="linear">Linear</option>
             <option value="radial">Radial</option>
         </select>
         {#if $gradientType === 'linear'}
-            <input class="input bg-surface-800" type="number" min="0" max="360" placeholder="90°" bind:value={$angle}/>
+            <input class="input input-toolbar bg-surface-800" type="number" placeholder="90°" bind:value={$angle}/>
         {/if}
     </div>
 
@@ -216,12 +217,16 @@
         {/each}
     </div>
 
-    <div>
+    <div class="flex flex-col gap-3">
         {#each $stops as stop, index}
-            <div>
-                <input class="bg-transparent" type="color" bind:value={stop.color}>
-                <input class="bg-transparent" type="number" min="0" max="100" bind:value={stop.position} />
-                <button on:click={() => removeStop(index)}>Remove</button>
+            <div class="inline-flex justify-start items-center w-full gap-3">
+                <div class="inline-flex w-1/2">
+                    <input class="input input-toolbar" type="color" bind:value={stop.color}>
+                    <input class="input input-toolbar" type="number" min="0" max="100" bind:value={stop.position} />
+                </div>
+                <button on:click={() => removeStop(index)} class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-warning-900">
+                    <DeleteIcon size={20} />
+                </button>
             </div>
         {/each}
     </div>

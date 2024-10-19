@@ -16,39 +16,39 @@
 
 <div class="flex flex-col min-w-[375px] w-[375px] h-full p-3 gap-3 preset-filled-surface-50-950 border-surface-100-900 border-[1px]">
     <ToolbarSection title="Typography">
-        <input class="input bg-surface-800" type="text" placeholder="Text" />
-        <select class="select bg-surface-800" placeholder="Typeface - Not Implemented">
+        <input bind:value={$uiState.styles.label} class="input input-toolbar bg-surface-800" type="text" placeholder="Text" />
+        <select class="select select-toolbar bg-surface-800" placeholder="Typeface - Not Implemented">
             <option>Typeface - Not Implemented</option>
         </select>
     </ToolbarSection>
     <hr class="hr" />
     <ToolbarSection title="Text Positioning">
         <div class="flex flex-row gap-4">
-            <input bind:value={$uiState.styles.labelX} class="input bg-surface-800" type="text" placeholder="X" />
-            <input bind:value={$uiState.styles.labelY} class="input bg-surface-800" type="text" placeholder="Y" />
+            <input bind:value={$uiState.styles.labelX} class="input input-toolbar bg-surface-800" type="number" placeholder="X" />
+            <input bind:value={$uiState.styles.labelY} class="input input-toolbar bg-surface-800" type="number" placeholder="Y" />
         </div>
-        <input class="input bg-surface-800" type="text" placeholder="Scale - Not Implemented" />
+        <input class="input input-toolbar bg-surface-800" type="text" placeholder="Scale - Not Implemented" />
     </ToolbarSection>
     <hr class="hr" />
     <ToolbarSection title="Text Styling">
         <div class="grid grid-cols-[auto_1fr] gap-2">
-            <input class="input" bind:value={$uiState.styles.labelColor} type="color" />
-            <input class="input bg-surface-800" type="text" bind:value={$uiState.styles.labelColor} />
+            <input class="input input-toolbar" bind:value={$uiState.styles.labelColor} type="color" />
+            <input class="input input-toolbar bg-surface-800" type="text" bind:value={$uiState.styles.labelColor} />
         </div>
     </ToolbarSection>
     <hr class="hr" />
     <ToolbarSection title="Icon Positioning">
         <div class="flex flex-row gap-4">
-            <input bind:value={$uiState.styles.imgX} class="input bg-surface-800" type="number" placeholder="X" />
-            <input bind:value={$uiState.styles.imgY} class="input bg-surface-800" type="number" placeholder="Y" />
+            <input bind:value={$uiState.styles.imgX} class="input input-toolbar bg-surface-800" type="number" placeholder="X" />
+            <input bind:value={$uiState.styles.imgY} class="input input-toolbar bg-surface-800" type="number" placeholder="Y" />
         </div>
-        <input bind:value={$uiState.styles.iconScale} class="input bg-surface-800" type="text" placeholder="Scale" />
+        <input bind:value={$uiState.styles.iconScale} class="input input-toolbar bg-surface-800" type="number" placeholder="Scale" />
     </ToolbarSection>
     <hr class="hr" />
     <ToolbarSection title="Icon Styling">
         <div class="grid grid-cols-[auto_1fr] gap-2">
-            <input class="input" bind:value={$uiState.styles.glyphColor} type="color" />
-            <input class="input bg-surface-800" type="text" bind:value={$uiState.styles.glyphColor} />
+            <input class="input input-toolbar" bind:value={$uiState.styles.glyphColor} type="color" />
+            <input class="input input-toolbar bg-surface-800" type="text" bind:value={$uiState.styles.glyphColor} />
         </div>
     </ToolbarSection>
     <hr class="hr" />
@@ -65,29 +65,9 @@
             <GradientGenerator bind:state={$uiState.styles}/>
         {:else}
             <div class="grid grid-cols-[auto_1fr] gap-2">
-                <input class="input" bind:value={$uiState.styles.backgroundColor} type="color" />
-                <input class="input bg-surface-800" type="text" bind:value={$uiState.styles.backgroundColor} />
+                <input class="input input-toolbar" bind:value={$uiState.styles.backgroundColor} type="color" />
+                <input class="input input-toolbar bg-surface-800" type="text" bind:value={$uiState.styles.backgroundColor} />
             </div>
         {/if}
     </ToolbarSection>
 </div>
-
-<style lang="postcss">
-    input, select, .input[type='color'] {
-        height: calc(1.75rem * var(--space-scale-factor));
-    }
-    .input[type='color'] {
-        width: calc(1.75rem * var(--space-scale-factor));
-    }
-
-    select {
-        padding-top: 0.1rem;
-        padding-bottom: 0.1rem;
-    }
-
-    .btn-icon {
-        width: auto;
-
-        /* border-radius: var(); */
-    }
-</style>
