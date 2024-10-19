@@ -56,6 +56,10 @@
     }
 
     function mkCssStyle({ stops, type, angle }: UserIconGradient): string {
+        if (!type) {
+            return 'linear-gradient(90deg, #45fc8b 0%, #212a54 100%)';
+        }
+
         return type === 'linear' ? `linear-gradient(${angle}deg, ${stops.map(s => `${s.color} ${s.position}%`).join(', ')})` : 'radial-gradient(circle, ' + stops.map(s => `${s.color} ${s.position}%`).join(', ') + ')';
     }
 
@@ -133,50 +137,8 @@
     }
 </script>
 
-<style>
-    .gradient-generator {
-        border-radius: 8px;
-        color: #ffffff;
-    }
-
-    .gradient-bar {
-        width: 100%;
-        height: 30px;
-        position: relative;
-        background: linear-gradient(90deg, #45fc8b 0%, #212a54 100%);
-        cursor: copy;
-        border-radius: 4px;
-        margin: 10px 0;
-    }
-
-    .stop {
-        position: absolute;
-        top: 0; /* Aligns the stops to the top of the bar */
-        width: 10px; /* Width of the vertical line */
-        height: 30px; /* Height of the gradient bar */
-        cursor: pointer;
-        border: 2px solid #ffffff;
-        cursor: ew-resize;
-    }
-
-    .controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 10px 0;
-    }
-
-    input[type="color"] {
-        margin-right: 10px;
-    }
-
-    .angle-input {
-        width: 50px;
-        text-align: center;
-    }
-</style>
-
-<div class="gradient-generator">
+<div class="flex flex-col gap-5">
+    <!-- Inputs for gradient type and angle -->
     <div class="flex flex-row gap-10 justify-between">
         <select class="select select-toolbar bg-surface-800" on:change={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}>
             <option value="linear">Linear</option>
@@ -187,11 +149,12 @@
         {/if}
     </div>
 
+    <!-- Gradient bar -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div 
         id="gradientBar"
-        class="gradient-bar" 
+        class="relative cursor-copy w-full h-10 rounded-sm" 
         on:click={event => {
             if (event.target !== event.currentTarget) return;
             addStop(event);
@@ -200,7 +163,7 @@
     >
         {#each $stops as stop, index}
             <div
-                class="stop"
+                class="stop rounded-md absolute -bottom-2 h-14 w-3 border border-white cursor-ew-resize"
                 style="left: {stop.position}%; background-color: {stop.color};"
                 on:mousedown={_ => {
                     const moveHandler = (e: MouseEvent) => {
@@ -217,10 +180,11 @@
         {/each}
     </div>
 
-    <div class="flex flex-col gap-3">
+    <!-- Stops -->
+    <div class="flex flex-col gap-2">
         {#each $stops as stop, index}
             <div class="inline-flex justify-start items-center w-full gap-3">
-                <div class="inline-flex w-1/2">
+                <div class="inline-flex w-1/2 gap-3">
                     <input class="input input-toolbar" type="color" bind:value={stop.color}>
                     <input class="input input-toolbar" type="number" min="0" max="100" bind:value={stop.position} />
                 </div>
@@ -231,3 +195,6 @@
         {/each}
     </div>
 </div>
+
+<style lang="postcss">
+</style>
