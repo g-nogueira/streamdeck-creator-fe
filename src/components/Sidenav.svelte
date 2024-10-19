@@ -1,23 +1,24 @@
 <script lang="ts">
-	import { Nav } from '@skeletonlabs/skeleton-svelte';
-	// Icons
-	import IconCollection from 'lucide-svelte/icons/library';
-	import Search from 'lucide-svelte/icons/search';
-	import IconList from './IconList.svelte';
-	import IconSearch from './IconSearch.svelte';
+    import { Nav } from '@skeletonlabs/skeleton-svelte';
+    // Icons
+    import IconCollection from 'lucide-svelte/icons/library';
+    import Search from 'lucide-svelte/icons/search';
+    import IconSearch from './IconSearch.svelte';
+    import CollectionList from './Sidebar/CollectionList.svelte';
 
-	let hrefExample = '#';
+    let selectedTile = $state('icons'); // Default to 'icons'
+
 </script>
 
 <div class="flex flex-row h-full">
     <div class="card border-surface-100-900 grid h-full w-[96px] grid-cols-[auto_1fr] border-[1px]">
         <!-- Component -->
-        <Nav.Rail>
+        <Nav.Rail bind:value={selectedTile}>
             {#snippet header()}
-                <Nav.Tile id="0" label="Icons" href={hrefExample}>
+                <Nav.Tile id="icons" label="Icons" href="#">
                     <Search />
                 </Nav.Tile>
-                <Nav.Tile id="1" label="Collections" href={hrefExample}>
+                <Nav.Tile id="collections" label="Collections" href="#">
                     <IconCollection />
                 </Nav.Tile>
             {/snippet}
@@ -28,6 +29,11 @@
         </div> -->
     </div>
     <div class="flex flex-col w-[375px] h-full p-3 gap-3 preset-filled-surface-50-950 border-surface-100-900 border-[1px]">
-        <IconSearch/>
+        {#if selectedTile === 'icons'}
+            <IconSearch/>
+        {/if}
+        {#if selectedTile === 'collections'}
+            <CollectionList/>
+        {/if}
     </div>
 </div>

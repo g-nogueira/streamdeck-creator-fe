@@ -4,7 +4,7 @@
 
 	import IconHeader from './IconHeader.svelte';
 	import CollectionList from './Sidebar/CollectionList.svelte';
-	import CollectionIcons from './CollectionIcons.svelte';
+	import CollectionIcons from './Sidebar/CollectionIcons.svelte';
 	import { ImageProcessing, UUID } from '$lib';
 	import type { UserIcon } from '../models/UserIcon';
 	import type { SelectedIcon } from '../models/SelectedIcon';
