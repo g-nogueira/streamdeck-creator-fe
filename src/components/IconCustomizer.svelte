@@ -1,24 +1,10 @@
 <script lang="ts">
-	import IconSettings from './Archived/IconSettings.svelte';
-	import IconPreview from './IconPreview.svelte';
-
-	import IconHeader from './IconHeader.svelte';
-	import CollectionList from './Sidebar/CollectionList.svelte';
-	import CollectionIcons from './Sidebar/CollectionIcons.svelte';
-	import { ImageProcessing, UUID } from '$lib';
+	import { UUID } from '$lib';
 	import type { UserIcon } from '../models/UserIcon';
-	import type { SelectedIcon } from '../models/SelectedIcon';
-	import type { UIState } from '../models/UIState';
-	import type { UserIconCollection } from '../models/UserIconCollection';
-	import { userIconCollections } from '../stores/user-icon-collection.store';
 	import * as _selectedIcon from '../models/SelectedIcon';
 	import { IconService } from '../services/icon.service';
-	import { UserIconCollectionService } from '../services/user-icon-collection.service';
 	import { selectedIcon } from '../stores/selected-icon.store';
-	import { selectedCollection } from '../stores/selected-collection.store';
 	import { uiState } from '../stores/ui-state.store';
-
-	export let classNames: string = '';
 
 	$: if ($selectedIcon) {
 		// Has userIconId and isn't empty uuid?
@@ -126,97 +112,4 @@
 
 		return injectColorIntoSvg(removeFillAttributes(svgContent), $uiState.styles.glyphColor);
 	}
-
-	// Save the customized icon
-	async function addIconToCollection(
-		selectedIcon: SelectedIcon,
-		collection: UserIconCollection | null
-	) {
-		if (!collection) {
-			console.error('No collection selected to save the icon');
-			return;
-		}
-
-		const node = document.querySelector(`#iconToCapture`);
-
-		if (!node) {
-			throw new Error('No HTML element #iconToCapture found to save');
-		}
-
-		let iconPng = await ImageProcessing.NodeToBase64Png(node);
-
-		$uiState.styles.pngData = iconPng;
-		
-		const userIcon = {
-			id: UUID.empty,
-			originalIconId: selectedIcon.iconId,
-			glyphColor: $uiState.styles.glyphColor,
-			backgroundColor: $uiState.styles.backgroundColor,
-			labelColor: $uiState.styles.labelColor,
-			label: $uiState.styles.label,
-			labelVisible: $uiState.styles.labelVisible,
-			labelTypeface: $uiState.styles.labelTypeface,
-			iconScale: $uiState.styles.iconScale,
-			imgX: $uiState.styles.imgX,
-			imgY: $uiState.styles.imgY,
-			labelX: $uiState.styles.labelX,
-			labelY: $uiState.styles.labelY,
-			pngData: $uiState.styles.pngData,
-			useGradient: $uiState.styles.useGradient,
-			gradient: $uiState.styles.gradient,
-		} as UserIcon;
-
-		selectedCollection.addIconToSelectedCollection(userIcon);
-		userIconCollections.upsertCollection(collection);
-	}
-
-	// Download the customized icon as a PNG
-	function downloadIcon() {
-		const node = document.querySelector(`#iconToCapture`);
-
-		if (!node) {
-			throw new Error('No HTML element #iconToCapture found to save');
-		}
-
-		ImageProcessing.DownloadIcon(node, $uiState.styles.label);
-	}
-
-	function selectUserIcon(icon: UserIcon, collection: UserIconCollection | null) {
-		if (collection === null) {
-			throw new Error('No collection selected. An user icon must belong to a collection.');
-		}
-
-		let newSelectedIcon = _selectedIcon.fromUserIcon(icon, collection.id);
-		selectedIcon.selectIcon(newSelectedIcon);
-	}
-
-	function donwloadUserCollection() {
-		if ($selectedCollection === null) {
-			throw new Error('No collection selected to download');
-		}
-
-		UserIconCollectionService.download($selectedCollection.id);
-	}
 </script>
-
-<!-- <aside class={`flex flex-col w-[500px] border-l ${classNames}`}>
-	{#if $selectedIcon}
-		<IconHeader
-			bind:labelText={state.styles.label}
-			onDownload={downloadIcon}
-			onSave={() => {
-				addIconToCollection($selectedIcon, $selectedCollection);
-			}}
-		/>
-		<IconPreview bind:state />
-	<div class="overflow-y-scroll">
-		<IconSettings bind:state />
-
-		{#if $selectedCollection}
-			<CollectionIcons onIconSelect={(icon) => selectUserIcon(icon, $selectedCollection)} onDownload={donwloadUserCollection}/>
-		{:else}
-			<CollectionList />
-		{/if}
-	</div>
-	{/if}
-</aside> -->
