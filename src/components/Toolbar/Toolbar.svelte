@@ -43,7 +43,7 @@
             <input bind:value={$uiState.styles.imgX} class="input input-toolbar bg-surface-800" type="number" placeholder="X" />
             <input bind:value={$uiState.styles.imgY} class="input input-toolbar bg-surface-800" type="number" placeholder="Y" />
         </div>
-        <input bind:value={$uiState.styles.iconScale} class="input input-toolbar bg-surface-800" type="number" placeholder="Scale" />
+        <input bind:value={$uiState.styles.iconScale} class="input input-toolbar bg-surface-800" type="number" placeholder="Scale" step=".1"/>
     </ToolbarSection>
     <hr class="hr" />
     <ToolbarSection title="Icon Styling">

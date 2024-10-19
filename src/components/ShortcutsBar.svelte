@@ -68,12 +68,12 @@
 
 <div class="sticky bottom-3 left-2/4 w-fit bg-surface-800 rounded-md">
     {#if $selectedIcon}
-        <button on:click={() => downloadIcon()} class="btn btn-icon">
+        <button on:click={() => downloadIcon()} class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
             <Tooltip text="Download Icon">
                 <DownloadIcon/>
             </Tooltip>
         </button>
-        <button on:click={() => addIconToCollection($selectedIcon, $selectedCollection)} class="btn btn-icon">
+        <button on:click={() => addIconToCollection($selectedIcon, $selectedCollection)} class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
             <Tooltip text="Add to Collection">
                 <AddToCollection/>
             </Tooltip>
