@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { UIState } from "../models/UIState";
-	import GradientGenerator from "./GradientGenerator.svelte";
+	import type { UIState } from "../../models/UIState";
+	import GradientGenerator from "../Toolbar/GradientGenerator.svelte";
 
 	export let state: UIState;
 </script>

@@ -1,8 +1,9 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
     import { ColorTranslator } from 'colortranslator';
-	import type { GradientStop, UserIconGradient } from '../models/UserIconGradient';
-	import type { UIState } from '../models/UIState';
+	import type { GradientStop, UserIconGradient } from '../../models/UserIconGradient';
+	import type { UIState } from '../../models/UIState';
+    import DeleteIcon from 'lucide-svelte/icons/trash';
 
     export let state: UIState['styles'];
     
@@ -55,6 +56,10 @@
     }
 
     function mkCssStyle({ stops, type, angle }: UserIconGradient): string {
+        if (!type) {
+            return 'linear-gradient(90deg, #45fc8b 0%, #212a54 100%)';
+        }
+
         return type === 'linear' ? `linear-gradient(${angle}deg, ${stops.map(s => `${s.color} ${s.position}%`).join(', ')})` : 'radial-gradient(circle, ' + stops.map(s => `${s.color} ${s.position}%`).join(', ') + ')';
     }
 
@@ -122,80 +127,34 @@
     }
 
     // Toggle gradient type
-    function toggleGradientType(type: 'linear' | 'radial') {
+    function toggleGradientType(type: string) {
+        // Throw an error if the type is not 'linear' or 'radial'
+        if (type !== 'linear' && type !== 'radial') {
+            throw new Error('Invalid gradient type');
+        }
+
         gradientType.set(type);
     }
 </script>
 
-<style>
-    .gradient-generator {
-        margin: 20px;
-        background-color: #1e1e1e;
-        padding: 20px;
-        border-radius: 8px;
-        color: #ffffff;
-    }
-
-    .gradient-bar {
-        width: 100%;
-        height: 30px;
-        position: relative;
-        background: linear-gradient(90deg, #45fc8b 0%, #212a54 100%);
-        cursor: copy;
-        border-radius: 4px;
-        margin: 10px 0;
-    }
-
-    .stop {
-        position: absolute;
-        top: 0; /* Aligns the stops to the top of the bar */
-        width: 10px; /* Width of the vertical line */
-        height: 30px; /* Height of the gradient bar */
-        cursor: pointer;
-        border: 2px solid #ffffff;
-        cursor: ew-resize;
-    }
-
-    .controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 10px 0;
-    }
-
-    input[type="color"] {
-        margin-right: 10px;
-    }
-
-    .angle-input {
-        width: 50px;
-        text-align: center;
-    }
-</style>
-
-<div class="gradient-generator">
-    <div class="controls">
-        <div>
-            <label>
-                <input class="bg-transparent" type="radio" name="gradientType" value="linear" checked on:change={() => toggleGradientType('linear')} /> Linear
-            </label>
-            <label>
-                <input class="bg-transparent" type="radio" name="gradientType" value="radial" on:change={() => toggleGradientType('radial')} /> Radial
-            </label>
-        </div>
+<div class="flex flex-col gap-5">
+    <!-- Inputs for gradient type and angle -->
+    <div class="flex flex-row gap-10 justify-between">
+        <select class="select select-toolbar bg-surface-800" on:change={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}>
+            <option value="linear">Linear</option>
+            <option value="radial">Radial</option>
+        </select>
         {#if $gradientType === 'linear'}
-            <label>
-                Angle:
-                <input class="bg-transparent angle-input" type="number" bind:value={$angle} min="0" max="360" />°
-            </label>
+            <input class="input input-toolbar bg-surface-800" type="number" placeholder="90°" bind:value={$angle}/>
         {/if}
     </div>
 
+    <!-- Gradient bar -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div 
         id="gradientBar"
-        class="gradient-bar" 
+        class="relative cursor-copy w-full h-10 rounded-sm" 
         on:click={event => {
             if (event.target !== event.currentTarget) return;
             addStop(event);
@@ -204,9 +163,9 @@
     >
         {#each $stops as stop, index}
             <div
-                class="stop"
+                class="stop rounded-md absolute -bottom-2 h-14 w-3 border border-white cursor-ew-resize"
                 style="left: {stop.position}%; background-color: {stop.color};"
-                on:mousedown={event => {
+                on:mousedown={_ => {
                     const moveHandler = (e: MouseEvent) => {
                         updatePosition(index, e);
                     };
@@ -221,13 +180,21 @@
         {/each}
     </div>
 
-    <div>
+    <!-- Stops -->
+    <div class="flex flex-col gap-2">
         {#each $stops as stop, index}
-            <div>
-                <input class="bg-transparent" type="color" bind:value={stop.color}>
-                <input class="bg-transparent" type="number" min="0" max="100" bind:value={stop.position} />
-                <button on:click={() => removeStop(index)}>Remove</button>
+            <div class="inline-flex justify-start items-center w-full gap-3">
+                <div class="inline-flex w-1/2 gap-3">
+                    <input class="input input-toolbar" type="color" bind:value={stop.color}>
+                    <input class="input input-toolbar" type="number" min="0" max="100" bind:value={stop.position} />
+                </div>
+                <button on:click={() => removeStop(index)} class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-warning-900">
+                    <DeleteIcon size={20} />
+                </button>
             </div>
         {/each}
     </div>
 </div>
+
+<style lang="postcss">
+</style>

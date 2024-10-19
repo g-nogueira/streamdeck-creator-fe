@@ -45,7 +45,7 @@ export class ImageProcessing {
             .then((dataUrl: string) => {
                 const a = document.createElement('a');
                 a.href = dataUrl;
-                a.download = fileName;
+                a.download = fileName+'.png';
                 a.click();
             })
             .catch((err: string) => {

@@ -24,7 +24,7 @@
   }
 </script>
 
-<div class={`h-full w-full flex flex-row flex-wrap gap-8 flex-grow overflow-y-scroll p-8 ${classNames}`}>
+<div class={`h-auto w-full flex flex-row flex-wrap gap-6 ${classNames}`}>
     {#each $icons as icon}
       <IconItem icon={icon} onClick={useIcon} />
     {/each}
