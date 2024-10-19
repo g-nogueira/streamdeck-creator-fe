@@ -9,6 +9,7 @@
 	import IconPreview from '../components/IconPreview.svelte';
 	import { uiState } from '../stores/ui-state.store';
 	import Toolbar from '../components/Toolbar/Toolbar.svelte';
+	import ShortcutsBar from '../components/ShortcutsBar.svelte';
 
 	startUserIconCollectionsSync();
 
@@ -41,10 +42,12 @@
 	</main>
 	<Toolbar />
 </div>
+<ShortcutsBar/>
 
 <style lang="postcss">
 	:global(html) {
 		height: 100%;
+		overflow-y: hidden;
 	}
 	:global(body) {
 		height: 100%;
