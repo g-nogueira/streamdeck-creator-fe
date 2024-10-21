@@ -1,65 +1,55 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import type { UserIconCollection } from "../models/UserIconCollection";
 import type { UserIcon } from "../models/UserIcon";
+import { userIconCollections } from "./user-icon-collection.store";
 
 function createSelectedCollectionStore() {
     const { subscribe, set, update } = writable<UserIconCollection | null>(null);
 
+    function getSekectedCollection() : UserIconCollection {
+        let collection = null;
+        update((c) => {
+            collection = c;
+            return c;
+        });
+
+        if (!collection) {
+            throw new Error('No collection selected');
+        }
+
+        return collection;
+    }
+
+
     return {
         subscribe,
-        selectCollection: (collection: UserIconCollection) => set(collection),
-        addIconToCollection: (icon: UserIcon) => {
-            update((collection) => {
-                if (!collection) {
-                    throw new Error('No collection selected');
-                }
+        selectCollection: (collectionId: string) => {
+            const collection = get(userIconCollections).find(c => c.id === collectionId);
 
-                collection.icons.push(icon);
-                return collection;
-            });
+            if (!collection) {
+                throw new Error(`Collection with ID ${collectionId} not found`);
+            }
+
+            set(collection);
         },
-        updateIconFromCollection: (icon: UserIcon) => {
-            update((collection) => {
-                if (!collection) {
-                    throw new Error('No collection selected');
-                }
+        addIconToSelectedCollection: async (icon: UserIcon) => {
 
-                const index = collection.icons.findIndex((i) => i.id === icon.id);
+            let selectedCollection = get({subscribe});
 
-                if (index === -1) {
-                    throw new Error('Icon not found in collection');
-                }
+            if (!selectedCollection) {
+                throw new Error('No collection selected');
+            }
 
-                collection.icons[index] = icon;
-                return collection;
-            });
+            await userIconCollections.addIcon(selectedCollection.id, icon);
+
+            const collectionFromCollections = get(userIconCollections).find(c => c.id === selectedCollection.id);
+
+            if (!collectionFromCollections) {
+                throw new Error('Selected collection not found in collections');
+            }
+
+            update(_ => collectionFromCollections);
         },
-        addIconToSelectedCollection: (icon: UserIcon) => {
-            update((collection) => {
-                if (!collection) {
-                    throw new Error('No collection selected');
-                }
-
-                collection.icons.push(icon);
-                return collection;
-            });
-        },
-        updateIconFromSelectedCollection: (icon: UserIcon) => {
-            update((collection) => {
-                if (!collection) {
-                    throw new Error('No collection selected');
-                }
-
-                const index = collection.icons.findIndex((i) => i.id === icon.id);
-
-                if (index === -1) {
-                    throw new Error('Icon not found in collection');
-                }
-
-                collection.icons[index] = icon;
-                return collection;
-            });
-        }
     };
 }
 

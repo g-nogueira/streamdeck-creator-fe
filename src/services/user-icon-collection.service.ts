@@ -1,5 +1,6 @@
 import { UUID } from "$lib";
 import { baseUrl } from "../constants";
+import type { UserIcon } from "../models/UserIcon";
 import type { UserIconCollection } from "../models/UserIconCollection";
 import type { UserIconCollectionDto } from "./dto/UserIconCollectionDto";
 import * as _userIconCollecionDto from "./dto/UserIconCollectionDto";
@@ -7,6 +8,77 @@ import * as _userIconCollecionDto from "./dto/UserIconCollectionDto";
 const userCollectionEndpoint = `${baseUrl}/user-icon-collections`;
 
 export class UserIconCollectionService {
+	static async update(userIconCollection: UserIconCollection): Promise<UserIconCollection> {
+		try {
+			const response = await fetch(`${userCollectionEndpoint}/${userIconCollection.id}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(_userIconCollecionDto.fromUserIconCollection(userIconCollection)),
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to update UserIconCollection with id: ' + userIconCollection.id);
+			}
+
+			return _userIconCollecionDto.toUserIconCollection(await response.json());
+		} catch (error) {
+			console.error('Error updating user icon collection:', error);
+			throw error;
+		}
+	}
+
+	static async delete(userIconCollectionId: string): Promise<void> {
+		try {
+			if (userIconCollectionId === UUID.empty || userIconCollectionId === '') {
+				throw new Error('User icon collection ID is empty');
+			}
+
+			const response = await fetch(`${userCollectionEndpoint}/${userIconCollectionId}`, {
+				method: 'DELETE',
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to delete UserIconCollection with id: ' + userIconCollectionId);
+			}
+		} catch (error) {
+			console.error('Error deleting user icon collection:', error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Adds a user icon to a collection
+	 * @param icon 
+	 * @param userIconCollectionId 
+	 * @returns The ID of the added icon
+	 */
+	static async addUserIcon(icon: UserIcon, userIconCollectionId: string): Promise<string> {
+		try {
+			if (userIconCollectionId === UUID.empty || userIconCollectionId === '') {
+				throw new Error('User icon collection ID is empty');
+			}
+
+			const response = await fetch(`${userCollectionEndpoint}/${userIconCollectionId}/icons`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(icon),
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to add UserIcon to UserIconCollection with id: ' + userIconCollectionId);
+			}
+
+			return await response.json() as string;
+		} catch (error) {
+			console.error('Error adding user icon to collection:', error);
+			throw error;
+		}
+	}
+
 	static async fetchById(userIconCollectionId: string): Promise<UserIconCollection> {
 		try {
 			if (userIconCollectionId === UUID.empty || userIconCollectionId === '') {
@@ -19,7 +91,7 @@ export class UserIconCollectionService {
 				throw new Error('Failed to fetch UserIconCollection with id: ' + userIconCollectionId);
 			}
 
-			const userIconCollection: UserIconCollectionDto = await response.json();
+			const userIconCollection = await response.json() as UserIconCollectionDto;
 			return _userIconCollecionDto.toUserIconCollection(userIconCollection);
 		} catch (error) {
 			console.error('Error fetching user icon collection:', error);

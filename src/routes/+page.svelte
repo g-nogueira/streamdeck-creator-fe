@@ -4,14 +4,11 @@
 	import IconCustomizer from '../components/IconCustomizer.svelte';
 	import Footer from '../components/Footer.svelte';
 	import '../app.css';
-	import { startUserIconCollectionsSync } from '$lib/sync-manager';
 	import Sidenav from '../components/Sidenav.svelte';
 	import IconPreview from '../components/IconPreview.svelte';
 	import { uiState } from '../stores/ui-state.store';
 	import Toolbar from '../components/Toolbar/Toolbar.svelte';
 	import ShortcutsBar from '../components/ShortcutsBar.svelte';
-
-	startUserIconCollectionsSync();
 
 	// Add dark mode class based on localStorage or system preference
 	// if (typeof localStorage !== 'undefined') {
@@ -35,7 +32,7 @@
 	<Sidenav />
 	<main class="flex h-screen w-screen flex-col overflow-hidden">
 		<div class="flex h-full w-full items-center justify-center">
-			<IconCustomizer classNames="w-1/4" />
+			<IconCustomizer/>
 			<IconPreview bind:state={$uiState} />
 		</div>
 		<!-- <Footer /> -->

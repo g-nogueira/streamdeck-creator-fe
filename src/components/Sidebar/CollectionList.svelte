@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import * as _userIconCollection from '../../models/UserIconCollection';
 	import { userIconCollections } from '../../stores/user-icon-collection.store';
-	import { UserIconCollectionService } from '../../services/user-icon-collection.service';
 	import { selectedCollection } from '../../stores/selected-collection.store';
 	import { Accordion } from '@skeletonlabs/skeleton-svelte';
 	import * as _selectedIcon from '../../models/SelectedIcon';
@@ -10,32 +9,17 @@
 	import CollectionIcons from './CollectionIcons.svelte';
 	import CollectionToolbar from './CollectionToolbar.svelte';
 
-	let selectedAccordionItem = $state<string[]>([]);
+	let selectedCollectionId = $state<string[]>([]);
 
 	onMount(async () => {
-		const collectionsResponse = await UserIconCollectionService.fetchList();
-
-		// Create new collection if there are no collections
-		if (collectionsResponse.length === 0) {
-			let newCollection = _userIconCollection.mkEmpty();
-
-			newCollection.id = await UserIconCollectionService.create(newCollection);
-
-			userIconCollections.upsertCollection(newCollection);
-			selectedCollection.selectCollection(newCollection);
-			return;
-		}
-
 		// Select the first collection if there is only one
-		if (collectionsResponse.length === 1) {
-			selectedCollection.selectCollection(collectionsResponse[0]);
+		if ($userIconCollections.length === 1) {
+			selectedCollection.selectCollection($userIconCollections[0].id);
 		}
-
-		userIconCollections.set(collectionsResponse);
 
 		// Expand the accordion item if there's a selected collection
-		if ($selectedCollection?.id) {
-			selectedAccordionItem = [$selectedCollection.id];
+		if ($selectedCollection) {
+			selectedCollectionId = [$selectedCollection.id];
 		}
 	});
 
@@ -51,19 +35,29 @@
 			throw new Error(`Collection with id ${id} not found`);
 		}
 
-		selectedCollection.selectCollection(collection);
+		selectedCollection.selectCollection(collection.id);
 	}
 
-	$effect(() => {
-		if (!selectedAccordionItem || selectedAccordionItem?.length === 0) {
-			return;
-		}
+	let lastSelectedCollectionId: string = '';
 
-		selectCollectionById(selectedAccordionItem[0]);
+	// Watch for changes in the selected collection
+	$effect(() => {
+		if (!selectedCollectionId[0]) return;
+		if (lastSelectedCollectionId === selectedCollectionId[0]) return;
+		
+		$inspect('selectedAccordionItem:', selectedCollectionId);
+		selectCollectionById(selectedCollectionId[0]);
+		lastSelectedCollectionId = selectedCollectionId[0];
+	});
+
+	$effect(() => {
+		if (!$selectedCollection) return;
+
+		selectedCollectionId = [$selectedCollection.id];
 	});
 </script>
 
-<Accordion bind:value={selectedAccordionItem} collapsible>
+<Accordion bind:value={selectedCollectionId} collapsible>
 	{#each $userIconCollections as collection}
 		<Accordion.Item value={collection.id}>
 			<!-- Control -->
@@ -71,7 +65,7 @@
 			{#snippet control()}{collection.name}{/snippet}
 			<!-- Panel -->
 			{#snippet panel()}
-				<CollectionToolbar />
+				<CollectionToolbar {collection} />
 				<CollectionIcons {collection} />
 			{/snippet}
 		</Accordion.Item>
