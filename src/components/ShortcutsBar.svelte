@@ -62,7 +62,6 @@
 		} as UserIcon;
 
 		selectedCollection.addIconToSelectedCollection(userIcon);
-		userIconCollections.upsertCollection(collection);
 	}
 </script>
 
