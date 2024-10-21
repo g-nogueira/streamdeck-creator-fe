@@ -1,11 +1,9 @@
 import { UUID } from "$lib";
-import { baseUrl } from "../constants";
+import { userCollectionEndpoint } from "../constants";
 import type { UserIcon } from "../models/UserIcon";
 import type { UserIconCollection } from "../models/UserIconCollection";
 import type { UserIconCollectionDto } from "./dto/UserIconCollectionDto";
 import * as _userIconCollecionDto from "./dto/UserIconCollectionDto";
-
-const userCollectionEndpoint = `${baseUrl}/user-icon-collections`;
 
 export class UserIconCollectionService {
 	static async update(userIconCollection: UserIconCollection): Promise<UserIconCollection> {

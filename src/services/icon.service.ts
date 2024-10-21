@@ -1,5 +1,5 @@
 import { UUID } from "$lib";
-import { userCollectionEndpoint } from "../constants";
+import { iconsEndpoint, userCollectionEndpoint } from "../constants";
 import type { UserIcon } from "../models/UserIcon";
 import type { UserIconCollectionDto } from "./dto/UserIconCollectionDto";
 import * as _userIconDto from "./dto/UserIconDto";
@@ -7,7 +7,7 @@ import * as _userIconDto from "./dto/UserIconDto";
 export class IconService {
     static async searchIcons(searchTerm: string): Promise<UserIcon[]> {
         try {
-            const response = await fetch(`http://localhost:5199/icons/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+            const response = await fetch(`${iconsEndpoint}/search?searchTerm=${encodeURIComponent(searchTerm)}`);
 
             if (!response.ok) {
                 throw new Error('Failed to search icons with term: ' + searchTerm);
@@ -53,7 +53,7 @@ export class IconService {
           throw new Error('Icon ID is empty');
         }
   
-        const response = await fetch(`http://localhost:5199/icons/${iconId}`);
+        const response = await fetch(`${iconsEndpoint}/${iconId}`);
   
         if (!response.ok) {
           throw new Error('Failed to fetch Icon with id: ' + iconId);
@@ -74,6 +74,6 @@ export class IconService {
     }
   
     static mkIconUrl(iconId: string): string {
-      return `http://localhost:5199/icons/${iconId}`;
+      return `${iconsEndpoint}/${iconId}`;
     }
   }

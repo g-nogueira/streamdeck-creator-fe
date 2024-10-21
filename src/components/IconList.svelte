@@ -5,11 +5,12 @@
 	import { icons } from '../stores/icon.store';
 	import { selectedIcon } from '../stores/selected-icon.store';
 	import type { Icon } from '../models/Icon';
+	import { serviceBaseUrl } from '../constants';
 
   export let classNames: string = '';
 
   onMount(async () => {
-    const response = await fetch('http://localhost:5199/icons?page=1&pageSize=100');
+    const response = await fetch(`${serviceBaseUrl}/icons?page=1&pageSize=100`);
     const data: Icon[] = await response.json();
     icons.set(data);
   });
