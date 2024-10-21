@@ -5,3 +5,5 @@ services:
     build: .
     ports:
       - "3000:3000"
+    environment:
+      - PUBLIC_SERVICE_URL=http://host.docker.internal:5199

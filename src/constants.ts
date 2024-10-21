@@ -1,3 +1,5 @@
-export const baseUrl = 'http://localhost:5199';
-export const userCollectionEndpoint = `${baseUrl}/user-icon-collections`;
-export const iconsEndpoint = `${baseUrl}/icons`;
+import { env } from '$env/dynamic/public';
+
+export const serviceBaseUrl = env.PUBLIC_SERVICE_URL;
+export const userCollectionEndpoint = `${serviceBaseUrl}/user-icon-collections`;
+export const iconsEndpoint = `${serviceBaseUrl}/icons`;
