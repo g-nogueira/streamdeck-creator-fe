@@ -1,4 +1,4 @@
-# docker-compose.yml
+name: streamdeck-designer-fe
 
 services:
   web:

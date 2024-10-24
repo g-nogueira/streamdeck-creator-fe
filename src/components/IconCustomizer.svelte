@@ -5,6 +5,7 @@
 	import { IconService } from '../services/icon.service';
 	import { selectedIcon } from '../stores/selected-icon.store';
 	import { uiState } from '../stores/ui-state.store';
+	import { UserIconService } from '../services/user-icon.service';
 
 	$: if ($selectedIcon) {
 		// Has userIconId and isn't empty uuid?
@@ -12,7 +13,7 @@
 		if ($selectedIcon.userIconId && $selectedIcon.userIconId !== UUID.empty) {
 			(async () => {
 				try {
-					let userIcon = await IconService.fetchUserIcon($selectedIcon.userIconCollectionId, $selectedIcon.userIconId)
+					let userIcon = await UserIconService.getById($selectedIcon.userIconCollectionId, $selectedIcon.userIconId)
 					let [iconContent, contentType] = await IconService.fetchIconWithContentType(userIcon.originalIconId);
 					
 					$uiState.styles = mkStateStyles(userIcon);

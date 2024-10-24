@@ -1,9 +1,12 @@
 import { writable } from "svelte/store";
 import type { Icon } from "../models/Icon";
+import { IconService } from "../services/icon.service";
 
 // export const icons = writable<Icon[]>([]);
 function createIconStore() {
     const { subscribe, set, update } = writable<Icon[]>([]);
+
+    IconService.fetchList().then(set);
 
     return {
         subscribe,
@@ -28,6 +31,12 @@ function createIconStore() {
 
             return icons;
         }),
+        search: async (searchTerm: string) => {
+            const icons = await IconService.search(searchTerm);
+            set(icons);
+        },
+        setEmpty: () => set([]),
+        setDefault: () => IconService.fetchList().then(set),
         set
     };
 }

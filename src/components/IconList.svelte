@@ -10,9 +10,7 @@
   export let classNames: string = '';
 
   onMount(async () => {
-    const response = await fetch(`${serviceBaseUrl}/icons?page=1&pageSize=100`);
-    const data: Icon[] = await response.json();
-    icons.set(data);
+    icons.setDefault();
   });
 
   function useIcon (icon: Icon) {
