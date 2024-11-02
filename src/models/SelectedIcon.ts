@@ -1,4 +1,5 @@
 import { UUID } from "$lib";
+import type { IconOrigin } from "./Icon";
 import type { UserIcon } from "./UserIcon";
 import type { UserIconGradient } from "./UserIconGradient";
 
@@ -26,6 +27,8 @@ export type SelectedIcon = {
     gradient: UserIconGradient | null;
 
     pngData: string;
+
+    iconOrigin: IconOrigin;
 }
 
 export function mkEmpty(): SelectedIcon {
@@ -50,6 +53,8 @@ export function mkEmpty(): SelectedIcon {
         pngData: '',
 
         gradient: null,
+
+        iconOrigin: 'mdi',
     };
 };
 export function fromUserIcon(userIcon: UserIcon, collectionId: string): SelectedIcon {
@@ -79,5 +84,7 @@ export function fromUserIcon(userIcon: UserIcon, collectionId: string): Selected
             angle: userIcon.gradient.angle,
             cssStyle: userIcon.gradient.cssStyle,
         } : null,
+
+        iconOrigin: userIcon.origin,
     };
 }

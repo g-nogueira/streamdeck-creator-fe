@@ -1,8 +1,5 @@
-import { UUID } from "$lib";
-import { iconsEndpoint, userCollectionEndpoint } from "../constants";
-import type { Icon } from "../models/Icon";
-import type { UserIcon } from "../models/UserIcon";
-import type { UserIconCollectionDto } from "./dto/UserIconCollectionDto";
+import { iconsEndpoint } from "../constants";
+import type { Icon, IconOrigin } from "../models/Icon";
 import * as _userIconDto from "./dto/UserIconDto";
 import { MdiIconService } from "./mdi-icon.service";
 import { StreamDeckIconService } from "./streamdeck-icon.service";
@@ -13,7 +10,8 @@ export class IconService {
             let streamDeckIcons = await StreamDeckIconService.fetchList();
             let mdiIcons = MdiIconService.fetchList();
     
-            return [...streamDeckIcons, ...mdiIcons];
+            // return [...streamDeckIcons, ...mdiIcons];
+            return mdiIcons;
         } catch (error) {
             console.error('Error fetching icons:', error);
             throw error;
@@ -22,18 +20,22 @@ export class IconService {
 
     static async search(searchTerm: string): Promise<Icon[]> {
         try {
-            let streamDeckIcons = await StreamDeckIconService.search(searchTerm);
+            // let streamDeckIcons = await StreamDeckIconService.search(searchTerm);
             let mdiIcons = MdiIconService.search(searchTerm);
 
-            return [...streamDeckIcons, ...mdiIcons];
+            // return [...streamDeckIcons, ...mdiIcons];
+            return mdiIcons;
         } catch (error) {
             console.error('Error searching icons:', error);
             throw error;
         }
     }
 
-    static async fetchIconWithContentType(iconId: string): Promise<[string, string]> {
+    static async fetchIconWithContentType(iconId: string, iconOrigin: IconOrigin): Promise<[string, string]> {
       try {
+        if (iconOrigin === 'mdi') {
+          return [await MdiIconService.fetchSvgData(iconId), 'image/svg+xml'];
+        }
         return await StreamDeckIconService.fetchIconWithContentType(iconId);
       } catch (error) {
         console.error('Error fetching icon:', error);

@@ -15,6 +15,7 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
+		"@mdi/light-svg": "^0.2.63",
 		"@mdi/svg": "^7.1.96",
 		"@playwright/test": "^1.28.1",
 		"@skeletonlabs/skeleton": "^3.0.0-next.5",
@@ -25,11 +26,9 @@
 		"@tailwindcss/forms": "^0.5.9",
 		"@types/dom-to-image": "^2.6.7",
 		"@types/eslint": "^9.6.0",
-		"@types/lodash": "^4.17.9",
+		"@types/lodash": "^4.17.13",
 		"@types/lodash-es": "^4.17.12",
 		"@types/node": "^22.7.6",
-		"@mdi/light-svg": "^0.2.63",
-		"material-scss-colors": "^1.1.2",
 		"autoprefixer": "^10.4.20",
 		"chalk": "4.1.2",
 		"eslint": "^9.0.0",
@@ -38,6 +37,7 @@
 		"globals": "^15.0.0",
 		"lodash": "^4.17.21",
 		"lodash-es": "^4.17.21",
+		"material-scss-colors": "^1.1.2",
 		"postcss": "^8.4.47",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",

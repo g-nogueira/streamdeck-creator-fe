@@ -1,3 +1,4 @@
+import type { IconOrigin } from "./Icon";
 import type { UserIconGradient } from "./UserIconGradient";
 
 /**
@@ -28,7 +29,7 @@ export type UserIcon = {
   pngData: string;
 
   /** Origin of the icon */
-  origin: 'mdi' | 'streamdeck';
+  origin: IconOrigin;
 
   keywords: string[];
 }

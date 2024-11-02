@@ -22,6 +22,21 @@ export class MdiIconService {
         return icons.map(_mdiIcon.toIcon);
     }
 
+    static async fetchSvgData(iconId: string): Promise<string> {
+        try {
+            const icon = await fetch(`/data/svg/${iconId}.svg`).then(res => res.text());
+            
+            if (!icon) {
+                throw new Error('Icon not found');
+            }
+            
+            return icon;
+        } catch (error) {
+            console.error('Error fetching icon:', error);
+            throw error;
+        }
+    }
+
     /**
      * Searches for MDI icons based on the specified search term.
      * @param searchTerm The search term to use.
