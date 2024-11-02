@@ -13,18 +13,11 @@
     icons.setDefault();
   });
 
-  function useIcon (icon: Icon) {
-    let newSelectedIcon = _selectedIcon.mkEmpty();
 
-    newSelectedIcon.iconId = icon.id;
-    newSelectedIcon.label = icon.label;
-
-    selectedIcon.selectIcon(newSelectedIcon);
-  }
 </script>
 
 <div class={`h-auto w-full flex flex-row flex-wrap gap-6 ${classNames}`}>
     {#each $icons as icon}
-      <IconItem icon={icon} onClick={useIcon} />
+      <IconItem icon={icon} />
     {/each}
 </div>

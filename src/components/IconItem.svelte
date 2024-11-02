@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { serviceBaseUrl } from "../constants";
 	import type { Icon } from "../models/Icon";
+    import * as _selectedIcon from '../models/SelectedIcon';
+	import { selectedIcon } from "../stores/selected-icon.store";
+
 
   export let icon: Icon;
-  export let onClick: (icon: Icon) => void;
 
   // See how the options work here: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
   let options = {
@@ -12,7 +14,7 @@
       threshold: 0
   }
 
-  const lazyLoad = (image: HTMLImageElement, src: string) => {
+  function lazyLoad (image: HTMLImageElement, src: string) {
       const loaded = () => {
           image.classList.add('visible')                          // doesn't work in REPL
           // image.style.opacity = "1"                                 // REPL hack to apply loading animation
@@ -36,9 +38,18 @@
           }
       }
   }
+
+  function selectIcon (icon: Icon) {
+    let newSelectedIcon = _selectedIcon.mkEmpty();
+
+    newSelectedIcon.iconId = icon.id;
+    newSelectedIcon.iconOrigin = icon.origin;
+
+    selectedIcon.selectIcon(newSelectedIcon);
+  }
 </script>
 
-<button type="button" class="h-20 w-20 flex flex-col items-center gap-3 p-1 hover:bg-gray-200 transition-all cursor-pointer" on:click={() => onClick(icon)} aria-label={`Icon ${icon.label}`}>
+<button type="button" class="h-20 w-20 flex flex-col items-center gap-3 p-1 hover:bg-gray-200 transition-all cursor-pointer" on:click={() => selectIcon(icon)} aria-label={`Icon ${icon.label}`}>
     {#if icon.origin === 'mdi'}
       <i class={`mdi mdi-24px mdi-${icon.label}`} title={icon.label}></i>
       <!-- <img use:lazyLoad={`/data/svg/${icon.id}.svg`} alt={icon.label} class="h-10 w-10" /> -->
