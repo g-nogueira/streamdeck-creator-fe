@@ -53,8 +53,6 @@ function stylesFromUserIcon(userIcon: UserIcon): UIState['styles'] {
   };
 }
 
-
-
 export const extensions = {
   stylesFromUserIcon: stylesFromUserIcon
 }

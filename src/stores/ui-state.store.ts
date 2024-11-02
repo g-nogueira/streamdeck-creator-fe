@@ -131,6 +131,11 @@ function createUIState() {
             return state;
         }),
 
+        setUseGradient: (value: boolean) => update(state => {
+            state.styles.useGradient = value;
+            return state;
+        }),
+
         reset: () => set(emptyState)
     };
 
