@@ -5,14 +5,6 @@
     import IconSprayCan from "lucide-svelte/icons/spray-can";
     import ToolbarSection from "./ToolbarSection.svelte";
 	import Tooltip from "../Tooltip.svelte";
-
-    function toggleUseGradient(value: boolean) {
-        uiState.update(s => {
-            s.styles.useGradient = value;
-            return s;
-        });
-    }
-
 </script>
 
 <div class="flex flex-col min-w-[375px] w-[375px] h-full p-3 gap-3 preset-filled-surface-50-950 border-surface-100-900 border-[1px]">
@@ -55,12 +47,12 @@
     <hr class="hr" />
     <ToolbarSection title="Fill">
         <div class="flex flex-row gap-3">
-            <button type="button" on:click={() => toggleUseGradient(false)} class="{$uiState.styles.useGradient ? "" : "bg-secondary-950"} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
+            <button type="button" on:click={() => uiState.setUseGradient(false)} class="{$uiState.styles.useGradient ? "" : "bg-secondary-950"} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
                 <Tooltip text="Solid Fill">
                     <IconPaint size={20}/>
                 </Tooltip>
             </button>
-            <button type="button" on:click={() => toggleUseGradient(true)} class="{!$uiState.styles.useGradient ? "" : "bg-secondary-950"} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
+            <button type="button" on:click={() => uiState.setUseGradient(true)} class="{!$uiState.styles.useGradient ? "" : "bg-secondary-950"} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
                 <Tooltip text="Gradient Fill">
                     <IconSprayCan size={20}/>
                 </Tooltip>

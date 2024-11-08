@@ -6,21 +6,6 @@ import { userIconCollections } from "./user-icon-collection.store";
 function createSelectedCollectionStore() {
     const { subscribe, set, update } = writable<UserIconCollection | null>(null);
 
-    function getSekectedCollection() : UserIconCollection {
-        let collection = null;
-        update((c) => {
-            collection = c;
-            return c;
-        });
-
-        if (!collection) {
-            throw new Error('No collection selected');
-        }
-
-        return collection;
-    }
-
-
     return {
         subscribe,
         selectCollection: (collectionId: string) => {

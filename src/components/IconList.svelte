@@ -10,23 +10,14 @@
   export let classNames: string = '';
 
   onMount(async () => {
-    const response = await fetch(`${serviceBaseUrl}/icons?page=1&pageSize=100`);
-    const data: Icon[] = await response.json();
-    icons.set(data);
+    icons.setDefault();
   });
 
-  function useIcon (icon: Icon) {
-    let newSelectedIcon = _selectedIcon.mkEmpty();
 
-    newSelectedIcon.iconId = icon.id;
-    newSelectedIcon.label = icon.label;
-
-    selectedIcon.selectIcon(newSelectedIcon);
-  }
 </script>
 
 <div class={`h-auto w-full flex flex-row flex-wrap gap-6 ${classNames}`}>
     {#each $icons as icon}
-      <IconItem icon={icon} onClick={useIcon} />
+      <IconItem icon={icon} />
     {/each}
 </div>

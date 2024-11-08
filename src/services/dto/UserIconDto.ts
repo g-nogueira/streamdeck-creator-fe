@@ -1,4 +1,5 @@
 import type { UserIcon } from "../../models/UserIcon";
+import type { IconOriginDto } from "./IconDto";
 import type { UserIconGradientDto } from "./UserIconGradientDto";
 import * as _userIconGradientDto from "./UserIconGradientDto";
 
@@ -19,6 +20,7 @@ export interface UserIconDto {
   pngData: string;
   useGradient: boolean;
   gradient: UserIconGradientDto | null;
+  origin: IconOriginDto;
 }
 
 export function toUserIcon(userIconDto: UserIconDto): UserIcon {
@@ -39,7 +41,7 @@ export function toUserIcon(userIconDto: UserIconDto): UserIcon {
     pngData: userIconDto.pngData,
     useGradient: userIconDto.useGradient,
     gradient: userIconDto.gradient ? _userIconGradientDto.toDomain(userIconDto.gradient) : null,
-        
+    origin: userIconDto.origin,
   };
 }
 
@@ -61,5 +63,6 @@ export function fromUserIcon(userIcon: UserIcon): UserIconDto {
     pngData: userIcon.pngData,
     useGradient: userIcon.useGradient,
     gradient: userIcon.gradient ? _userIconGradientDto.fromDomain(userIcon.gradient) : null,
+    origin: userIcon.origin,
   };
 }

@@ -12,15 +12,19 @@
 	let error = '';
 
 	const searchIcons = debounce(async () => {
-		if (!searchTerm || searchTerm.length <= 2) {
-			icons.set([]); // Clear icons if search term is empty or too short
+		if (!searchTerm) {
+			icons.setDefault();
 			return;
 		}
+		else if (searchTerm.length <= 2) {
+			icons.setEmpty();
+			return;
+		}
+
 		isLoading = true;
 		error = '';
 		try {
-			const response = await IconService.searchIcons(searchTerm);
-			icons.set(response);
+			await icons.search(searchTerm);
 		} catch (e: any) {
 			error = e.message;
 		} finally {

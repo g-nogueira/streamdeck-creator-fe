@@ -59,6 +59,7 @@
 			pngData: $uiState.styles.pngData,
 			useGradient: $uiState.styles.useGradient,
 			gradient: $uiState.styles.gradient,
+			origin: selectedIcon.iconOrigin,
 		} as UserIcon;
 
 		selectedCollection.addIconToSelectedCollection(userIcon);

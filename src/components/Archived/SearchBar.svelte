@@ -18,7 +18,7 @@
     isLoading = true;
     error = '';
     try {
-      const response = await IconService.searchIcons(searchTerm);
+      const response = await IconService.search(searchTerm);
       icons.set(response);
     } catch (e: any) {
       error = e.message;
