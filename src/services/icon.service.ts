@@ -11,8 +11,7 @@ export class IconService {
             let streamDeckIcons = await StreamDeckIconService.fetchList();
             let mdiIcons = MdiIconService.fetchList();
     
-            // return [...streamDeckIcons, ...mdiIcons];
-            return mdiIcons;
+            return [...streamDeckIcons, ...mdiIcons];
         } catch (error) {
             console.error('Error fetching icons:', error);
             throw error;
@@ -21,11 +20,10 @@ export class IconService {
 
     static async search(searchTerm: string): Promise<Icon[]> {
         try {
-            // let streamDeckIcons = await StreamDeckIconService.search(searchTerm);
+            let streamDeckIcons = await StreamDeckIconService.search(searchTerm);
             let mdiIcons = MdiIconService.search(searchTerm);
 
-            // return [...streamDeckIcons, ...mdiIcons];
-            return mdiIcons;
+            return [...streamDeckIcons, ...mdiIcons];
         } catch (error) {
             console.error('Error searching icons:', error);
             throw error;
