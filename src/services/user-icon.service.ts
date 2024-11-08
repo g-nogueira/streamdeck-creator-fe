@@ -11,6 +11,7 @@ export class UserIconService {
                 throw new Error('User icon ID is empty');
             }
 
+            // Fetch the user icon collection
             const response = await fetch(`${userCollectionEndpoint}/${userIconCollectionId}`);
 
             if (!response.ok) {
