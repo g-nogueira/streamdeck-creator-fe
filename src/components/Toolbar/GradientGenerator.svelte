@@ -129,16 +129,14 @@
 					const removeListeners = () => {
 						window.removeEventListener('mousemove', updateStopPos);
 						window.removeEventListener('mouseup', removeListeners);
-					};
-					const disableDrag = () => {
-						console.log('disableDrag');
-						isDraggingGradientHandler = false;
+                        console.log('disableDrag');
+                        isDraggingGradientHandler = false;
 					};
 
 					console.log('enableDrag');
 					isDraggingGradientHandler = true;
 					window.addEventListener('mousemove', updateStopPos);
-					window.addEventListener('mouseup', _ld.flow(removeListeners, disableDrag));
+					window.addEventListener('mouseup', removeListeners);
 				}}
 			></div>
 		{/each}
