@@ -30,8 +30,6 @@ export type UserIcon = {
 
   /** Origin of the icon */
   origin: IconOrigin;
-
-  keywords: string[];
 }
 
 export function mkEmpty(): UserIcon {
@@ -52,7 +50,6 @@ export function mkEmpty(): UserIcon {
     useGradient: false,
     gradient: null,
     pngData: '',
-    origin: 'mdi',
-    keywords: [],
+    origin: 'mdi'
   };
 }
