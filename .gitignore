@@ -24,3 +24,4 @@ vite.config.ts.timestamp-*
 /static/data
 /static/fonts
 /static/css
+test-results
