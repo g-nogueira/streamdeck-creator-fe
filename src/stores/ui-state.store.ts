@@ -1,6 +1,7 @@
 import _ from "lodash";
 import type { UIState } from "../models/UIState";
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
+import type { GradientStop, UserIconGradient } from "../models/UserIconGradient";
 
 let emptyState: UIState = {
     styles: {
@@ -87,6 +88,26 @@ const removeSvgSizeAttributes = (svgContent: string): string => {
     return svgContent.replace(/(width|height)="[^"]*"/g, '');
 }
 
+function mkDefaultGradinet(): UserIconGradient {
+    return {
+        stops: [
+            { position: 0, color: '#fc466b' },
+            { position: 100, color: '#3f5efb' }
+        ],
+        type: 'linear',
+        angle: 90,
+        cssStyle: 'linear-gradient(90deg, #fc466b 0%, #3f5efb 100%)'
+    };
+}
+
+function mkCssStyle({ stops, type, angle }: UserIconGradient): string {
+    if (!type) {
+        return 'linear-gradient(90deg, #45fc8b 0%, #212a54 100%)';
+    }
+
+    return type === 'linear' ? `linear-gradient(${angle}deg, ${stops.map(s => `${s.color} ${s.position}%`).join(', ')})` : 'radial-gradient(circle, ' + stops.map(s => `${s.color} ${s.position}%`).join(', ') + ')';
+}
+
 function createUIState() {
     const { subscribe, set, update } = writable(emptyState);
 
@@ -133,6 +154,66 @@ function createUIState() {
 
         setUseGradient: (value: boolean) => update(state => {
             state.styles.useGradient = value;
+            return state;
+        }),
+
+        upsertGradient: (gradient: Partial<UserIconGradient>) => {
+            const uiState = get({subscribe});
+            const oldGradient : any = _.cloneDeep(uiState.styles.gradient || {});
+
+            const newUiState = ((state : UIState) => {
+                state.styles.gradient ||= mkDefaultGradinet();
+                state.styles.gradient = { ...state.styles.gradient, ...gradient };
+                state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+                return state;
+            })(uiState);
+
+            // Checkes if any prop has changed
+            if (_.isEqual(oldGradient, newUiState.styles.gradient)) return;
+
+            update(_ => newUiState);
+        },
+
+        addGradientStop: (stop: GradientStop) => update(state => {
+            state.styles.gradient ||= mkDefaultGradinet();
+            state.styles.gradient.stops = [...state.styles.gradient.stops, stop].sort((a, b) => a.position - b.position);
+            state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+            return state;
+        }),
+
+        updateGradientStopPosition: (index: number, position: GradientStop['position']) => update(state => {
+            state.styles.gradient ||= mkDefaultGradinet();
+            state.styles.gradient.stops[index].position = position;
+            state.styles.gradient.stops = state.styles.gradient.stops.sort((a, b) => a.position - b.position);
+            state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+            return state;
+        }),
+
+        updateGradientStopColor: (index: number, color: GradientStop['color']) => update(state => {
+            state.styles.gradient ||= mkDefaultGradinet();
+            state.styles.gradient.stops[index].color = color;
+            state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+            return state;
+        }),
+
+        removeGradientStop: (index: number) => update(state => {
+            state.styles.gradient ||= mkDefaultGradinet();
+            state.styles.gradient.stops = state.styles.gradient.stops.filter((_, i) => i !== index);
+            state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+            return state;
+        }),
+
+        setGradientType: (type: UserIconGradient['type']) => update(state => {
+            state.styles.gradient ||= mkDefaultGradinet();
+            state.styles.gradient.type = type;
+            state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+            return state;
+        }),
+
+        recalculateGradientCss: () => update(state => {
+            console.log('Recalculating gradient css');
+            state.styles.gradient ||= mkDefaultGradinet();
+            state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
             return state;
         }),
 

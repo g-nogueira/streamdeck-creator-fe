@@ -1,199 +1,178 @@
 <script lang="ts">
-    import { writable } from 'svelte/store';
-    import { ColorTranslator } from 'colortranslator';
-	import type { GradientStop, UserIconGradient } from '../../models/UserIconGradient';
+	import _ld from 'lodash';
+	import { ColorTranslator } from 'colortranslator';
+	import type { UserIconGradient } from '../../models/UserIconGradient';
 	import type { UIState } from '../../models/UIState';
-    import DeleteIcon from 'lucide-svelte/icons/trash';
+	import DeleteIcon from 'lucide-svelte/icons/trash';
+	import { uiState } from '../../stores/ui-state.store';
 
-    export let state: UIState['styles'];
-    
-    let stops = writable<GradientStop[]>([
-        { position: 0, color: '#fc466b' },
-        { position: 100, color: '#3f5efb' }
-    ]);
+	export let state: UIState['styles'];
 
-    let gradientType = writable<'linear' | 'radial'>('linear'); // 'linear' or 'radial'
-    let angle = writable<number>(90); // default angle for linear gradient
-    
-    stops.subscribe(value => {
-        state.gradient = state.gradient || mkDefaultGradinet();
-        state.gradient.stops = value;
-        state.gradient.cssStyle = mkCssStyle(state.gradient);
-    });
-    gradientType.subscribe(value => {
-        state.gradient = state.gradient || mkDefaultGradinet();
-        state.gradient.type = value;
-        state.gradient.cssStyle = mkCssStyle(state.gradient);
-    });
-    angle.subscribe(value => {
-        state.gradient = state.gradient || mkDefaultGradinet();
-        state.gradient.angle = value;
-        state.gradient.cssStyle = mkCssStyle(state.gradient);
-    });
+	let isDraggingGradientHandler = false;
 
-    $: if (state.gradient?.stops && state.gradient?.stops !== $stops) {
-        stops.set(state.gradient.stops);
-    }
+	// Function to get the color at a specific position
+	function getColorAtPosition(position: number): string {
+		// Create a temporary canvas
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d');
 
-    $: if (state.gradient?.type && state.gradient.type !== $gradientType) {
-        gradientType.set(state.gradient.type);
-    }
+		canvas.width = 1; // Only need 1 pixel wide
+		canvas.height = 30; // Height can match the height of the gradient bar
 
-    $: if (state.gradient?.angle && state.gradient.angle !== $angle) {
-        angle.set(state.gradient.angle);
-    }
+		// Create a linear gradient that fills the entire height of the canvas
+		const gradient = ctx!.createLinearGradient(0, 0, 0, canvas.height);
 
-    function mkDefaultGradinet(): UserIconGradient {
-        return {
-            stops: [
-                { position: 0, color: '#fc466b' },
-                { position: 100, color: '#3f5efb' }
-            ],
-            type: 'linear',
-            angle: 90,
-            cssStyle: 'linear-gradient(90deg, #fc466b 0%, #3f5efb 100%)'
-        };
-    }
+		// Populate the gradient with your stops
+		state.gradient?.stops.forEach((stop) => {
+			gradient.addColorStop(stop.position / 100, stop.color);
+		});
 
-    function mkCssStyle({ stops, type, angle }: UserIconGradient): string {
-        if (!type) {
-            return 'linear-gradient(90deg, #45fc8b 0%, #212a54 100%)';
-        }
+		// Fill the gradient onto the canvas
+		ctx!.fillStyle = gradient;
+		ctx!.fillRect(0, 0, 1, canvas.height); // Fill the 1xHeight rectangle
 
-        return type === 'linear' ? `linear-gradient(${angle}deg, ${stops.map(s => `${s.color} ${s.position}%`).join(', ')})` : 'radial-gradient(circle, ' + stops.map(s => `${s.color} ${s.position}%`).join(', ') + ')';
-    }
+		// Get the color from the canvas at the specified position
+		const y = (position / 100) * canvas.height; // Convert to canvas height
+		const imageData = ctx!.getImageData(0, y, 1, 1).data;
+		const color = `rgba(${imageData[0]}, ${imageData[1]}, ${imageData[2]}, ${imageData[3] / 255})`;
 
-    // Function to get the color at a specific position
-    function getColorAtPosition(position: number): string {
-        // Create a temporary canvas
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        
-        canvas.width = 1;  // Only need 1 pixel wide
-        canvas.height = 30; // Height can match the height of the gradient bar
-        
-        // Create a linear gradient that fills the entire height of the canvas
-        const gradient = ctx!.createLinearGradient(0, 0, 0, canvas.height);
-        
-        // Populate the gradient with your stops
-        $stops.forEach(stop => {
-            gradient.addColorStop(stop.position / 100, stop.color);
-        });
-        
-        // Fill the gradient onto the canvas
-        ctx!.fillStyle = gradient;
-        ctx!.fillRect(0, 0, 1, canvas.height); // Fill the 1xHeight rectangle
-    
-        // Get the color from the canvas at the specified position
-        const y = position / 100 * canvas.height; // Convert to canvas height
-        const imageData = ctx!.getImageData(0, y, 1, 1).data;
-        const color = `rgba(${imageData[0]}, ${imageData[1]}, ${imageData[2]}, ${imageData[3] / 255})`;
-    
-        return color;
-    }
+		return color;
+	}
 
+	// Modify the addStop function to set the new stop's color
+	function addStop(event: MouseEvent) {
+		const bar = event.currentTarget as HTMLDivElement;
+		const clickPosition = (event.offsetX / bar.clientWidth) * 100;
 
-    // Modify the addStop function to set the new stop's color
-    function addStop(event: MouseEvent) {
-        const bar = event.currentTarget as HTMLDivElement;
-        const clickPosition = (event.offsetX / bar.clientWidth) * 100;
+		// Get the color at the click position
+		const colorAtClick = getColorAtPosition(clickPosition);
 
-        // Get the color at the click position
-        const colorAtClick = getColorAtPosition(clickPosition);
+		// Convert the color to hex
+		const colorAtClickHex = ColorTranslator.toHEX(colorAtClick);
 
-        // Convert the color to hex
-        const colorAtClickHex = ColorTranslator.toHEX(colorAtClick);
-        
-        stops.update(s => [
-            ...s,
-            { position: clickPosition, color: colorAtClickHex }
-        ].sort((a, b) => a.position - b.position));
-    }
+		uiState.addGradientStop({ position: clickPosition, color: colorAtClickHex });
+	}
 
-    // Update position of stop on drag
-    function updatePosition(index: number, event: MouseEvent) {
-        const bar = document.getElementById("gradientBar") as HTMLDivElement; // Get the bar element
-        const rect = bar.getBoundingClientRect(); // Get the bounding rectangle of the bar
-        const newPosition = Math.min(Math.max(((event.clientX - rect.left) / bar.clientWidth) * 100, 0), 100); // Corrected parenthesis
-        stops.update(s => {
-            s[index].position = newPosition;
-            return s.sort((a, b) => a.position - b.position);
-        });
-    }
+	// Update position of stop on drag
+	function updateStopPosition(index: number, event: MouseEvent) {
+		const bar = document.getElementById('gradientBar') as HTMLDivElement; // Get the bar element
+		const rect = bar.getBoundingClientRect(); // Get the bounding rectangle of the bar
+		const newPosition = Math.min(
+			Math.max(((event.clientX - rect.left) / bar.clientWidth) * 100, 0),
+			100
+		);
 
-    // Remove stop
-    function removeStop(index: number) {
-        stops.update(s => s.filter((_, i) => i !== index));
-    }
+		uiState.updateGradientStopPosition(index, newPosition);
+	}
 
-    // Toggle gradient type
-    function toggleGradientType(type: string) {
-        // Throw an error if the type is not 'linear' or 'radial'
-        if (type !== 'linear' && type !== 'radial') {
-            throw new Error('Invalid gradient type');
-        }
+	// Remove stop
+	function removeStop(index: number) {
+		uiState.removeGradientStop(index);
+	}
 
-        gradientType.set(type);
-    }
+	// Toggle gradient type
+	function toggleGradientType(type: string) {
+		// Throw an error if the type is not 'linear' or 'radial'
+		if (type !== 'linear' && type !== 'radial') {
+			throw new Error('Invalid gradient type');
+		}
+
+		uiState.setGradientType(type as UserIconGradient['type']);
+	}
 </script>
 
 <div class="flex flex-col gap-5">
-    <!-- Inputs for gradient type and angle -->
-    <div class="flex flex-row gap-10 justify-between">
-        <select class="select select-toolbar bg-surface-800" on:change={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}>
-            <option value="linear">Linear</option>
-            <option value="radial">Radial</option>
-        </select>
-        {#if $gradientType === 'linear'}
-            <input class="input input-toolbar bg-surface-800" type="number" placeholder="90°" bind:value={$angle}/>
-        {/if}
-    </div>
+	<!-- Inputs for gradient type and angle -->
+	<div class="flex flex-row justify-between gap-10">
+		<select
+			class="select-toolbar select bg-surface-800"
+			on:change={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}
+		>
+			<option value="linear">Linear</option>
+			<option value="radial">Radial</option>
+		</select>
+		{#if state.gradient?.type === 'linear'}
+			<input
+				class="input-toolbar input bg-surface-800"
+				type="number"
+				placeholder="90°"
+				bind:value={state.gradient.angle}
+			/>
+		{/if}
+	</div>
 
-    <!-- Gradient bar -->
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div 
-        id="gradientBar"
-        class="relative cursor-copy w-full h-10 rounded-sm" 
-        on:click={event => {
-            if (event.target !== event.currentTarget) return;
-            addStop(event);
-        }}
-        style="background: {mkCssStyle({stops: $stops, type: $gradientType, angle: $angle, cssStyle: '' })}"
-    >
-        {#each $stops as stop, index}
-            <div
-                class="stop rounded-md absolute -bottom-2 h-14 w-3 border border-white cursor-ew-resize"
-                style="left: {stop.position}%; background-color: {stop.color};"
-                on:mousedown={_ => {
-                    const moveHandler = (e: MouseEvent) => {
-                        updatePosition(index, e);
-                    };
-                    const upHandler = () => {
-                        window.removeEventListener('mousemove', moveHandler);
-                        window.removeEventListener('mouseup', upHandler);
-                    };
-                    window.addEventListener('mousemove', moveHandler);
-                    window.addEventListener('mouseup', upHandler);
-                }}
-            ></div>
-        {/each}
-    </div>
+	<!-- Gradient bar -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		id="gradientBar"
+		class="relative h-10 w-full cursor-copy rounded-sm"
+		on:click={(event) => {
+			// Prevent adding a stop when dragging the handler
+			if (event.target !== event.currentTarget) return;
 
-    <!-- Stops -->
-    <div class="flex flex-col gap-2">
-        {#each $stops as stop, index}
-            <div class="inline-flex justify-start items-center w-full gap-3">
-                <div class="inline-flex w-1/2 gap-3">
-                    <input class="input input-toolbar" type="color" bind:value={stop.color}>
-                    <input class="input input-toolbar" type="number" min="0" max="100" bind:value={stop.position} />
-                </div>
-                <button on:click={() => removeStop(index)} class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-warning-900">
-                    <DeleteIcon size={20} />
-                </button>
-            </div>
-        {/each}
-    </div>
+			addStop(event);
+		}}
+		style="background: {state.gradient?.cssStyle}"
+	>
+		{#each state.gradient?.stops || [] as stop, index}
+			<div
+				class="stop absolute -bottom-2 h-14 w-3 cursor-ew-resize rounded-md border border-white"
+				style="left: {stop.position}%; background-color: {stop.color};"
+				on:mousedown={(_) => {
+					if (isDraggingGradientHandler) return;
+
+					const updateStopPos = (e: MouseEvent) => {
+						console.log('Moving handler for stop', index);
+						updateStopPosition(index, e);
+					};
+					const removeListeners = () => {
+						window.removeEventListener('mousemove', updateStopPos);
+						window.removeEventListener('mouseup', removeListeners);
+					};
+					const disableDrag = () => {
+						console.log('disableDrag');
+						isDraggingGradientHandler = false;
+					};
+
+					console.log('enableDrag');
+					isDraggingGradientHandler = true;
+					window.addEventListener('mousemove', updateStopPos);
+					window.addEventListener('mouseup', _ld.flow(removeListeners, disableDrag));
+				}}
+			></div>
+		{/each}
+	</div>
+
+	<!-- Stops -->
+	<div class="flex flex-col gap-2">
+		{#each state.gradient?.stops || [] as stop, index}
+			<div class="inline-flex w-full items-center justify-start gap-3">
+				<div class="inline-flex w-1/2 gap-3">
+					<input
+						class="input-toolbar input"
+						type="color"
+						bind:value={stop.color}
+						on:input={(_) => uiState.recalculateGradientCss()}
+					/>
+					<input
+						class="input-toolbar input"
+						type="number"
+						min="0"
+						max="100"
+						bind:value={stop.position}
+						on:input={(_) => uiState.recalculateGradientCss()}
+					/>
+				</div>
+				<button
+					on:click={() => removeStop(index)}
+					class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-warning-900"
+				>
+					<DeleteIcon size={20} />
+				</button>
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style lang="postcss">
