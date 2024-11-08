@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { iconsEndpoint } from "../constants";
 import type { Icon, IconOrigin } from "../models/Icon";
 import * as _userIconDto from "./dto/UserIconDto";
@@ -32,9 +33,12 @@ export class IconService {
     }
 
     static async fetchIconWithContentType(iconId: string, iconOrigin: IconOrigin): Promise<[string, string]> {
+      // File names are case sensitive. Not sure if I'm able to change the behavior, so I'm just going to uppercase the iconId
       try {
         if (iconOrigin === 'mdi') {
-          return [await MdiIconService.fetchSvgData(iconId), 'image/svg+xml'];
+          const svgPromise = _.flow(_.toUpper, MdiIconService.fetchSvgData)(iconId);
+
+          return [await svgPromise, 'image/svg+xml'];
         }
         return await StreamDeckIconService.fetchIconWithContentType(iconId);
       } catch (error) {
