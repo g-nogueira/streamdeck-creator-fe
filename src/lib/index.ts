@@ -10,14 +10,12 @@ export class UUID {
 }
 
 export class ImageProcessing {
-    static async NodeToBase64Png(node: Element): Promise<string> {
+    static async NodeToBase64Png(node: Node): Promise<string> {
         if (typeof window === 'undefined') {
             console.error('NodeToBase64Png called on server-side');
             return Promise.reject('Cannot process image on the server');
         }
 
-        const domtoimage = await import('dom-to-image-more');
-        
         if (!node) {
             console.error('No icon found to download');
             return Promise.reject('No icon found to download');
@@ -35,7 +33,7 @@ export class ImageProcessing {
         });
     }
 
-    static async DownloadIcon(node: Element, fileName: string): Promise<void> {
+    static async DownloadIcon(node: Node, fileName: string): Promise<void> {
         if (typeof window === 'undefined') {
             console.error('DownloadIcon called on server-side');
             return;

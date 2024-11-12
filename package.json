@@ -57,7 +57,8 @@
 	"dependencies": {
 		"colortranslator": "^4.1.0",
 		"dom-to-image-more": "^3.4.5",
-		"lucide-svelte": "^0.453.0"
+		"lucide-svelte": "^0.453.0",
+		"unleash-proxy-client": "^3.6.1"
 	},
 	"materialdesignicons-picker": {
 		"version": {
