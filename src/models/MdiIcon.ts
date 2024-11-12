@@ -18,8 +18,7 @@ export function toUserIcon(icon: MdiIcon): UserIcon {
         ..._userIcon.mkEmpty(),
         originalIconId: icon.id,
         label: icon.name,
-        origin: 'mdi',
-        keywords: [...icon.keywords1.split(' '), ...icon.keywords2.split(' ')],
+        origin: 'mdi'
     };
 }
 
