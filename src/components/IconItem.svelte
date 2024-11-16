@@ -49,13 +49,13 @@
   }
 </script>
 
-<button type="button" class="h-20 w-20 flex flex-col items-center gap-3 p-1 hover:bg-gray-200 transition-all cursor-pointer" on:click={() => selectIcon(icon)} aria-label={`Icon ${icon.label}`}>
+<button type="button" class="h-20 w-20 flex flex-col items-center gap-3 p-1 hover:bg-gray-200 transition-all cursor-pointer" on:click={() => selectIcon(icon)} aria-label={`Icon ${icon.label}`} data-testid="icon-button">
     {#if icon.origin === 'mdi'}
-      <i class={`mdi mdi-24px mdi-${icon.label}`} title={icon.label}></i>
+      <i class={`mdi mdi-24px mdi-${icon.label}`} title={icon.label} data-testid="mdi-icon"></i>
       <!-- <img use:lazyLoad={`/data/svg/${icon.id}.svg`} alt={icon.label} class="h-10 w-10" /> -->
-      <span data-origin="mdi" class="w-full font-semibold text-sm truncate">{icon.label}</span>
+      <span data-origin="mdi" class="w-full font-semibold text-sm truncate" data-testid="mdi-label">{icon.label}</span>
     {:else if icon.origin === 'streamdeck'}
-      <img use:lazyLoad={`${serviceBaseUrl}/icons/${icon.id}`} alt={icon.label} class="h-10 w-10" />
-      <span data-origin="streamdeck" class="w-full font-semibold text-sm truncate">{icon.label}</span>
+      <img use:lazyLoad={`${serviceBaseUrl}/icons/${icon.id}`} alt={icon.label} class="h-10 w-10" data-testid="streamdeck-icon-img" />
+      <span data-origin="streamdeck" class="w-full font-semibold text-sm truncate" data-testid="streamdeck-label">{icon.label}</span>
     {/if}
 </button>
