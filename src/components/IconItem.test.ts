@@ -6,16 +6,12 @@ import * as _selectedIcon from '../models/SelectedIcon';
 
 import IconItem from '../components/IconItem.svelte';
 import type { Icon } from '../models/Icon';
-import { serviceBaseUrl } from '../constants';
 
 // Mock the stores
 vi.mock('../stores/selected-icon.store', () => ({
     selectedIcon: {
         selectIcon: vi.fn(),
     },
-}));
-vi.mock('../constants', () => ({
-    serviceBaseUrl: 'http://localhost:5000',
 }));
 
 /**
@@ -65,10 +61,10 @@ export function setupIntersectionObserverMock({
     );
 }
 
+beforeEach(() => setupIntersectionObserverMock({ observe: vi.fn() }));
 
 describe('IconItem Component', () => {
-    beforeEach(() => setupIntersectionObserverMock({ observe: vi.fn() }));
-
+    
     const mockIcon = { ..._icon.mkEmpty(), label: "test-icon" } as Icon;
     const getIconButton = () => screen.getByTestId('icon-button');
 
@@ -117,8 +113,6 @@ describe('IconItem Component', () => {
 });
 
 describe('IconItem Component - MDI Icon', () => {
-    beforeEach(() => setupIntersectionObserverMock({ observe: vi.fn() }));
-
     const mockIcon = { ..._icon.mkEmpty(), label: "test-icon", origin: "mdi" } as Icon;
     const getIconButton = () => screen.getByTestId('icon-button');
 
