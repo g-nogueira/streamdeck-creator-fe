@@ -53,6 +53,29 @@ function stylesFromUserIcon(userIcon: UserIcon): UIState['styles'] {
   };
 }
 
+export function mkEmpty(): UIState {
+  return {
+    styles: {
+      glyphColor: '#000000',
+      backgroundColor: '#ffffff',
+      labelColor: '#000000',
+      label: 'Label',
+      labelVisible: true,
+      labelTypeface: 'Arial',
+      iconScale: 1,
+      imgX: 0,
+      imgY: 0,
+      labelX: 0,
+      labelY: 0,
+      pngData: '',
+      useGradient: false,
+      gradient: null
+    },
+    svgContent: '',
+    imageUrl: ''
+  };
+}
+
 export const extensions = {
   stylesFromUserIcon: stylesFromUserIcon
 }
