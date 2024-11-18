@@ -23,7 +23,7 @@ export default defineConfig({
     },
     coverage: {
       enabled: true,
-      exclude: ['**/node_modules/**', '**/cypress/**', '**/tests/**', '**/.svelte-kit/**'],
+      exclude: ['**/node_modules/**', '**/cypress/**', '**/tests/**', '**/.svelte-kit/**', '**/*.test.ts', '*.config.ts', '*.config.js'],
       provider: 'v8',
     }
   },
