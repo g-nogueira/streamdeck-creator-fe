@@ -1,3 +1,12 @@
+## Docker Container
+```bash
+docker compose up -d
+```
+or
+```bash
+docker compose up -d --build
+```
+
 ## Developing
 
 Once you've created a project and installed dependencies with `npm install`, start a development server:
