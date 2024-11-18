@@ -87,6 +87,7 @@
 		<select
 			class="select-toolbar select bg-surface-800"
 			on:change={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}
+			data-testid="gradient-type-select"
 		>
 			<option value="linear">Linear</option>
 			<option value="radial">Radial</option>
@@ -97,6 +98,7 @@
 				type="number"
 				placeholder="90°"
 				bind:value={state.gradient.angle}
+				data-testid="gradient-angle-input"
 			/>
 		{/if}
 	</div>
@@ -107,6 +109,7 @@
 	<div
 		id="gradientBar"
 		class="relative h-10 w-full cursor-copy rounded-sm"
+		data-testid="gradient-bar"
 		on:click={(event) => {
 			// Prevent adding a stop when dragging the handler
 			if (event.target !== event.currentTarget) return;
@@ -119,6 +122,7 @@
 			<div
 				class="stop absolute -bottom-2 h-14 w-3 cursor-ew-resize rounded-md border border-white"
 				style="left: {stop.position}%; background-color: {stop.color};"
+				data-testid="gradient-stop-handler"
 				on:mousedown={(_) => {
 					if (isDraggingGradientHandler) return;
 
@@ -145,13 +149,14 @@
 	<!-- Stops -->
 	<div class="flex flex-col gap-2">
 		{#each state.gradient?.stops || [] as stop, index}
-			<div class="inline-flex w-full items-center justify-start gap-3">
+			<div class="inline-flex w-full items-center justify-start gap-3" data-testid="gradient-stop-options">
 				<div class="inline-flex w-1/2 gap-3">
 					<input
 						class="input-toolbar input"
 						type="color"
 						bind:value={stop.color}
 						on:input={(_) => uiState.recalculateGradientCss()}
+						data-testid="stop-color-input"
 					/>
 					<input
 						class="input-toolbar input"
@@ -165,6 +170,7 @@
 				<button
 					on:click={() => removeStop(index)}
 					class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-warning-900"
+					data-testid="delete-stop-button"
 				>
 					<DeleteIcon size={20} />
 				</button>
