@@ -41,7 +41,7 @@
 	});
 </script>
 
-<input class="input" type="search" placeholder="Search..." bind:value={searchTerm} on:input={() => searchIcons()}/>
+<input class="input" type="search" placeholder="Search..." data-testid="search-field" bind:value={searchTerm} on:input={() => searchIcons()}/>
 <select class="select" placeholder="Collection...">
 	<option value="1">Option 1</option>
 	<option value="2">Option 2</option>
