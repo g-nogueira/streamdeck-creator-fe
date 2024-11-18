@@ -81,7 +81,7 @@
 	}
 </script>
 
-<div class="flex flex-col gap-5">
+<div data-testid="gradient-generator-component" class="flex flex-col gap-5">
 	<!-- Inputs for gradient type and angle -->
 	<div class="flex flex-row justify-between gap-10">
 		<select
