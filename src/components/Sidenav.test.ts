@@ -2,6 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import Sidenav from './Sidenav.svelte';
 
+vi.mock('../services/user-icon-collection.service', async () => await import('../../tests/user-icon-collection.service.mock'));
+
 describe('Sidenav', () => {
     afterEach(() => {
         vi.restoreAllMocks();
