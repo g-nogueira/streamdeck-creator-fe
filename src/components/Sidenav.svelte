@@ -15,7 +15,7 @@
         <!-- Component -->
         <Nav.Rail bind:value={selectedTile}>
             {#snippet header()}
-                <Nav.Tile id="icons" label="Icons" href="#">
+                <Nav.Tile id="icons" label="Icons" href="#" data-testid="nav-tile">
                     <Search />
                 </Nav.Tile>
                 <Nav.Tile id="collections" label="Collections" href="#">

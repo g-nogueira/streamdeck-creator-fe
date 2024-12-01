@@ -5,6 +5,12 @@ services:
     build: .
     ports:
       - "3000:3000"
+    environment:
+      # For building the app locally, use the .env file
+      PUBLIC_SERVICE_URL: http://host.docker.internal:5199 # This is the URL of the StreamDeck Creator API
+      PUBLIC_UNLEASH_URL: http://localhost:4242 # Unleash is the feature flagging service. Check or modify the URL on docker-compose.yml
+      PUBLIC_UNLEASH_API_TOKEN: default:development.unleash-insecure-frontend-api-token # Check or modify the API token on docker-compose.yml
+      PUBLIC_UNLEASH_APP_NAME: default # Didn't find a way to change this yet, so leave it as is
 
   unleash-web:
     image: unleashorg/unleash-server:latest

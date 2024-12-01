@@ -6,3 +6,12 @@ export interface Icon {
     keywords: string[];
     origin: IconOrigin;
 }
+
+export function mkEmpty(): Icon {
+    return {
+        id: '',
+        label: '',
+        keywords: [],
+        origin: 'mdi',
+    };
+}

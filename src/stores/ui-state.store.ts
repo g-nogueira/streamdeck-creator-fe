@@ -30,6 +30,10 @@ let emptyState: UIState = {
     imageUrl: ''
 };
 
+export function mkEmpty(): UIState {
+    return _.cloneDeep(emptyState);
+}
+
 /**
  * Injects the color into the SVG content
  * @param svgContent
