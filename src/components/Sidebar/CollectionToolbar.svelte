@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as _userIconCollection from '../../models/UserIconCollection';
-	import { UserIconCollectionService } from '../../services/user-icon-collection.service';
+	import { UserIconCollectionIndexedDBService } from '../../services/user-icon-collection-indexeddb.service';
 	import * as _selectedIcon from '../../models/SelectedIcon';
 	import DownloadIcon from 'lucide-svelte/icons/download';
 	import DeleteIcon from 'lucide-svelte/icons/trash';
@@ -21,7 +21,7 @@
 			throw new Error('No collection selected to download');
 		}
 
-		UserIconCollectionService.download(collection.id);
+		UserIconCollectionIndexedDBService.download(collection.id);
 	}
 
 	async function deleteUserCollection() {

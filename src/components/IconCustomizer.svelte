@@ -5,7 +5,7 @@
 	import { IconService } from '../services/icon.service';
 	import { selectedIcon } from '../stores/selected-icon.store';
 	import { uiState } from '../stores/ui-state.store';
-	import { UserIconService } from '../services/user-icon.service';
+	import { UserIconIndexedDBService } from '../services/user-icon-indexeddb.service';
 	import _ from 'lodash';
 
 	$: if ($selectedIcon) {
@@ -14,7 +14,7 @@
 		if ($selectedIcon.userIconId && $selectedIcon.userIconId !== UUID.empty) {
 			(async () => {
 				try {
-					const userIcon = await UserIconService.getById(
+					const userIcon = await UserIconIndexedDBService.getById(
 						$selectedIcon.userIconCollectionId,
 						$selectedIcon.userIconId
 					);

@@ -6,7 +6,7 @@
 	import { uiState } from '../stores/ui-state.store';
 	import Toolbar from '../components/Toolbar/Toolbar.svelte';
 	import ShortcutsBar from '../components/ShortcutsBar.svelte';
-
+	
 </script>
 
 <svelte:head>
