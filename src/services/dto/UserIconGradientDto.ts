@@ -1,4 +1,4 @@
-import type { UserIconGradient } from "../../models/UserIconGradient";
+import type { IconGradient } from "../../models/IconGradient";
 
 export interface UserIconGradientDto {
     stops: { position: number; color: string }[];
@@ -7,7 +7,7 @@ export interface UserIconGradientDto {
     cssStyle: string;
 }
 
-export function toDomain(userIconGradientDto: UserIconGradientDto): UserIconGradient {
+export function toDomain(userIconGradientDto: UserIconGradientDto): IconGradient {
     return {
         stops: userIconGradientDto.stops.map(stop => ({
             position: stop.position,
@@ -19,7 +19,7 @@ export function toDomain(userIconGradientDto: UserIconGradientDto): UserIconGrad
     };
 }
 
-export function fromDomain(userIconGradient: UserIconGradient): UserIconGradientDto {
+export function fromDomain(userIconGradient: IconGradient): UserIconGradientDto {
     return {
         stops: userIconGradient.stops.map(stop => ({
             position: stop.position,

@@ -1,8 +1,8 @@
 import { render, fireEvent, screen, getByTestId } from '@testing-library/svelte';
 import { describe, it, expect, vi, test, beforeEach } from 'vitest';
-import { selectedIcon } from '../stores/selected-icon.store';
+import { customizedIcon } from '../stores/icon-customizations.store';
 import * as _icon from '../models/Icon';
-import * as _selectedIcon from '../models/SelectedIcon';
+import * as _selectedIcon from '../models/IconPreview';
 
 import IconItem from '../components/IconItem.svelte';
 import type { Icon } from '../models/Icon';
@@ -87,7 +87,7 @@ describe('IconItem Component', () => {
         const button = getIconButton();
 
         await fireEvent.click(button);
-        expect(selectedIcon.selectIcon).toHaveBeenCalledWith({
+        expect(customizedIcon.selectIcon).toHaveBeenCalledWith({
             ..._selectedIcon.mkEmpty(),
             iconId: mdiIcon.id,
             iconOrigin: mdiIcon.origin,

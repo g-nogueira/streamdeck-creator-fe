@@ -13,7 +13,7 @@
 
 	const searchIcons = debounce(async () => {
 		if (!searchTerm) {
-			icons.setDefault();
+			icons.loadDefault();
 			return;
 		}
 		else if (searchTerm.length <= 2) {

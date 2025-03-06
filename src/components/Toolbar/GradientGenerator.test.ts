@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vite
 import GradientGenerator from './GradientGenerator.svelte';
 import { uiState } from '../../stores/ui-state.store';
 import { mkEmpty, type UIState } from '../../models/UIState';
-import type { UserIconGradient } from '../../models/UserIconGradient';
+import type { IconGradient } from '../../models/IconGradient';
 
 describe('GradientGenerator', () => {
 	let mockGetContext: Mock;
@@ -112,7 +112,7 @@ describe('GradientGenerator', () => {
 
 	it('shows linear gradient options when linear type is selected', async () => {
 		// Arrange
-		const stateWithRadialGradient = { ...mockState, gradient: { ...mockState.gradient, type: 'linear' } as UserIconGradient };
+		const stateWithRadialGradient = { ...mockState, gradient: { ...mockState.gradient, type: 'linear' } as IconGradient };
 		render(GradientGenerator, { state: stateWithRadialGradient });
 
 		// Assert
@@ -121,7 +121,7 @@ describe('GradientGenerator', () => {
 
 	it('hides linear gradient options when radial type is selected', async () => {
 		// Arrange
-		const stateWithRadialGradient = { ...mockState, gradient: { ...mockState.gradient, type: 'radial' } as UserIconGradient };
+		const stateWithRadialGradient = { ...mockState, gradient: { ...mockState.gradient, type: 'radial' } as IconGradient };
 		render(GradientGenerator, { state: stateWithRadialGradient });
 
 		// Assert
@@ -130,8 +130,8 @@ describe('GradientGenerator', () => {
 
 	it('remove stop fields when the stops in the state are removed', async () => { 
 		// Arrange
-		const stateWithStops = { ...mockState, gradient: { ...mockState.gradient, stops: [{ position: 0, color: '#ff0000' }] } as UserIconGradient };
-		const stateWithNoStops = { ...mockState, gradient: { ...mockState.gradient, stops: [] } as UserIconGradient };
+		const stateWithStops = { ...mockState, gradient: { ...mockState.gradient, stops: [{ position: 0, color: '#ff0000' }] } as IconGradient };
+		const stateWithNoStops = { ...mockState, gradient: { ...mockState.gradient, stops: [] } as IconGradient };
 		const comp = render(GradientGenerator, { state: stateWithStops });
 
 		const initialStops = screen.getAllByTestId('gradient-stop-options');

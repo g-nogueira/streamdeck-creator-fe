@@ -3,7 +3,6 @@
 	import '../app.css';
 	import Sidenav from '../components/Sidenav.svelte';
 	import IconPreview from '../components/IconPreview.svelte';
-	import { uiState } from '../stores/ui-state.store';
 	import Toolbar from '../components/Toolbar/Toolbar.svelte';
 	import ShortcutsBar from '../components/ShortcutsBar.svelte';
 	
@@ -20,7 +19,7 @@
 	<main class="flex h-screen w-screen flex-col overflow-hidden">
 		<div class="flex h-full w-full items-center justify-center">
 			<IconCustomizer />
-			<IconPreview bind:state={$uiState} />
+			<IconPreview />
 		</div>
 		<!-- <Footer /> -->
 	</main>

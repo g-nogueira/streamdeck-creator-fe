@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as _userIconCollection from '../../models/UserIconCollection';
 	import { UserIconCollectionIndexedDBService } from '../../services/user-icon-collection-indexeddb.service';
-	import * as _selectedIcon from '../../models/SelectedIcon';
+	import * as _selectedIcon from '../../models/IconPreview';
 	import DownloadIcon from 'lucide-svelte/icons/download';
 	import DeleteIcon from 'lucide-svelte/icons/trash';
 	import Tooltip from '../Tooltip.svelte';

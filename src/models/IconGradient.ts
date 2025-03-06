@@ -3,7 +3,7 @@ export type GradientStop = {
     color: string;
 }
 
-export type UserIconGradient = {
+export type IconGradient = {
     stops: GradientStop[];
     type: 'linear' | 'radial';
     angle: number;

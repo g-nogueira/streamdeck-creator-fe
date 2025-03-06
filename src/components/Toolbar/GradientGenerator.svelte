@@ -1,12 +1,15 @@
 <script lang="ts">
 	import _ld from 'lodash';
 	import { ColorTranslator } from 'colortranslator';
-	import type { UserIconGradient } from '../../models/UserIconGradient';
-	import type { UIState } from '../../models/UIState';
+	import type { IconGradient } from '../../models/IconGradient';
 	import DeleteIcon from 'lucide-svelte/icons/trash';
-	import { uiState } from '../../stores/ui-state.store';
+	import { customizedIcon } from '../../stores/icon-customizations.store';
 
-	export let state: UIState['styles'];
+	// if (!$customizedIcon) {
+	// 	throw new Error('Customized Icon store not found');
+	// }
+
+	let state = $customizedIcon?.styles;
 
 	let isDraggingGradientHandler = false;
 
@@ -50,7 +53,7 @@
 		// Convert the color to hex
 		const colorAtClickHex = ColorTranslator.toHEX(colorAtClick);
 
-		uiState.addGradientStop({ position: clickPosition, color: colorAtClickHex });
+		customizedIcon.addGradientStop({ position: clickPosition, color: colorAtClickHex });
 	}
 
 	// Update position of stop on drag
@@ -62,12 +65,12 @@
 			100
 		);
 
-		uiState.updateGradientStopPosition(index, newPosition);
+		customizedIcon.updateGradientStopPosition(index, newPosition);
 	}
 
 	// Remove stop
 	function removeStop(index: number) {
-		uiState.removeGradientStop(index);
+		customizedIcon.removeGradientStop(index);
 	}
 
 	// Toggle gradient type
@@ -77,7 +80,7 @@
 			throw new Error('Invalid gradient type');
 		}
 
-		uiState.setGradientType(type as UserIconGradient['type']);
+		customizedIcon.setGradientType(type as IconGradient['type']);
 	}
 </script>
 
@@ -133,8 +136,8 @@
 					const removeListeners = () => {
 						window.removeEventListener('mousemove', updateStopPos);
 						window.removeEventListener('mouseup', removeListeners);
-                        console.log('disableDrag');
-                        isDraggingGradientHandler = false;
+						console.log('disableDrag');
+						isDraggingGradientHandler = false;
 					};
 
 					console.log('enableDrag');
@@ -149,13 +152,16 @@
 	<!-- Stops -->
 	<div class="flex flex-col gap-2">
 		{#each state.gradient?.stops || [] as stop, index}
-			<div class="inline-flex w-full items-center justify-start gap-3" data-testid="gradient-stop-options">
+			<div
+				class="inline-flex w-full items-center justify-start gap-3"
+				data-testid="gradient-stop-options"
+			>
 				<div class="inline-flex w-1/2 gap-3">
 					<input
 						class="input-toolbar input"
 						type="color"
 						bind:value={stop.color}
-						on:input={(_) => uiState.recalculateGradientCss()}
+						on:input={(_) => customizedIcon.recalculateGradientCss()}
 						data-testid="stop-color-input"
 					/>
 					<input
@@ -164,7 +170,7 @@
 						min="0"
 						max="100"
 						bind:value={stop.position}
-						on:input={(_) => uiState.recalculateGradientCss()}
+						on:input={(_) => customizedIcon.recalculateGradientCss()}
 					/>
 				</div>
 				<button

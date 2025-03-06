@@ -16,7 +16,8 @@ export const startUnleash = () => new Promise((resolve) => {
         resolve(true);
         return;
     }
-    unleashClient.start();
+    // unleashClient.start();
+    resolve(false);
     unleashClient.on('ready', () => {
         console.log('Unleash is ready');
         unleashReady = true;
@@ -26,6 +27,7 @@ export const startUnleash = () => new Promise((resolve) => {
         console.error(error);
         resolve(false);
     });
+
 }) as Promise<boolean>;
 
 export const USE_STREAM_DECK_ICONS = () => unleashClient.isEnabled('streamDeckIconsEnabled');

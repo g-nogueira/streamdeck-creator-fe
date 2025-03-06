@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { fromUserIcon, mkEmpty, type SelectedIcon } from './SelectedIcon';
+import { fromUserIcon, mkEmpty, type IconPreview } from './IconPreview';
 import type { UserIcon } from './UserIcon';
-import type { UserIconGradient } from './UserIconGradient';
+import type { IconGradient } from './IconGradient';
 
 describe('SelectedIcon', () => {
     const userIcon: UserIcon = {
@@ -33,7 +33,7 @@ describe('SelectedIcon', () => {
 
     it('converts UserIcon to SelectedIcon correctly', () => {
         // Arrange
-        const expectedSelectedIcon: SelectedIcon = {
+        const expectedSelectedIcon: IconPreview = {
             iconId: userIcon.originalIconId,
             userIconId: userIcon.id,
             userIconCollectionId: collectionId,
@@ -68,7 +68,7 @@ describe('SelectedIcon', () => {
     it('handles UserIcon without gradient correctly', () => {
         // Arrange
         const userIconWithoutGradient: UserIcon = { ...userIcon, gradient: null };
-        const expectedSelectedIcon: SelectedIcon = {
+        const expectedSelectedIcon: IconPreview = {
             iconId: userIconWithoutGradient.originalIconId,
             userIconId: userIconWithoutGradient.id,
             userIconCollectionId: collectionId,
