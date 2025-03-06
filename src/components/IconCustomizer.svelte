@@ -3,7 +3,6 @@
 	import * as _selectedIcon from '../models/IconPreview';
 	import { IconService } from '../services/icon.service';
 	import { customizedIcon } from '../stores/icon-customizations.store';
-	import { UserIconIndexedDBService } from '../services/user-icon-indexeddb.service';
 	import _ from 'lodash';
 
 	$: if ($customizedIcon) {
