@@ -64,7 +64,7 @@
             </button>
         </div>
         {#if $customizedIcon.styles.useGradient}
-            <GradientGenerator bind:state={$customizedIcon.styles}/>
+            <GradientGenerator/>
         {:else}
             <div data-testid="solid-fill-controls" class="grid grid-cols-[auto_1fr] gap-2">
                 <input data-testid="colorpicker-solid-fill-color" class="input input-toolbar" bind:value={$customizedIcon.styles.backgroundColor} type="color" />

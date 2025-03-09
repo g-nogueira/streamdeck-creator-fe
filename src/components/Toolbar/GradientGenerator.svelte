@@ -4,12 +4,13 @@
 	import type { IconGradient } from '../../models/IconGradient';
 	import DeleteIcon from 'lucide-svelte/icons/trash';
 	import { customizedIcon } from '../../stores/icon-customizations.store';
+	import * as _iconPreview from '../../models/IconPreview';
 
 	// if (!$customizedIcon) {
 	// 	throw new Error('Customized Icon store not found');
 	// }
 
-	let state = $customizedIcon?.styles;
+	let state = $customizedIcon?.styles || _iconPreview.mkEmpty().styles;
 
 	let isDraggingGradientHandler = false;
 
