@@ -2,7 +2,7 @@ import { render, fireEvent, screen, getByTestId } from '@testing-library/svelte'
 import { describe, it, expect, vi, test, beforeEach } from 'vitest';
 import { customizedIcon } from '../stores/icon-customizations.store';
 import * as _icon from '../models/Icon';
-import * as _iconPreview from '../models/IconPreview';
+import * as _iconPreview from '../models/CustomizableIcon';
 
 import IconItem from '../components/IconItem.svelte';
 import type { Icon } from '../models/Icon';

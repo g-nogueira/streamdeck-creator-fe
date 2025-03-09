@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as _selectedIcon from '../../models/IconPreview';
+	import * as _selectedIcon from '../../models/CustomizableIcon';
 	import RemoveFromCollectionIcon from "lucide-svelte/icons/x";
 	import type { UserIcon } from '../../models/UserIcon';
 	import type { UserIconCollection } from '../../models/UserIconCollection';

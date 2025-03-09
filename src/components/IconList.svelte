@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import * as _selectedIcon from '../models/IconPreview';
+  import * as _selectedIcon from '../models/CustomizableIcon';
 	import IconItem from './IconItem.svelte';
 	import { icons } from '../stores/icon.store';
 

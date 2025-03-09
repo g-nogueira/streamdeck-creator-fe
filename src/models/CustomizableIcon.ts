@@ -6,7 +6,7 @@ import type { IconGradient } from "./IconGradient";
 /**
  * Represents an icon, either user-created or original, that has been selected for modification in the app.
  */
-export type IconPreview = {
+export type CustomizableIcon = {
     iconId: string;
     userIconId: string;
     userIconCollectionId: string;
@@ -41,9 +41,9 @@ export type IconPreview = {
     iconOrigin: IconOrigin;
 }
 
-export type IconPreviewStyles = IconPreview['styles'];
+export type CustomizableIconStyles = CustomizableIcon['styles'];
 
-export function mkEmpty(): IconPreview {
+export function mkEmpty(): CustomizableIcon {
     return {
         iconId: UUID.empty,
         userIconId: UUID.empty,
@@ -72,7 +72,7 @@ export function mkEmpty(): IconPreview {
         iconOrigin: 'mdi',
     };
 };
-export function fromUserIcon(userIcon: UserIcon, collectionId: string): IconPreview {
+export function fromUserIcon(userIcon: UserIcon, collectionId: string): CustomizableIcon {
     return {
         iconId: userIcon.originalIconId,
         userIconId: userIcon.id,
@@ -107,5 +107,30 @@ export function fromUserIcon(userIcon: UserIcon, collectionId: string): IconPrev
         contentType: userIcon.contentType,
 
         iconOrigin: userIcon.origin,
+    };
+}
+
+
+export function toUserIcon(customizableIcon: CustomizableIcon): UserIcon {
+    return {
+        id: customizableIcon.userIconId || UUID.empty,
+        collectionId: customizableIcon.userIconCollectionId || UUID.empty,
+        contentType: customizableIcon.contentType,
+        originalIconId: customizableIcon.iconId,
+        glyphColor: customizableIcon.styles.glyphColor,
+        backgroundColor: customizableIcon.styles.backgroundColor,
+        labelColor: customizableIcon.styles.labelColor,
+        label: customizableIcon.styles.label,
+        labelVisible: customizableIcon.styles.labelVisible,
+        labelTypeface: customizableIcon.styles.labelTypeface,
+        iconScale: customizableIcon.styles.iconScale,
+        imgX: customizableIcon.styles.imgX,
+        imgY: customizableIcon.styles.imgY,
+        labelX: customizableIcon.styles.labelX,
+        labelY: customizableIcon.styles.labelY,
+        pngData: customizableIcon.styles.pngData,
+        useGradient: customizableIcon.styles.useGradient,
+        gradient: customizableIcon.styles.gradient,
+        origin: customizableIcon.iconOrigin
     };
 }

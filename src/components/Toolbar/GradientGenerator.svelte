@@ -4,7 +4,7 @@
 	import type { IconGradient } from '../../models/IconGradient';
 	import DeleteIcon from 'lucide-svelte/icons/trash';
 	import { customizedIcon } from '../../stores/icon-customizations.store';
-	import * as _iconPreview from '../../models/IconPreview';
+	import * as _iconPreview from '../../models/CustomizableIcon';
 
 	// if (!$customizedIcon) {
 	// 	throw new Error('Customized Icon store not found');

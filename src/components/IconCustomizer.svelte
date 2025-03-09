@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { UUID } from '$lib';
-	import * as _selectedIcon from '../models/IconPreview';
+	import * as _selectedIcon from '../models/CustomizableIcon';
 	import { IconService } from '../services/icon.service';
 	import { customizedIcon } from '../stores/icon-customizations.store';
 	import _ from 'lodash';

@@ -3,12 +3,9 @@
     import AddToCollection from "lucide-svelte/icons/save";
 	import { customizedIcon } from "../stores/icon-customizations.store";
 	import { selectedCollection } from "../stores/selected-collection.store";
-	import type { IconPreview } from "../models/IconPreview";
+	import { toUserIcon, type CustomizableIcon } from "../models/CustomizableIcon";
 	import type { UserIconCollection } from "../models/UserIconCollection";
-	import { ImageProcessing, UUID } from "$lib";
-    // import { customizedIcon } from '../stores/ui-state.store';
-	import type { UserIcon } from "../models/UserIcon";
-	import { userIconCollections } from "../stores/user-icon-collection.store";
+	import { ImageProcessing } from "$lib";
 	import Tooltip from "./Tooltip.svelte";
 
 	function downloadIcon() {
@@ -26,7 +23,7 @@
 	}
 
 	// Save the customized icon
-	async function addIconToCollection(selectedIcon: IconPreview, collection: UserIconCollection | null) {
+	async function addIconToCollection(customizableIcon: CustomizableIcon, collection: UserIconCollection | null) {
 
 		if (!collection) {
 			console.error('No collection selected to save the icon');
@@ -43,25 +40,7 @@
 
         customizedIcon.updatePngData(iconPng);
 		
-		const userIcon = {
-			id: UUID.empty,
-			originalIconId: selectedIcon.iconId,
-			glyphColor: $customizedIcon?.styles.glyphColor,
-			backgroundColor: $customizedIcon?.styles.backgroundColor,
-			labelColor: $customizedIcon?.styles.labelColor,
-			label: $customizedIcon?.styles.label,
-			labelVisible: $customizedIcon?.styles.labelVisible,
-			labelTypeface: $customizedIcon?.styles.labelTypeface,
-			iconScale: $customizedIcon?.styles.iconScale,
-			imgX: $customizedIcon?.styles.imgX,
-			imgY: $customizedIcon?.styles.imgY,
-			labelX: $customizedIcon?.styles.labelX,
-			labelY: $customizedIcon?.styles.labelY,
-			pngData: $customizedIcon?.styles.pngData,
-			useGradient: $customizedIcon?.styles.useGradient,
-			gradient: $customizedIcon?.styles.gradient,
-			origin: selectedIcon.iconOrigin,
-		} as UserIcon;
+		const userIcon = toUserIcon(customizableIcon);
 
 		selectedCollection.addIconToSelectedCollection(userIcon);
 	}
