@@ -7,6 +7,7 @@
 	import type { UserIconCollection } from "../models/UserIconCollection";
 	import { ImageProcessing } from "$lib";
 	import Tooltip from "./Tooltip.svelte";
+	import _ from "lodash";
 
 	function downloadIcon() {
 		const node = document.querySelector(`#iconToCapture`);
@@ -39,10 +40,8 @@
 		let iconPng = await ImageProcessing.NodeToBase64Png(node);
 
         customizedIcon.updatePngData(iconPng);
-		
-		const userIcon = toUserIcon(customizableIcon);
 
-		selectedCollection.addIconToSelectedCollection(userIcon);
+		_.flow(toUserIcon, selectedCollection.addIconToSelectedCollection)(customizableIcon);
 	}
 </script>
 
