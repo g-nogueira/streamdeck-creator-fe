@@ -36,6 +36,8 @@ describe('MdiIcon', () => {
             originalIconId: mdiIcon.id,
             label: mdiIcon.name,
             origin: 'mdi',
+            collectionId: '',
+            contentType: 'image/svg+xml'
         };
 
         // Act
@@ -52,6 +54,7 @@ describe('MdiIcon', () => {
             label: mdiIcon.name,
             keywords: ['mdi', 'keyword1', 'mdi', 'keyword2'],
             origin: 'mdi',
+            contentType: "img/svg+xml"
         };
 
         // Act

@@ -1,9 +1,9 @@
 import { get, writable } from "svelte/store";
 import { vi } from "vitest";
-import { mkEmpty, type UIState } from "../src/models/UIState";
+import { mkEmpty, type IconPreview } from "../src/models/IconPreview";
 
-function createUIStateStore() {
-    const { subscribe, set } = writable<UIState>(mkEmpty());
+function createIconPreviewStore() {
+    const { subscribe, set } = writable<IconPreview>(mkEmpty());
 
     return {
         subscribe,
@@ -22,8 +22,8 @@ function createUIStateStore() {
         setGradientType: vi.fn(),
         recalculateGradientCss: vi.fn(),
         mockGetSubscribeValue: () => get({subscribe}),
-        mockSetSubscribeValue: (value: UIState): void => set(value)
+        mockSetSubscribeValue: (value: IconPreview): void => set(value)
     };
 }
 
-export const uiState = createUIStateStore();
+export const customizedIcon = createIconPreviewStore();
