@@ -6,8 +6,6 @@
 	import { customizedIcon } from '../../stores/icon-customizations.store';
 	import * as _iconPreview from '../../models/CustomizableIcon';
 
-	let state = $customizedIcon?.styles || _iconPreview.mkEmpty().styles;
-
 	let isDraggingGradientHandler = false;
 
 	// Function to get the color at a specific position
@@ -23,7 +21,7 @@
 		const gradient = ctx!.createLinearGradient(0, 0, 0, canvas.height);
 
 		// Populate the gradient with your stops
-		state.gradient?.stops.forEach((stop) => {
+		$customizedIcon?.styles.gradient?.stops?.forEach((stop) => {
 			gradient.addColorStop(stop.position / 100, stop.color);
 		});
 
@@ -61,7 +59,6 @@
 			Math.max(((event.clientX - rect.left) / bar.clientWidth) * 100, 0),
 			100
 		);
-
 		customizedIcon.updateGradientStopPosition(index, newPosition);
 	}
 
@@ -86,18 +83,24 @@
 	<div class="flex flex-row justify-between gap-10">
 		<select
 			class="select-toolbar select bg-surface-800"
-			on:change={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}
+			onchange={(e: Event) => toggleGradientType((e.target as HTMLSelectElement).value)}
 			data-testid="gradient-type-select"
 		>
 			<option value="linear">Linear</option>
 			<option value="radial">Radial</option>
 		</select>
-		{#if state.gradient?.type === 'linear'}
+		{#if $customizedIcon?.styles.gradient?.type === 'linear'}
 			<input
 				class="input-toolbar input bg-surface-800"
 				type="number"
 				placeholder="90°"
-				bind:value={state.gradient.angle}
+				value={$customizedIcon?.styles.gradient.angle}
+				oninput={(e: Event) => {
+					const angle = parseFloat((e.target as HTMLInputElement).value);
+					if (!isNaN(angle)) {
+						customizedIcon.setGradientAngle(angle);
+					}
+				}}
 				data-testid="gradient-angle-input"
 			/>
 		{/if}
@@ -110,24 +113,22 @@
 		id="gradientBar"
 		class="relative h-10 w-full cursor-copy rounded-sm"
 		data-testid="gradient-bar"
-		on:click={(event) => {
+		onclick={(event) => {
 			// Prevent adding a stop when dragging the handler
 			if (event.target !== event.currentTarget) return;
-
 			addStop(event);
 		}}
-		style="background: {state.gradient?.cssStyle}"
+		style="background: {$customizedIcon?.styles.gradient?.cssStyle}"
 	>
-		{#each state.gradient?.stops || [] as stop, index}
+		{#each $customizedIcon?.styles.gradient?.stops || [] as stop, index}
 			<div
 				class="stop absolute -bottom-2 h-14 w-3 cursor-ew-resize rounded-md border border-white"
 				style="left: {stop.position}%; background-color: {stop.color};"
 				data-testid="gradient-stop-handler"
-				on:mousedown={(_) => {
+				onmousedown={(_) => {
 					if (isDraggingGradientHandler) return;
 
 					const updateStopPos = (e: MouseEvent) => {
-						console.log('Moving handler for stop', index);
 						updateStopPosition(index, e);
 					};
 					const removeListeners = () => {
@@ -148,7 +149,7 @@
 
 	<!-- Stops -->
 	<div class="flex flex-col gap-2">
-		{#each state.gradient?.stops || [] as stop, index}
+		{#each $customizedIcon?.styles.gradient?.stops || [] as stop, index}
 			<div
 				class="inline-flex w-full items-center justify-start gap-3"
 				data-testid="gradient-stop-options"
@@ -157,8 +158,8 @@
 					<input
 						class="input-toolbar input"
 						type="color"
-						bind:value={stop.color}
-						on:input={(_) => customizedIcon.recalculateGradientCss()}
+						value={stop.color}
+						oninput={(_) => customizedIcon.recalculateGradientCss()}
 						data-testid="stop-color-input"
 					/>
 					<input
@@ -166,12 +167,12 @@
 						type="number"
 						min="0"
 						max="100"
-						bind:value={stop.position}
-						on:input={(_) => customizedIcon.recalculateGradientCss()}
+						value={stop.position}
+						oninput={(_) => customizedIcon.recalculateGradientCss()}
 					/>
 				</div>
 				<button
-					on:click={() => removeStop(index)}
+					onclick={() => removeStop(index)}
 					class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-warning-900"
 					data-testid="delete-stop-button"
 				>
