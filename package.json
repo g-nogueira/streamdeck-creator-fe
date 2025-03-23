@@ -68,6 +68,7 @@
 	"dependencies": {
 		"colortranslator": "^4.1.0",
 		"dom-to-image-more": "^3.4.5",
+		"dompurify": "^3.2.4",
 		"idb": "^8.0.2",
 		"jszip": "^3.10.1",
 		"lucide-svelte": "^0.453.0",
