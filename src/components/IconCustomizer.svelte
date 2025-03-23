@@ -5,6 +5,8 @@
 	import { customizedIcon } from '../stores/icon-customizations.store';
 	import _ from 'lodash';
 
+	let previousIconId: string | null = null;
+
 	$: if ($customizedIcon?.userIconId && $customizedIcon.userIconId !== UUID.empty) {
 		// Has userIconId and isn't empty uuid?
 		if (isContentTypeSvg($customizedIcon.contentType) && $customizedIcon.svgContent) {
@@ -18,7 +20,7 @@
 	$: if ($customizedIcon?.iconId && (!$customizedIcon.userIconId || $customizedIcon.userIconId === UUID.empty)) {
 		// Has iconId and userIconId is empty uuid?
 		// Then keeps the state.styles as it is, so that the user can reuse the previous styles
-		IconService.fetchIconWithContentType($customizedIcon.iconId, $customizedIcon.iconOrigin)
+		previousIconId !== $customizedIcon.iconId && IconService.fetchIconWithContentType($customizedIcon.iconId, $customizedIcon.iconOrigin)
 			.then(([iconContent, contentType]) => {
 				if (isContentTypeSvg(contentType)) {
 					customizedIcon.selectSvgIcon(iconContent);
@@ -28,6 +30,9 @@
 			})
 			.catch((error) => {
 				throw new Error('Error fetching icon', error);
+			})
+			.finally(() => {
+				previousIconId = $customizedIcon.iconId;
 			});
 	}
 
