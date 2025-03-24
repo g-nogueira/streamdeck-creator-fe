@@ -64,7 +64,15 @@ export function mkEmpty(): CustomizableIcon {
             labelY: 0,
 
             useGradient: false,
-            gradient: null,
+            gradient: {
+				type: 'linear',
+				angle: 90,
+				cssStyle: 'linear-gradient(to right, #ea62e5, #0000ff)',
+				stops: [
+					{ position: 0, color: '#ea62e5' },
+					{ position: 100, color: '#0000ff' }
+				]
+			},
             pngData: ""
         },
             

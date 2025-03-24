@@ -21,6 +21,7 @@ function createIconPreviewStore() {
         updateGradientStopColor: vi.fn(),
         setGradientType: vi.fn(),
         recalculateGradientCss: vi.fn(),
+        removeGradientStop: vi.fn(),
         mockGetSubscribeValue: () => get({subscribe}),
         mockSetSubscribeValue: (value: CustomizableIcon): void => set(value)
     };
