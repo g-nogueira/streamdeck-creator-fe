@@ -54,7 +54,7 @@ describe('MdiIcon', () => {
             label: mdiIcon.name,
             keywords: ['mdi', 'keyword1', 'mdi', 'keyword2'],
             origin: 'mdi',
-            contentType: "img/svg+xml"
+            contentType: "image/svg+xml"
         };
 
         // Act
