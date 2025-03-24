@@ -22,7 +22,7 @@ let fromUserIcon = (userIcon: UserIcon) => {
 }
 
 /**
- * Update the ourter SVG fill attribute with the given color
+ * Update the outer SVG fill attribute with the given color
  * @param svgContent
  * @param color
  */
@@ -68,6 +68,7 @@ function mkCssStyle({ stops, type, angle }: IconGradient): string {
 
 function createIconCustomizationsStore() {
     const { subscribe, set, update } = writable<CustomizableIcon | null>(null);
+    const verboseMode = true;
 
     return {
         subscribe,
@@ -77,6 +78,8 @@ function createIconCustomizationsStore() {
 
         selectSvgIcon: (svg: string) => update((state) => {
             if (!state) return state;
+
+            verboseMode && console.log("Setting SVG icon");
 
             const cleanedSvg = _.flow(updateSvgFill(state.styles.glyphColor), removeSvgSizeAttributes)(svg);
 
@@ -90,6 +93,8 @@ function createIconCustomizationsStore() {
         selectImageIcon: (url: string) => update(state => {
             if (!state) return state;
 
+            verboseMode && console.log("Setting image icon");
+
             state.imageUrl = url;
             state.svgContent = '';
 
@@ -99,12 +104,16 @@ function createIconCustomizationsStore() {
         setIconTitle: (title: string) => update(state => {
             if (!state) return state;
 
+            verboseMode && console.log("Setting icon title");
+
             state.styles.label = title;
             return state;
         }),
 
         upsertStyles: (styles: Partial<CustomizableIcon['styles']>) => update(state => {
             if (!state) return state;
+
+            verboseMode && console.log("Upserting styles");
 
             state.styles = { ...state.styles, ...styles };
             return state;
@@ -113,12 +122,16 @@ function createIconCustomizationsStore() {
         setSvgFillColor: (color: string) => update(state => {
             if (!state) return state;
 
+            verboseMode && console.log("Setting SVG fill color");
+
             state.svgContent = updateSvgFill(color)(state.svgContent!);
             return state;
         }),
 
         setUseGradient: (value: boolean) => update(state => {
             if (!state) return state;
+
+            verboseMode && console.log("Setting use gradient");
 
             state.styles.useGradient = value;
             return state;
@@ -141,11 +154,15 @@ function createIconCustomizationsStore() {
             // Checkes if any prop has changed
             if (_.isEqual(oldGradient, newUiState.styles.gradient)) return;
 
+            verboseMode && console.log("Upserting gradient");
+
             update(_ => newUiState);
         },
 
         addGradientStop: (stop: GradientStop) => update(state => {
             if (!state) return state;
+
+            verboseMode && console.log("Adding gradient stop");
 
             state.styles.gradient ||= mkDefaultGradient();
             state.styles.gradient.stops = [...state.styles.gradient.stops, stop].sort((a, b) => a.position - b.position);
@@ -155,6 +172,8 @@ function createIconCustomizationsStore() {
 
         updateGradientStopPosition: (index: number, position: GradientStop['position']) => update(state => {
             if (!state) return state;
+
+            verboseMode && console.log("Updating gradient stop position");
 
             state.styles.gradient ||= mkDefaultGradient();
             state.styles.gradient.stops[index].position = position;
@@ -166,6 +185,8 @@ function createIconCustomizationsStore() {
         updateGradientStopColor: (index: number, color: GradientStop['color']) => update(state => {
             if (!state) return state;
 
+            verboseMode && console.log("Updating gradient stop color");
+
             state.styles.gradient ||= mkDefaultGradient();
             state.styles.gradient.stops[index].color = color;
             state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
@@ -174,6 +195,8 @@ function createIconCustomizationsStore() {
 
         removeGradientStop: (index: number) => update(state => {
             if (!state) return state;
+
+            verboseMode && console.log("Removing gradient stop");
 
             state.styles.gradient ||= mkDefaultGradient();
             state.styles.gradient.stops = state.styles.gradient.stops.filter((_, i) => i !== index);
@@ -184,8 +207,21 @@ function createIconCustomizationsStore() {
         setGradientType: (type: IconGradient['type']) => update(state => {
             if (!state) return state;
 
+            verboseMode && console.log("Setting gradient type");
+
             state.styles.gradient ||= mkDefaultGradient();
             state.styles.gradient.type = type;
+            state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+            return state;
+        }),
+
+        setGradientAngle: (angle: IconGradient['angle']) => update(state => {
+            if (!state) return state;
+
+            verboseMode && console.log("Setting gradient angle");
+
+            state.styles.gradient ||= mkDefaultGradient();
+            state.styles.gradient.angle = angle;
             state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
             return state;
         }),
@@ -193,7 +229,8 @@ function createIconCustomizationsStore() {
         recalculateGradientCss: () => update(state => {
             if (!state) return state;
 
-            console.log('Recalculating gradient css');
+            verboseMode && console.log("Recalculating gradient css");
+
             state.styles.gradient ||= mkDefaultGradient();
             state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
             return state;
@@ -202,11 +239,16 @@ function createIconCustomizationsStore() {
         updatePngData: (data: string) => update(state => {
             if (!state) return state;
 
+            verboseMode && console.log("Updating PNG data");
+
             state.styles.pngData = data;
             return state;
         }),
 
-        reset: () => set(_iconPreview.mkEmpty())
+        reset: () => {
+            verboseMode && console.log("Resetting store");
+            set(_iconPreview.mkEmpty());
+        }
     };
 }
 
