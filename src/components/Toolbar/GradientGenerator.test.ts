@@ -2,39 +2,17 @@ import { render, fireEvent, screen, act } from '@testing-library/svelte';
 import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest';
 import GradientGenerator from './GradientGenerator.svelte';
 import type { IconGradient } from '../../models/IconGradient';
-import { type CustomizableIcon } from "../../models/CustomizableIcon";
-import * as _iconPreview from '../../models/CustomizableIcon';
+import { mkEmpty, type CustomizableIcon } from "../../models/CustomizableIcon";
 
 const iconCustomizationsStorePromise = vi.hoisted(() => import('../../../tests/icon-customizations.store.mock'));
 
 vi.mock('../../stores/icon-customizations.store', async () => await iconCustomizationsStorePromise);
 
-describe('GradientGenerator', () => {
+describe('GradientGenerator', async () => {
 	let mockGetContext: Mock;
 
-	const mockState: CustomizableIcon = {
-		..._iconPreview.mkEmpty(),
-		styles: {
-			..._iconPreview.mkEmpty().styles,
-			gradient: {
-				type: 'linear',
-				angle: 90,
-				cssStyle: 'linear-gradient(to right, #ea62e5, #0000ff)',
-				stops: [
-					{ position: 0, color: '#ea62e5' },
-					{ position: 100, color: '#0000ff' }
-				]
-			}
-		},
-	};
-
-	// beforeEach(() => {
-	// 	vi.spyOn(customizedIcon, 'recalculateGradientCss')
-	// 	vi.spyOn(customizedIcon, 'addGradientStop')
-	// 	vi.spyOn(customizedIcon, 'removeGradientStop')
-	// 	vi.spyOn(customizedIcon, 'updateGradientStopPosition')
-	// 	vi.spyOn(customizedIcon, 'setGradientType')
-	// });
+	const mockState = mkEmpty();
+	const { customizedIcon } = await iconCustomizationsStorePromise;
 
 	// Mock the canvas context used on getColorAtPosition
 	beforeEach(async () => {
@@ -50,7 +28,7 @@ describe('GradientGenerator', () => {
 			value: mockGetContext,
 		});
 
-		(await iconCustomizationsStorePromise).customizedIcon.mockSetSubscribeValue(mockState);
+		customizedIcon.mockSetSubscribeValue(mockState);
 	});
 
 	afterEach(() => {
@@ -59,7 +37,6 @@ describe('GradientGenerator', () => {
 
 	it('adds a gradient stop on click', async () => {
 		// Arrange
-		const { customizedIcon } = await iconCustomizationsStorePromise;
 		render(GradientGenerator);
 		const gradientBar = screen.getByTestId('gradient-bar');
 
@@ -72,7 +49,6 @@ describe('GradientGenerator', () => {
 
 	it('removes a gradient stop on button click', async () => {
 		// Arrange
-		const { customizedIcon } = await iconCustomizationsStorePromise;
 		render(GradientGenerator);
 		const deleteButton = screen.getAllByTestId('delete-stop-button')[0];
 
@@ -85,7 +61,6 @@ describe('GradientGenerator', () => {
 
 	it('updates gradient stop position on drag', async () => {
 		// Arrange
-		const { customizedIcon } = await iconCustomizationsStorePromise;
 		render(GradientGenerator);
 		const stopHandler = screen.getAllByTestId('gradient-stop-handler')[0];
 
@@ -100,7 +75,6 @@ describe('GradientGenerator', () => {
 
 	it('updates gradient stop color on color change', async () => {
 		// Arrange
-		const { customizedIcon } = await iconCustomizationsStorePromise;
 		render(GradientGenerator);
 		const colorInput = screen.getAllByTestId('stop-color-input')[0];
 
@@ -113,7 +87,6 @@ describe('GradientGenerator', () => {
 
 	it('toggles gradient type on select change', async () => {
 		// Arrange
-		const { customizedIcon } = await iconCustomizationsStorePromise;
 		render(GradientGenerator);
 		const select = screen.getByTestId('gradient-type-select');
 
@@ -126,7 +99,6 @@ describe('GradientGenerator', () => {
 
 	it('shows linear gradient options when linear type is selected', async () => {
 		// Arrange
-		const { customizedIcon } = await iconCustomizationsStorePromise;
 		const stateWithRadialGradient = { ...mockState, styles: { gradient: { ...mockState.styles.gradient, type: 'linear' } as IconGradient } } as CustomizableIcon;
 		customizedIcon.mockSetSubscribeValue(stateWithRadialGradient);
 		render(GradientGenerator);
@@ -137,7 +109,6 @@ describe('GradientGenerator', () => {
 
 	it('hides linear gradient options when radial type is selected', async () => {
 		// Arrange
-		const { customizedIcon } = await iconCustomizationsStorePromise;
 		const stateWithRadialGradient = { ...mockState, styles: { gradient: { ...mockState.styles.gradient, type: 'radial' } as IconGradient } } as CustomizableIcon;
 		customizedIcon.mockSetSubscribeValue(stateWithRadialGradient);
 		render(GradientGenerator);
@@ -148,7 +119,6 @@ describe('GradientGenerator', () => {
 
 	it('remove stop fields when the stops in the state are removed', async () => {
 		// Arrange
-		const { customizedIcon } = await iconCustomizationsStorePromise;
 		const stateWithStops = { ...mockState, styles: { gradient: { ...mockState.styles.gradient, stops: [{ position: 0, color: '#ff0000' }] } as IconGradient } } as CustomizableIcon;
 		const stateWithNoStops = { ...mockState, styles: { gradient: { ...mockState.styles.gradient, stops: [] } as IconGradient } } as CustomizableIcon;
 		customizedIcon.mockSetSubscribeValue(stateWithStops);
