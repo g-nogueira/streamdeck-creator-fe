@@ -20,20 +20,21 @@
 	$: if ($customizedIcon?.iconId && (!$customizedIcon.userIconId || $customizedIcon.userIconId === UUID.empty)) {
 		// Has iconId and userIconId is empty uuid?
 		// Then keeps the state.styles as it is, so that the user can reuse the previous styles
-		previousIconId !== $customizedIcon.iconId && IconService.fetchIconWithContentType($customizedIcon.iconId, $customizedIcon.iconOrigin)
-			.then(([iconContent, contentType]) => {
-				if (isContentTypeSvg(contentType)) {
-					customizedIcon.selectSvgIcon(iconContent);
-				} else {
-					_.flow(IconService.mkIconUrl, customizedIcon.selectImageIcon)($customizedIcon.iconId);
-				}
-			})
-			.catch((error) => {
-				throw new Error('Error fetching icon', error);
-			})
-			.finally(() => {
-				previousIconId = $customizedIcon.iconId;
-			});
+		if (previousIconId !== $customizedIcon.iconId)
+			IconService.fetchIconWithContentType($customizedIcon.iconId, $customizedIcon.iconOrigin)
+				.then(([iconContent, contentType]) => {
+					if (isContentTypeSvg(contentType)) {
+						customizedIcon.selectSvgIcon(iconContent);
+					} else {
+						_.flow(IconService.mkIconUrl, customizedIcon.selectImageIcon)($customizedIcon.iconId);
+					}
+				})
+				.catch((error) => {
+					throw new Error('Error fetching icon', error);
+				})
+				.finally(() => {
+					previousIconId = $customizedIcon.iconId;
+				});
 	}
 
 	$: if ($customizedIcon?.styles?.glyphColor) {
