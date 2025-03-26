@@ -248,6 +248,16 @@ function createIconCustomizationsStore() {
         reset: () => {
             verboseMode && console.log("Resetting store");
             set(_iconPreview.mkEmpty());
+        },
+
+
+        /**
+         * Function reserved for Svelte native calls
+         */
+        set: (value: CustomizableIcon) => {
+            verboseMode && console.log("Setting store value");
+
+            set(value);
         }
     };
 }
