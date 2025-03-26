@@ -21,7 +21,7 @@
 		const gradient = ctx!.createLinearGradient(0, 0, 0, canvas.height);
 
 		// Populate the gradient with your stops
-		$customizedIcon?.styles.gradient?.stops?.forEach((stop) => {
+		($customizedIcon?.styles?.gradient?.stops || []).forEach((stop) => {
 			gradient.addColorStop(stop.position / 100, stop.color);
 		});
 
@@ -89,7 +89,7 @@
 			<option value="linear">Linear</option>
 			<option value="radial">Radial</option>
 		</select>
-		{#if $customizedIcon?.styles.gradient?.type === 'linear'}
+		{#if $customizedIcon?.styles?.gradient?.type === 'linear'}
 			<input
 				class="input-toolbar input bg-surface-800"
 				type="number"
@@ -118,9 +118,9 @@
 			if (event.target !== event.currentTarget) return;
 			addStop(event);
 		}}
-		style="background: {$customizedIcon?.styles.gradient?.cssStyle}"
+		style="background: {$customizedIcon?.styles?.gradient?.cssStyle || 'transparent'}"
 	>
-		{#each $customizedIcon?.styles.gradient?.stops || [] as stop, index}
+		{#each $customizedIcon?.styles?.gradient?.stops || [] as stop, index}
 			<div
 				class="stop absolute -bottom-2 h-14 w-3 cursor-ew-resize rounded-md border border-white"
 				style="left: {stop.position}%; background-color: {stop.color};"
@@ -149,7 +149,7 @@
 
 	<!-- Stops -->
 	<div class="flex flex-col gap-2">
-		{#each $customizedIcon?.styles.gradient?.stops || [] as stop, index}
+		{#each $customizedIcon?.styles?.gradient?.stops || [] as stop, index}
 			<div
 				class="inline-flex w-full items-center justify-start gap-3"
 				data-testid="gradient-stop-options"
@@ -158,7 +158,7 @@
 					<input
 						class="input-toolbar input"
 						type="color"
-						value={stop.color}
+						bind:value={stop.color}
 						oninput={(_) => customizedIcon.recalculateGradientCss()}
 						data-testid="stop-color-input"
 					/>
@@ -167,7 +167,7 @@
 						type="number"
 						min="0"
 						max="100"
-						value={stop.position}
+						bind:value={stop.position}
 						oninput={(_) => customizedIcon.recalculateGradientCss()}
 					/>
 				</div>
