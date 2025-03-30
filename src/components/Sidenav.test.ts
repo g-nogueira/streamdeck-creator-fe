@@ -15,6 +15,9 @@ vi.mock('../services/user-icon-collection-indexeddb.service', async () => {
                 id: 'default-collection-id',
                 name: 'Default Collection',
                 icons: [],
+            }),
+            subscribe: vi.fn().mockReturnValue({
+                unsubscribe: vi.fn(),
             })
         },
         DEFAULT_COLLECTION_ID: 'default-collection-id',
