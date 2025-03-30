@@ -3,6 +3,15 @@ import { describe, it, expect, afterEach, vi } from 'vitest';
 import Sidenav from './Sidenav.svelte';
 
 vi.mock('../services/user-icon-collection.service', async () => await import('../../tests/user-icon-collection.service.mock'));
+vi.mock('../services/user-icon-collection-indexeddb.service', async () => {
+    return {
+        UserIconCollectionDBService: {
+            fetchList: vi.fn().mockResolvedValue([]),
+            create: vi.fn().mockResolvedValue('new-collection-id'),
+            addUserIcon: vi.fn().mockResolvedValue('new-icon-id')
+        }
+    }
+});
 
 describe('Sidenav', () => {
     afterEach(() => {

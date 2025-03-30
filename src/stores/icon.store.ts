@@ -36,7 +36,7 @@ function createIconStore() {
             set(icons);
         },
         setEmpty: () => set([]),
-        setDefault: () => IconService.fetchList().then(set),
+        loadDefault: () => IconService.fetchList().then(set),
         set
     };
 }

@@ -1,10 +1,20 @@
 import { act, render, screen } from '@testing-library/svelte';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import IconPreview from './IconPreview.svelte';
-import { mkEmpty, type UIState } from '../models/UIState';
+import { mkEmpty, type CustomizableIcon } from '../models/CustomizableIcon';
+import { beforeEach } from 'node:test';
 
-describe('Background Customization', () => {
+const iconCustomizationsStorePromise = vi.hoisted(() => import('../../tests/icon-customizations.store.mock'));
+
+vi.mock('../stores/icon-customizations.store', async () => await iconCustomizationsStorePromise);
+
+describe('Background Customization', async () => {
     const mockState = mkEmpty();
+    const { customizedIcon } = await iconCustomizationsStorePromise;
+
+    beforeEach(async () => {
+        customizedIcon.mockSetSubscribeValue(mockState);
+    });
 
     afterEach(() => {
         vi.restoreAllMocks();
@@ -13,42 +23,40 @@ describe('Background Customization', () => {
     it('applies background color correctly', () => {
         // Arrange
         const bgColorState = { ...mockState, styles: { ...mockState.styles, backgroundColor: '#FF0000' } };
+        customizedIcon.mockSetSubscribeValue(bgColorState);
 
         // Act
-        render(IconPreview, { state: bgColorState });
+        render(IconPreview);
         const iconContainer = screen.getByTestId("icon-background");
 
         // Assert
         expect(iconContainer.style.background).toBe("rgb(255, 0, 0)");
     });
 
-    // Don't know why iconBackground.style.background keeps returning empty string.
-    // it('applies background gradient correctly', async () => {
-    //     // Arrange
-    //     const bgGradientState = {
-    //         ...mockState,
-    //         styles: {
-    //             ...mockState.styles,
-    //             useGradient: true,
-    //             gradient: {
-    //                 ...mockState.styles.gradient,
-    //                 cssStyle: 'linear-gradient(to right, red, blue)'
-    //             }
-    //         }
-    //     } as UIState;
+    it('applies background gradient correctly', async () => {
+        // Arrange
+        const bgGradientState = { ...mockState } as CustomizableIcon;
+        bgGradientState.styles.useGradient = true;
+        bgGradientState.styles.gradient!.cssStyle = 'linear-gradient(to right, red, blue)';
 
-    //     // Act
-    //     render(IconPreview, { state: bgGradientState });
-    //     await act();
-    //     const iconBackground = screen.getByTestId("icon-background");
+        customizedIcon.mockSetSubscribeValue(bgGradientState);
 
-    //     // Assert
-    //     expect(iconBackground.style.background).toBe("linear-gradient(to right, red, blue)");
-    // });
+        // Act
+        render(IconPreview);
+        const iconBackground = screen.getByTestId("icon-background");
+
+        // Assert
+        expect(iconBackground.attributes.getNamedItem('style')?.value).toBe("background: linear-gradient(to right, red, blue);");
+    });
 });
 
-describe('Label Customization', () => {
+describe('Label Customization', async () => {
     const mockState = mkEmpty();
+    const { customizedIcon } = await iconCustomizationsStorePromise;
+
+    beforeEach(async () => {
+        customizedIcon.mockSetSubscribeValue(mockState);
+    });
 
     afterEach(() => {
         vi.restoreAllMocks();
@@ -56,10 +64,11 @@ describe('Label Customization', () => {
 
     it('renders label when labelVisible is true', () => {
         // Arrange
-        const stateWithLabel = { ...mockState, styles: { ...mockState.styles, labelVisible: true, label: "Test Label" } };
+        const stateWithLabel = { ...mockState, styles: { ...mockState.styles, labelVisible: true, label: "Test Label" } } as CustomizableIcon;
+        customizedIcon.mockSetSubscribeValue(stateWithLabel);
 
         // Act
-        render(IconPreview, { state: stateWithLabel });
+        render(IconPreview);
         const label = screen.getByTestId("icon-label");
 
         // Assert
@@ -69,10 +78,11 @@ describe('Label Customization', () => {
 
     it('does not render label when labelVisible is false', () => {
         // Arrange
-        const stateWithoutLabel = { ...mockState, styles: { ...mockState.styles, labelVisible: false } };
+        const stateWithoutLabel = { ...mockState, styles: { ...mockState.styles, labelVisible: false } } as CustomizableIcon;
+        customizedIcon.mockSetSubscribeValue(stateWithoutLabel);
 
         // Act
-        render(IconPreview, { state: stateWithoutLabel });
+        render(IconPreview);
         const label = screen.queryByTestId("icon-label");
 
         // Assert
@@ -81,10 +91,11 @@ describe('Label Customization', () => {
 
     it('applies label position correctly', () => {
         // Arrange
-        const labelPositionState = { ...mockState, styles: { ...mockState.styles, labelX: 10, labelY: 20 } };
+        const labelPositionState = { ...mockState, styles: { ...mockState.styles, labelX: 10, labelY: 20 } } as CustomizableIcon;
+        customizedIcon.mockSetSubscribeValue(labelPositionState);
 
         // Act
-        render(IconPreview, { state: labelPositionState });
+        render(IconPreview);
         const label = screen.getByTestId("icon-label");
 
         // Assert
@@ -94,9 +105,10 @@ describe('Label Customization', () => {
     it('applies label text correctly', () => {
         // Arrange
         const labelTextState = { ...mockState, styles: { ...mockState.styles, label: "Test Label" } };
+        customizedIcon.mockSetSubscribeValue(labelTextState);
 
         // Act
-        render(IconPreview, { state: labelTextState });
+        render(IconPreview);
         const label = screen.getByTestId("icon-label");
 
         // Assert
@@ -106,9 +118,10 @@ describe('Label Customization', () => {
     it('applies label color correctly', () => {
         // Arrange
         const labelColorState = { ...mockState, styles: { ...mockState.styles, labelColor: '#00FF00' } };
+        customizedIcon.mockSetSubscribeValue(labelColorState);
 
         // Act
-        render(IconPreview, { state: labelColorState });
+        render(IconPreview);
         const label = screen.getByTestId("icon-label");
 
         // Assert
@@ -118,9 +131,10 @@ describe('Label Customization', () => {
     it('applies label typeface correctly', () => {
         // Arrange
         const labelTypefaceState = { ...mockState, styles: { ...mockState.styles, labelTypeface: 'Arial' } };
+        customizedIcon.mockSetSubscribeValue(labelTypefaceState);
 
         // Act
-        render(IconPreview, { state: labelTypefaceState });
+        render(IconPreview);
         const label = screen.getByTestId("icon-label");
 
         // Assert
@@ -128,8 +142,13 @@ describe('Label Customization', () => {
     });
 });
 
-describe('Icon Customization', () => {
+describe('Icon Customization', async () => {
     const mockState = mkEmpty();
+    const { customizedIcon } = await iconCustomizationsStorePromise;
+
+    beforeEach(async () => {
+        customizedIcon.mockSetSubscribeValue(mockState);
+    });
 
     afterEach(() => {
         vi.restoreAllMocks();
@@ -138,9 +157,10 @@ describe('Icon Customization', () => {
     it('renders SVG content when provided', () => {
         // Arrange
         const stateWithSvg = { ...mockState, svgContent: '<svg></svg>' };
+        customizedIcon.mockSetSubscribeValue(stateWithSvg);
 
         // Act
-        render(IconPreview, { state: stateWithSvg });
+        render(IconPreview);
         const iconWrapper = screen.getByTestId('icon-wrapper');
 
         // Assert
@@ -150,9 +170,10 @@ describe('Icon Customization', () => {
     it('renders image when SVG content is not provided', () => {
         // Arrange
         const stateWithoutSvg = { ...mockState, imageUrl: 'http://example.com/image.png' };
+        customizedIcon.mockSetSubscribeValue(stateWithoutSvg);
 
         // Act
-        render(IconPreview, { state: stateWithoutSvg });
+        render(IconPreview);
         const img = screen.getByTestId("icon-image") as HTMLImageElement;
 
         // Assert
@@ -163,9 +184,10 @@ describe('Icon Customization', () => {
     it('applies glyph color correctly', () => {
         // Arrange
         const glyphColorState = { ...mockState, svgContent: '<svg></svg>', styles: { ...mockState.styles, glyphColor: '#00FF00' } };
+        customizedIcon.mockSetSubscribeValue(glyphColorState);
 
         // Act
-        render(IconPreview, { state: glyphColorState });
+        render(IconPreview);
         const iconWrapper = screen.getByTestId("icon-wrapper");
 
         // Assert
@@ -175,9 +197,10 @@ describe('Icon Customization', () => {
     it('applies icon scale correctly', () => {
         // Arrange
         const iconScaleState = { ...mockState, styles: { ...mockState.styles, iconScale: 2 } };
+        customizedIcon.mockSetSubscribeValue(iconScaleState);
 
         // Act
-        render(IconPreview, { state: iconScaleState });
+        render(IconPreview);
         const iconWrapper = screen.getByTestId("icon-wrapper");
 
         // Assert
@@ -187,9 +210,10 @@ describe('Icon Customization', () => {
     it('applies icon position correctly', () => {
         // Arrange
         const iconPositionState = { ...mockState, styles: { ...mockState.styles, imgX: 10, imgY: 20 } };
+        customizedIcon.mockSetSubscribeValue(iconPositionState);
 
         // Act
-        render(IconPreview, { state: iconPositionState });
+        render(IconPreview);
         const iconWrapper = screen.getByTestId("icon-wrapper");
 
         // Assert

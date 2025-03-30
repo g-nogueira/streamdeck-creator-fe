@@ -13,8 +13,8 @@ function createIconStore() {
         upsertIcon: vi.fn(),
         search: vi.fn(),
         setEmpty: vi.fn(),
-        setDefault: vi.fn(),
         set: vi.fn(),
+        loadDefault: vi.fn(),
         mockGetSubscribeValue: () => get({subscribe}),
         mockSetSubscribeValue: (value: Icon[]): void => set(value)
     };

@@ -5,6 +5,7 @@ import * as _userIconGradientDto from "./UserIconGradientDto";
 
 export interface UserIconDto {
   id: string;
+  collectionId: string;
   iconId: string;
   label: string;
   labelVisible: boolean;
@@ -21,6 +22,7 @@ export interface UserIconDto {
   useGradient: boolean;
   gradient: UserIconGradientDto | null;
   origin: IconOriginDto;
+  contentType: string;
 }
 
 export function toUserIcon(userIconDto: UserIconDto): UserIcon {
@@ -42,6 +44,8 @@ export function toUserIcon(userIconDto: UserIconDto): UserIcon {
     useGradient: userIconDto.useGradient,
     gradient: userIconDto.gradient ? _userIconGradientDto.toDomain(userIconDto.gradient) : null,
     origin: userIconDto.origin,
+    collectionId: userIconDto.collectionId,
+    contentType: userIconDto.contentType
   };
 }
 
@@ -64,5 +68,7 @@ export function fromUserIcon(userIcon: UserIcon): UserIconDto {
     useGradient: userIcon.useGradient,
     gradient: userIcon.gradient ? _userIconGradientDto.fromDomain(userIcon.gradient) : null,
     origin: userIcon.origin,
+    collectionId: userIcon.collectionId,
+    contentType: userIcon.contentType,
   };
 }

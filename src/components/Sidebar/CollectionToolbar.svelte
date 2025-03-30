@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as _userIconCollection from '../../models/UserIconCollection';
-	import { UserIconCollectionService } from '../../services/user-icon-collection.service';
-	import * as _selectedIcon from '../../models/SelectedIcon';
+	import { UserIconCollectionDBService } from '../../services/user-icon-collection-indexeddb.service';
 	import DownloadIcon from 'lucide-svelte/icons/download';
 	import DeleteIcon from 'lucide-svelte/icons/trash';
 	import Tooltip from '../Tooltip.svelte';
@@ -21,7 +20,7 @@
 			throw new Error('No collection selected to download');
 		}
 
-		UserIconCollectionService.download(collection.id);
+		UserIconCollectionDBService.download(collection.id);
 	}
 
 	async function deleteUserCollection() {

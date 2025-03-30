@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { fromUserIcon, mkEmpty, type SelectedIcon } from './SelectedIcon';
+import { fromUserIcon, mkEmpty, type CustomizableIcon } from './CustomizableIcon';
 import type { UserIcon } from './UserIcon';
-import type { UserIconGradient } from './UserIconGradient';
+import type { IconGradient } from './IconGradient';
 
 describe('SelectedIcon', () => {
     const userIcon: UserIcon = {
@@ -27,35 +27,44 @@ describe('SelectedIcon', () => {
         },
         origin: 'mdi',
         useGradient: false,
+        collectionId: '',
+        contentType: ''
     };
 
     const collectionId = 'collection-1';
 
-    it('converts UserIcon to SelectedIcon correctly', () => {
+    it('converts UserIcon to IconPreview correctly', () => {
         // Arrange
-        const expectedSelectedIcon: SelectedIcon = {
+        const expectedSelectedIcon: CustomizableIcon = {
             iconId: userIcon.originalIconId,
             userIconId: userIcon.id,
             userIconCollectionId: collectionId,
-            label: userIcon.label,
-            labelVisible: userIcon.labelVisible,
-            labelColor: userIcon.labelColor,
-            labelTypeface: userIcon.labelTypeface,
-            glyphColor: userIcon.glyphColor,
-            backgroundColor: userIcon.backgroundColor,
-            iconScale: userIcon.iconScale,
-            imgX: userIcon.imgX,
-            imgY: userIcon.imgY,
-            labelX: userIcon.labelX,
-            labelY: userIcon.labelY,
-            pngData: userIcon.pngData,
-            gradient: userIcon.gradient ? {
-                stops: userIcon.gradient.stops,
-                type: userIcon.gradient.type,
-                angle: userIcon.gradient.angle,
-                cssStyle: userIcon.gradient.cssStyle,
-            } : null,
+            styles: {
+                glyphColor: userIcon.glyphColor,
+                backgroundColor: userIcon.backgroundColor,
+                labelColor: userIcon.labelColor,
+                label: userIcon.label,
+                labelVisible: userIcon.labelVisible,
+                labelTypeface: userIcon.labelTypeface,
+                iconScale: userIcon.iconScale,
+
+                imgX: userIcon.imgX,
+                imgY: userIcon.imgY,
+                labelX: userIcon.labelX,
+                labelY: userIcon.labelY,
+
+                pngData: userIcon.pngData,
+
+                useGradient: userIcon.useGradient,
+                gradient: userIcon.gradient ? {
+                    stops: userIcon.gradient.stops,
+                    type: userIcon.gradient.type,
+                    angle: userIcon.gradient.angle,
+                    cssStyle: userIcon.gradient.cssStyle,
+                } : null,
+            },
             iconOrigin: userIcon.origin,
+            contentType: userIcon.contentType,
         };
 
         // Act
@@ -68,24 +77,28 @@ describe('SelectedIcon', () => {
     it('handles UserIcon without gradient correctly', () => {
         // Arrange
         const userIconWithoutGradient: UserIcon = { ...userIcon, gradient: null };
-        const expectedSelectedIcon: SelectedIcon = {
+        const expectedSelectedIcon: CustomizableIcon = {
             iconId: userIconWithoutGradient.originalIconId,
             userIconId: userIconWithoutGradient.id,
             userIconCollectionId: collectionId,
-            label: userIconWithoutGradient.label,
-            labelVisible: userIconWithoutGradient.labelVisible,
-            labelColor: userIconWithoutGradient.labelColor,
-            labelTypeface: userIconWithoutGradient.labelTypeface,
-            glyphColor: userIconWithoutGradient.glyphColor,
-            backgroundColor: userIconWithoutGradient.backgroundColor,
-            iconScale: userIconWithoutGradient.iconScale,
-            imgX: userIconWithoutGradient.imgX,
-            imgY: userIconWithoutGradient.imgY,
-            labelX: userIconWithoutGradient.labelX,
-            labelY: userIconWithoutGradient.labelY,
-            pngData: userIconWithoutGradient.pngData,
-            gradient: null,
+            styles: {
+                useGradient: false,
+                glyphColor: userIconWithoutGradient.glyphColor,
+                backgroundColor: userIconWithoutGradient.backgroundColor,
+                label: userIconWithoutGradient.label,
+                labelVisible: userIconWithoutGradient.labelVisible,
+                labelColor: userIconWithoutGradient.labelColor,
+                labelTypeface: userIconWithoutGradient.labelTypeface,
+                iconScale: userIconWithoutGradient.iconScale,
+                imgX: userIconWithoutGradient.imgX,
+                imgY: userIconWithoutGradient.imgY,
+                labelX: userIconWithoutGradient.labelX,
+                labelY: userIconWithoutGradient.labelY,
+                pngData: userIconWithoutGradient.pngData,
+                gradient: null,
+            },
             iconOrigin: userIconWithoutGradient.origin,
+            contentType: userIconWithoutGradient.contentType,
         };
 
         // Act

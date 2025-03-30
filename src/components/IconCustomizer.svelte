@@ -1,63 +1,47 @@
 <script lang="ts">
 	import { UUID } from '$lib';
-	import { extensions as uiStateEx } from '../models/UIState';
-	import * as _selectedIcon from '../models/SelectedIcon';
+	import * as _selectedIcon from '../models/CustomizableIcon';
 	import { IconService } from '../services/icon.service';
-	import { selectedIcon } from '../stores/selected-icon.store';
-	import { uiState } from '../stores/ui-state.store';
-	import { UserIconService } from '../services/user-icon.service';
+	import { customizedIcon } from '../stores/icon-customizations.store';
 	import _ from 'lodash';
 
-	$: if ($selectedIcon) {
+	let previousIconId: string | null = null;
+
+	$: if ($customizedIcon?.userIconId && $customizedIcon.userIconId !== UUID.empty) {
 		// Has userIconId and isn't empty uuid?
-		// Then fetches the userIcon from the server and updates the state.styles
-		if ($selectedIcon.userIconId && $selectedIcon.userIconId !== UUID.empty) {
-			(async () => {
-				try {
-					const userIcon = await UserIconService.getById(
-						$selectedIcon.userIconCollectionId,
-						$selectedIcon.userIconId
-					);
-					const [iconContent, contentType] = await IconService.fetchIconWithContentType(
-						userIcon.originalIconId,
-						$selectedIcon.iconOrigin
-					);
-
-					_.flow(uiStateEx.stylesFromUserIcon, uiState.upsertStyles)(userIcon);
-
-					if (isContentTypeSvg(contentType)) {
-						uiState.selectSvgIcon(iconContent);
-					} else {
-						_.flow(IconService.mkIconUrl, uiState.selectImageIcon)(userIcon.originalIconId);
-					}
-				} catch (error: any) {
-					throw new Error('Error fetching user icon', error);
-				}
-			})();
+		if (isContentTypeSvg($customizedIcon.contentType) && $customizedIcon.svgContent) {
+			customizedIcon.selectSvgIcon($customizedIcon.svgContent);
+		} else {
+			// _.flow(IconService.mkIconUrl, customizedIcon.selectImageIcon)($customizedIcon.originalIconId);
+			throw new Error('User icon is not an SVG. Only SVGs are supported for now.');
 		}
+	}
+
+	$: if ($customizedIcon?.iconId && (!$customizedIcon.userIconId || $customizedIcon.userIconId === UUID.empty)) {
 		// Has iconId and userIconId is empty uuid?
 		// Then keeps the state.styles as it is, so that the user can reuse the previous styles
-		else if ($selectedIcon.iconId) {
-			IconService.fetchIconWithContentType($selectedIcon.iconId, $selectedIcon.iconOrigin)
+		if (previousIconId !== $customizedIcon.iconId)
+			IconService.fetchIconWithContentType($customizedIcon.iconId, $customizedIcon.iconOrigin)
 				.then(([iconContent, contentType]) => {
 					if (isContentTypeSvg(contentType)) {
-						uiState.selectSvgIcon(iconContent);
+						customizedIcon.selectSvgIcon(iconContent);
 					} else {
-						_.flow(IconService.mkIconUrl, uiState.selectImageIcon)($selectedIcon.iconId);
+						_.flow(IconService.mkIconUrl, customizedIcon.selectImageIcon)($customizedIcon.iconId);
 					}
 				})
 				.catch((error) => {
 					throw new Error('Error fetching icon', error);
+				})
+				.finally(() => {
+					previousIconId = $customizedIcon.iconId;
 				});
-		}
 	}
 
-	$: if ($uiState.styles.glyphColor) {
-		uiState.setSvgFillColor($uiState.styles.glyphColor);
+	$: if ($customizedIcon?.styles?.glyphColor) {
+		customizedIcon.setSvgFillColor($customizedIcon.styles.glyphColor);
 	}
 
 	function isContentTypeSvg(contentType: string): boolean {
 		return contentType === 'image/svg+xml';
 	}
-
 </script>

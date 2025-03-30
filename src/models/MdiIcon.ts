@@ -18,7 +18,8 @@ export function toUserIcon(icon: MdiIcon): UserIcon {
         ..._userIcon.mkEmpty(),
         originalIconId: icon.id,
         label: icon.name,
-        origin: 'mdi'
+        origin: 'mdi',
+        contentType: 'image/svg+xml'
     };
 }
 
@@ -28,5 +29,6 @@ export function toIcon(icon: MdiIcon): Icon {
         label: icon.name,
         keywords: [...icon.keywords1.split(' '), ...icon.keywords2.split(' ')],
         origin: 'mdi',
+        contentType: 'image/svg+xml'
     };
 }

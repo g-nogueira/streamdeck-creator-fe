@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { serviceBaseUrl } from "../constants";
 	import type { Icon } from "../models/Icon";
-    import * as _selectedIcon from '../models/SelectedIcon';
-	import { selectedIcon } from "../stores/selected-icon.store";
+    import * as _iconPreview from '../models/CustomizableIcon';
+	import { customizedIcon } from "../stores/icon-customizations.store";
 
 
   export let icon: Icon;
@@ -38,18 +38,9 @@
           }
       }
   }
-
-  function selectIcon (icon: Icon) {
-    let newSelectedIcon = _selectedIcon.mkEmpty();
-
-    newSelectedIcon.iconId = icon.id;
-    newSelectedIcon.iconOrigin = icon.origin;
-
-    selectedIcon.selectIcon(newSelectedIcon);
-  }
 </script>
 
-<button type="button" class="h-20 w-20 flex flex-col items-center gap-3 p-1 hover:bg-gray-200 transition-all cursor-pointer" on:click={() => selectIcon(icon)} aria-label={`Icon ${icon.label}`} data-testid="icon-button">
+<button type="button" class="h-20 w-20 flex flex-col items-center gap-3 p-1 hover:bg-gray-200 transition-all cursor-pointer" on:click={() => customizedIcon.selectIcon(icon)} aria-label={`Icon ${icon.label}`} data-testid="icon-button">
     {#if icon.origin === 'mdi'}
       <i class={`mdi mdi-24px mdi-${icon.label}`} title={icon.label} data-testid="mdi-icon"></i>
       <!-- <img use:lazyLoad={`/data/svg/${icon.id}.svg`} alt={icon.label} class="h-10 w-10" /> -->

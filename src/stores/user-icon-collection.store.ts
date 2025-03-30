@@ -2,7 +2,7 @@ import { get, writable } from "svelte/store";
 import type { UserIconCollection } from "../models/UserIconCollection";
 import type { UserIcon } from "../models/UserIcon";
 import * as _userIconCollection from "../models/UserIconCollection";
-import { UserIconCollectionService } from "../services/user-icon-collection.service"; // Import the service
+import { UserIconCollectionDBService } from "../services/user-icon-collection-indexeddb.service"; // Import the service
 import { UUID } from "$lib";
 import { selectedCollection } from "./selected-collection.store";
 
@@ -10,14 +10,7 @@ function createCollectionsStore() {
     
     const { subscribe, set, update } = writable<UserIconCollection[]>([]);
     
-    UserIconCollectionService.fetchList().then(collections => {
-        if (collections.length === 0) {
-            const newCollection = _userIconCollection.mkEmpty();
-            addCollection(newCollection);
-        } else {
-            set(collections);
-        }
-    });
+    UserIconCollectionDBService.fetchList().then(set);
 
     /**
      * Add a new collection to the store
@@ -25,7 +18,7 @@ function createCollectionsStore() {
      * @returns The new collection with its ID
      */
     async function addCollection(newCollection: UserIconCollection) {
-        newCollection.id = await UserIconCollectionService.create(newCollection);
+        newCollection.id = await UserIconCollectionDBService.create(newCollection);
 
         update(collections => [...collections, newCollection]);
 
@@ -54,7 +47,7 @@ function createCollectionsStore() {
         addIcon: async (collectionId: string, icon: UserIcon) => {
 
             if (icon.id === UUID.empty) {
-                icon.id = await UserIconCollectionService.addUserIcon(icon, collectionId);
+                icon.id = await UserIconCollectionDBService.addUserIcon(icon, collectionId);
             }
 
             update(collections => {
@@ -83,7 +76,7 @@ function createCollectionsStore() {
 
             if (!collection) throw new Error(`Collection with ID ${collectionId} not found`);
 
-            await UserIconCollectionService.update(collection);
+            await UserIconCollectionDBService.update(collection);
         },
         updateIcon: async (collectionId: string, updatedIcon: UserIcon) => {
 
@@ -104,7 +97,7 @@ function createCollectionsStore() {
 
             if (!collection) throw new Error(`Collection with ID ${collectionId} not found`);
 
-            await UserIconCollectionService.update(collection);
+            await UserIconCollectionDBService.update(collection);
         },
         add: (newCollection: UserIconCollection) => addCollection(newCollection),
         addAndSelectCollection: async (newCollection: UserIconCollection) => {
@@ -127,7 +120,7 @@ function createCollectionsStore() {
 
             const collection = getCollectionOrThrow(updatedCollection.id);
 
-            await UserIconCollectionService.update(collection);
+            await UserIconCollectionDBService.update(collection);
         },
         removeCollection: async (collectionId: string) => {
             // If the collection is the only one, create a new empty collection
@@ -135,14 +128,14 @@ function createCollectionsStore() {
 
             if (shouldCreateNewCollection) {
                 const newCollection = _userIconCollection.mkEmpty();
-                newCollection.id = await UserIconCollectionService.create(newCollection);
+                newCollection.id = await UserIconCollectionDBService.create(newCollection);
                 
                 update(collections => [...collections.filter(c => c.id !== collectionId), newCollection]);
             } else {
                 update(collections => collections.filter(c => c.id !== collectionId));
             }
             
-            await UserIconCollectionService.delete(collectionId);
+            await UserIconCollectionDBService.delete(collectionId);
         },
         set
     };

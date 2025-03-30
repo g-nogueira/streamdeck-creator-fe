@@ -4,7 +4,6 @@
 	import { userIconCollections } from '../../stores/user-icon-collection.store';
 	import { selectedCollection } from '../../stores/selected-collection.store';
 	import { Accordion } from '@skeletonlabs/skeleton-svelte';
-	import * as _selectedIcon from '../../models/SelectedIcon';
 	import LibraryIcon from 'lucide-svelte/icons/library';
 	import CollectionIcons from './CollectionIcons.svelte';
 	import CollectionToolbar from './CollectionToolbar.svelte';
