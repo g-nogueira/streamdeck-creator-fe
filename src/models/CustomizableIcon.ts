@@ -100,7 +100,7 @@ export function fromUserIcon(userIcon: UserIcon, collectionId: string): Customiz
             labelX: userIcon.labelX,
             labelY: userIcon.labelY,
             pngData: userIcon.pngData,
-            useGradient: false,
+            useGradient: userIcon.useGradient,
             gradient: userIcon.gradient ? {
                 stops: userIcon.gradient.stops,
                 type: userIcon.gradient.type,
