@@ -2,14 +2,22 @@ import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import Sidenav from './Sidenav.svelte';
 
+// Mocks import { DEFAULT_COLLECTION_ID, UserIconCollectionDBService } from "../services/user-icon-collection-indexeddb.service";
 vi.mock('../services/user-icon-collection.service', async () => await import('../../tests/user-icon-collection.service.mock'));
 vi.mock('../services/user-icon-collection-indexeddb.service', async () => {
     return {
         UserIconCollectionDBService: {
             fetchList: vi.fn().mockResolvedValue([]),
             create: vi.fn().mockResolvedValue('new-collection-id'),
-            addUserIcon: vi.fn().mockResolvedValue('new-icon-id')
-        }
+            addUserIcon: vi.fn().mockResolvedValue('new-icon-id'),
+            getList: vi.fn().mockResolvedValue([]),
+            getById: vi.fn().mockResolvedValue({
+                id: 'default-collection-id',
+                name: 'Default Collection',
+                icons: [],
+            })
+        },
+        DEFAULT_COLLECTION_ID: 'default-collection-id',
     }
 });
 
