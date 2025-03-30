@@ -26,9 +26,12 @@ export type UserIcon = {
   useGradient: boolean;
   gradient: IconGradient | null;
 
-  /** Base64 encoded PNG data */
+  /** Base64 encoded PNG representation of the user icon. This is what the user downloads */
   pngData: string;
   svgContent?: string;
+
+  /** Base64 encoded thumbnail data */
+  base64Thumbnail: string;
 
   /** For ex, 'image/svg+xml' */
   contentType: string;
@@ -56,6 +59,7 @@ export function createFromIcon(icon: Icon): UserIcon {
     useGradient: false,
     gradient: null,
     pngData: '',
+    base64Thumbnail: '',
     origin: icon.origin,
     contentType: icon.contentType
   };
@@ -80,6 +84,7 @@ export function mkEmpty(): UserIcon {
     useGradient: false,
     gradient: null,
     pngData: '',
+    base64Thumbnail: '',
     origin: 'mdi',
     contentType: 'image/svg+xml'
   };

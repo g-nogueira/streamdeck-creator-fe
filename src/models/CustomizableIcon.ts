@@ -25,19 +25,15 @@ export type CustomizableIcon = {
         labelX: number;
         labelY: number;
     
-        pngData: string;
-    
         useGradient: boolean;
         gradient: IconGradient | null;
     },
-
+    
     /** For ex, 'image/svg+xml' */
     contentType: string;
     /** The SVG string content of the icon */
     svgContent?: string;
-    /** The URL of the icon image */
-    imageUrl?: string;
-
+    
     iconOrigin: IconOrigin;
 }
 
@@ -72,8 +68,7 @@ export function mkEmpty(): CustomizableIcon {
 					{ position: 0, color: '#ea62e5' },
 					{ position: 100, color: '#0000ff' }
 				]
-			},
-            pngData: ""
+			}
         },
             
         contentType: 'image/svg+xml',
@@ -99,7 +94,6 @@ export function fromUserIcon(userIcon: UserIcon, collectionId: string): Customiz
             imgY: userIcon.imgY,
             labelX: userIcon.labelX,
             labelY: userIcon.labelY,
-            pngData: userIcon.pngData,
             useGradient: userIcon.useGradient,
             gradient: userIcon.gradient ? {
                 stops: userIcon.gradient.stops,
@@ -108,8 +102,7 @@ export function fromUserIcon(userIcon: UserIcon, collectionId: string): Customiz
                 cssStyle: userIcon.gradient.cssStyle,
             } : null,
         },
-
-
+        
         svgContent: userIcon.svgContent,
 
         contentType: userIcon.contentType,
@@ -119,7 +112,7 @@ export function fromUserIcon(userIcon: UserIcon, collectionId: string): Customiz
 }
 
 
-export function toUserIcon(customizableIcon: CustomizableIcon): UserIcon {
+export function toUserIcon(customizableIcon: CustomizableIcon, base64Thumbnail: string, pngData: string): UserIcon {
     return {
         id: customizableIcon.userIconId || UUID.empty,
         collectionId: customizableIcon.userIconCollectionId || UUID.empty,
@@ -136,7 +129,8 @@ export function toUserIcon(customizableIcon: CustomizableIcon): UserIcon {
         imgY: customizableIcon.styles.imgY,
         labelX: customizableIcon.styles.labelX,
         labelY: customizableIcon.styles.labelY,
-        pngData: customizableIcon.styles.pngData,
+        pngData: pngData,
+        base64Thumbnail: base64Thumbnail,
         useGradient: customizableIcon.styles.useGradient,
         gradient: customizableIcon.styles.gradient,
         origin: customizableIcon.iconOrigin

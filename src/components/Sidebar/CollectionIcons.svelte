@@ -28,7 +28,7 @@
 					<RemoveFromCollectionIcon size={20} />
 				</button>
 				<button type="button" class="h-fit w-24 flex flex-col items-center gap-3 p-2 rounded-md transition-all cursor-pointer" onclick={() => customizedIcon.selectUserIcon(icon)} aria-label={`Select icon ${icon.label}`} >
-					<img src={icon.pngData} alt={icon.label} class="h-15 w-15" />
+					<img src={icon.base64Thumbnail} alt={icon.label} class="h-15 w-15" />
 					<span class="w-full font-semibold text-sm truncate">{icon.label}</span>
 				</button>
 			</div>

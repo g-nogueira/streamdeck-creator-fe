@@ -18,9 +18,11 @@ export interface UserIconDto {
   imgY: number;
   labelX: number;
   labelY: number;
+  // Base64 encoded PNG representation of the user icon. This is what the user downloads
   pngData: string;
+  base64Thumbnail: string;
   useGradient: boolean;
-  gradient: UserIconGradientDto | null;
+  gradient?: UserIconGradientDto | null;
   origin: IconOriginDto;
   contentType: string;
 }
@@ -42,6 +44,7 @@ export function toUserIcon(userIconDto: UserIconDto): UserIcon {
     labelY: userIconDto.labelY,
     pngData: userIconDto.pngData,
     useGradient: userIconDto.useGradient,
+    base64Thumbnail: userIconDto.base64Thumbnail,
     gradient: userIconDto.gradient ? _userIconGradientDto.toDomain(userIconDto.gradient) : null,
     origin: userIconDto.origin,
     collectionId: userIconDto.collectionId,
@@ -65,6 +68,7 @@ export function fromUserIcon(userIcon: UserIcon): UserIconDto {
     labelX: userIcon.labelX,
     labelY: userIcon.labelY,
     pngData: userIcon.pngData,
+    base64Thumbnail: userIcon.base64Thumbnail,
     useGradient: userIcon.useGradient,
     gradient: userIcon.gradient ? _userIconGradientDto.fromDomain(userIcon.gradient) : null,
     origin: userIcon.origin,
