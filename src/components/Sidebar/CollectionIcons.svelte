@@ -4,7 +4,7 @@
 	import type { UserIcon } from '../../models/UserIcon';
 	import type { UserIconCollection } from '../../models/UserIconCollection';
 	import { customizedIcon } from '../../stores/icon-customizations.store';
-	import {userIconCollections} from '../../stores/user-icon-collection.store';
+	import { UserIconCollectionDBService } from '../../services/user-icon-collection-indexeddb.service';
 
 
 	let { collection } : { collection : UserIconCollection} = $props()
@@ -15,7 +15,7 @@
 	}
 
 	function removeIcon(icon: UserIcon, collection: UserIconCollection) {
-		userIconCollections.removeIcon(collection.id, icon.id);
+		UserIconCollectionDBService.removeIcon(collection.id, icon.id);
 	}
 
 </script>

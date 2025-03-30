@@ -11,13 +11,16 @@ import * as _userIconDto from "./dto/UserIconDto";
 const DB_NAME = 'UserIconCollectionDB';
 const DB_VERSION = 1;
 const COLLECTIONS_STORE = 'userIconCollections';
+export const DEFAULT_COLLECTION_ID = '2f9c5e71-a249-4c01-b472-29757d9d69d8';
 
 class UserIconCollectionIndexedDBService {
     private static instance: UserIconCollectionIndexedDBService;
     private db: Promise<IDBPDatabase<UserIconCollectionDB>>;
+    private subscribers: Set<(collections: UserIconCollection[]) => void>;
 
     private constructor() {
         const that = this;
+        this.subscribers = new Set();
 
         this.db = openDB<UserIconCollectionDB>(DB_NAME, DB_VERSION, {
             upgrade(db) {
@@ -38,22 +41,144 @@ class UserIconCollectionIndexedDBService {
         return this.db;
     }
 
+    public subscribe(callback: (collections: UserIconCollection[]) => void): () => void {
+        this.subscribers.add(callback);
+
+        // Immediately notify the subscriber with the current state
+        this.getList().then(callback);
+
+        // Return an unsubscribe function
+        return () => {
+            this.subscribers.delete(callback);
+        };
+    }
+
+    // Notify all subscribers
+    private async notifySubscribers() {
+        const collections = await this.getList();
+        for (const callback of this.subscribers) {
+            callback(collections);
+        }
+    }
+
     private async initializeWithDefaultIfEmpty(db: IDBPDatabase<UserIconCollectionDB>): Promise<void> {
         try {
             // Check if the database is empty
             const count = await db.count(COLLECTIONS_STORE);
-            
+
             if (count > 0) return;
 
             const initialCollection: UserIconCollection = {
-                id: "2f9c5e71-a249-4c01-b472-29757d9d69d8",
+                id: DEFAULT_COLLECTION_ID,
                 name: 'Default Collection',
                 icons: [],
             };
 
             await db.add(COLLECTIONS_STORE, _userIconCollectionDto.fromUserIconCollection(initialCollection));
+            this.notifySubscribers();
+
         } catch (error) {
             console.error('Error initializing IndexedDB:', error);
+            throw error;
+        }
+    }
+
+    async addIcon(collectionId: string, icon: UserIcon): Promise<UserIcon> {
+        try {
+            const db = await this.getDB();
+
+            // Fetch the collection
+            const collection = await db.get(COLLECTIONS_STORE, collectionId);
+            if (!collection) {
+                throw new Error(`Collection with ID ${collectionId} not found`);
+            }
+
+            // Generate a new ID for the icon if not provided
+            if (!icon.id || icon.id === UUID.empty) {
+                icon.id = uuidv4();
+            }
+
+            // Check if the icon already exists
+            const existingIcon = collection.icons.find((i) => i.id === icon.id);
+            if (existingIcon) {
+                throw new Error(`Icon with ID ${icon.id} already exists in the collection`);
+            }
+
+            // Add the icon to the collection
+            collection.icons.push(_userIconDto.fromUserIcon(icon));
+            await db.put(COLLECTIONS_STORE, collection);
+            this.notifySubscribers();
+
+
+            return icon;
+        } catch (error) {
+            console.error('Error adding icon to collection in IndexedDB:', error);
+            throw error;
+        }
+    }
+
+    async removeIcon(collectionId: string, iconId: string): Promise<void> {
+        try {
+            const db = await this.getDB();
+
+            // Fetch the collection
+            const collection = await db.get(COLLECTIONS_STORE, collectionId);
+            if (!collection) {
+                throw new Error(`Collection with ID ${collectionId} not found`);
+            }
+
+            // Remove the icon
+            collection.icons = collection.icons.filter((icon) => icon.id !== iconId);
+            await db.put(COLLECTIONS_STORE, collection);
+            this.notifySubscribers();
+
+        } catch (error) {
+            console.error('Error removing icon from collection in IndexedDB:', error);
+            throw error;
+        }
+    }
+
+    async updateIcon(collectionId: string, updatedIcon: UserIcon): Promise<UserIcon> {
+        try {
+            const db = await this.getDB();
+
+            // Fetch the collection
+            const collection = await db.get(COLLECTIONS_STORE, collectionId);
+            if (!collection) {
+                throw new Error(`Collection with ID ${collectionId} not found`);
+            }
+
+            // Find the icon and update it
+            const iconIndex = collection.icons.findIndex((icon) => icon.id === updatedIcon.id);
+            if (iconIndex === -1) {
+                throw new Error(`Icon with ID ${updatedIcon.id} not found in collection`);
+            }
+
+            collection.icons[iconIndex] = _userIconDto.fromUserIcon(updatedIcon);
+            await db.put(COLLECTIONS_STORE, collection);
+            this.notifySubscribers();
+
+
+            return updatedIcon;
+        } catch (error) {
+            console.error('Error updating icon in collection in IndexedDB:', error);
+            throw error;
+        }
+    }
+
+    async remove(collectionId: string): Promise<void> {
+        try {
+            const db = await this.getDB();
+
+            // Delete the collection
+            await db.delete(COLLECTIONS_STORE, collectionId);
+
+            // Ensure the default collection exists
+            await this.initializeWithDefaultIfEmpty(db);
+            this.notifySubscribers();
+
+        } catch (error) {
+            console.error('Error removing collection from IndexedDB:', error);
             throw error;
         }
     }
@@ -67,6 +192,8 @@ class UserIconCollectionIndexedDBService {
             }
 
             await db.put(COLLECTIONS_STORE, _userIconCollectionDto.fromUserIconCollection(userIconCollection));
+            this.notifySubscribers();
+
             return userIconCollection;
         } catch (error) {
             console.error('Error updating user icon collection in IndexedDB:', error);
@@ -74,23 +201,7 @@ class UserIconCollectionIndexedDBService {
         }
     }
 
-    async delete(userIconCollectionId: string): Promise<void> {
-        try {
-            if (userIconCollectionId === UUID.empty || userIconCollectionId === '') {
-                throw new Error('User icon collection ID is empty');
-            }
-
-            const db = await this.getDB();
-            await db.delete(COLLECTIONS_STORE, userIconCollectionId);
-            await this.initializeWithDefaultIfEmpty(db);
-
-        } catch (error) {
-            console.error('Error deleting user icon collection from IndexedDB:', error);
-            throw error;
-        }
-    }
-
-    async addUserIcon(icon: UserIcon, userIconCollectionId: string): Promise<string> {
+    async upsertUserIcon(icon: UserIcon, userIconCollectionId: string): Promise<string> {
         try {
             const db = await this.getDB();
 
@@ -118,6 +229,8 @@ class UserIconCollectionIndexedDBService {
 
             collection.icons.push(_userIconDto.fromUserIcon(icon));
             await db.put(COLLECTIONS_STORE, collection);
+            this.notifySubscribers();
+
             return icon.id;
         } catch (error) {
             console.error('Error adding user icon to collection in IndexedDB:', error);
@@ -125,7 +238,7 @@ class UserIconCollectionIndexedDBService {
         }
     }
 
-    async fetchById(userIconCollectionId: string): Promise<UserIconCollection> {
+    async getById(userIconCollectionId: string): Promise<UserIconCollection> {
         try {
             const db = await this.getDB();
             const collection = await db.get(COLLECTIONS_STORE, userIconCollectionId);
@@ -139,9 +252,9 @@ class UserIconCollectionIndexedDBService {
         }
     }
 
-    async fetchList(): Promise<UserIconCollection[]> {
+    async getList(): Promise<UserIconCollection[]> {
         try {
-            const db = await this.getDB();            
+            const db = await this.getDB();
             await this.initializeWithDefaultIfEmpty(db);
 
             const collections = await db.getAll(COLLECTIONS_STORE);
@@ -149,28 +262,6 @@ class UserIconCollectionIndexedDBService {
             return collections.map(_userIconCollectionDto.toUserIconCollection);
         } catch (error) {
             console.error('Error fetching user icon collections from IndexedDB:', error);
-            throw error;
-        }
-    }
-
-    async create(userIconCollection: UserIconCollection): Promise<string> {
-        try {
-            const db = await this.getDB();
-
-            // Invalid Guid?
-            if (userIconCollection.id === UUID.empty || userIconCollection.id === '')
-                userIconCollection.id = uuidv4();
-
-            // Already exists?
-            const existingCollection = await db.get(COLLECTIONS_STORE, userIconCollection.id);
-            if (existingCollection) {
-                throw new Error('User icon collection with this ID already exists');
-            }
-
-            await db.add(COLLECTIONS_STORE, _userIconCollectionDto.fromUserIconCollection(userIconCollection));
-            return userIconCollection.id;
-        } catch (error) {
-            console.error('Error creating user icon collection in IndexedDB:', error);
             throw error;
         }
     }
@@ -209,27 +300,22 @@ class UserIconCollectionIndexedDBService {
     }
 
     async getIconById(userIconCollectionId: string, userIconId: string): Promise<UserIcon> {
-        try {
-            if (userIconId === UUID.empty || userIconId === '') {
-                throw new Error('User icon ID is empty');
-            }
-
-            const db = await this.getDB();
-            const collection = await db.get(COLLECTIONS_STORE, userIconCollectionId);
-            if (!collection) {
-                throw new Error('User icon collection not found');
-            }
-
-            const userIconDto = collection.icons.find((icon) => icon.id === userIconId);
-            if (!userIconDto) {
-                throw new Error('Failed to find UserIcon with id: ' + userIconId);
-            }
-
-            return _userIconDto.toUserIcon(userIconDto);
-        } catch (error) {
-            console.error('Error fetching user icon from IndexedDB:', error);
-            throw error;
+        if (userIconId === UUID.empty || userIconId === '') {
+            throw new Error('User icon ID is empty');
         }
+
+        const db = await this.getDB();
+        const collection = await db.get(COLLECTIONS_STORE, userIconCollectionId);
+        if (!collection) {
+            throw new Error('User icon collection not found');
+        }
+
+        const userIconDto = collection.icons.find((icon) => icon.id === userIconId);
+        if (!userIconDto) {
+            throw new Error('Failed to find UserIcon with id: ' + userIconId);
+        }
+
+        return _userIconDto.toUserIcon(userIconDto);
     }
 
     async tryGetIconById(userIconCollectionId: string, userIconId: string): Promise<[boolean, UserIcon | null]> {

@@ -19,6 +19,7 @@ describe('SelectedIcon', () => {
         labelX: 30,
         labelY: 40,
         pngData: 'data:image/png;base64,...',
+        base64Thumbnail: 'data:image/png;base64,...',
         gradient: {
             stops: [{ color: '#FF0000', position: 0 }, { color: '#00FF00', position: 100 }],
             type: 'linear',
@@ -52,8 +53,6 @@ describe('SelectedIcon', () => {
                 imgY: userIcon.imgY,
                 labelX: userIcon.labelX,
                 labelY: userIcon.labelY,
-
-                pngData: userIcon.pngData,
 
                 useGradient: userIcon.useGradient,
                 gradient: userIcon.gradient ? {
@@ -94,7 +93,6 @@ describe('SelectedIcon', () => {
                 imgY: userIconWithoutGradient.imgY,
                 labelX: userIconWithoutGradient.labelX,
                 labelY: userIconWithoutGradient.labelY,
-                pngData: userIconWithoutGradient.pngData,
                 gradient: null,
             },
             iconOrigin: userIconWithoutGradient.origin,

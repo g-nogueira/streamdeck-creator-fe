@@ -27,7 +27,7 @@
 		if (collection === null) {
 			throw new Error('No collection selected to delete');
 		}
-		await userIconCollections.removeCollection(collection.id);
+		await UserIconCollectionDBService.remove(collection.id);
 		selectedCollection.selectCollection($userIconCollections[0].id);
 	}
 </script>
