@@ -3,7 +3,7 @@
 	import { UserIconCollectionDBService } from '../../services/user-icon-collection-indexeddb.service';
 	import DownloadIcon from 'lucide-svelte/icons/download';
 	import DeleteIcon from 'lucide-svelte/icons/trash';
-	import Tooltip from '../Tooltip.svelte';
+	import Tooltip from '../common/Tooltip.svelte';
 	import type { UserIconCollection } from '../../models/UserIconCollection';
 	import { userIconCollections } from '../../stores/user-icon-collection.store';
 	import { selectedCollection } from '../../stores/selected-collection.store';

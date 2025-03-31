@@ -4,7 +4,7 @@
     import IconPaint from "lucide-svelte/icons/paint-bucket";
     import IconSprayCan from "lucide-svelte/icons/spray-can";
     import ToolbarSection from "./ToolbarSection.svelte";
-    import Tooltip from "../Tooltip.svelte";
+    import Tooltip from "../common/Tooltip.svelte";
 
 </script>
 

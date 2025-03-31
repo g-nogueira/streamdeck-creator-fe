@@ -6,7 +6,7 @@
 	import { toUserIcon, type CustomizableIcon } from "../models/CustomizableIcon";
 	import type { UserIconCollection } from "../models/UserIconCollection";
 	import * as ImageProcessing from "$lib/utils/dom";
-	import Tooltip from "./Tooltip.svelte";
+	import Tooltip from "./common/Tooltip.svelte";
 	import _ from "lodash";
 
 	function downloadIcon() {
