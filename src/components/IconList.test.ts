@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/svelte';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import IconList from '../components/IconList.svelte';
+import IconList from './icons/IconList.svelte';
 import * as _icon from '../models/Icon';
 
 const iconsPromise = vi.hoisted(() => import('../../tests/icon.store.mock'));

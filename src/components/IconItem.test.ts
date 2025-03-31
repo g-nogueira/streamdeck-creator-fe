@@ -4,7 +4,7 @@ import { customizedIcon } from '../stores/icon-customizations.store';
 import * as _icon from '../models/Icon';
 import * as _iconPreview from '../models/CustomizableIcon';
 
-import IconItem from '../components/IconItem.svelte';
+import IconItem from './icons/IconItem.svelte';
 import type { Icon } from '../models/Icon';
 
 // Mock the stores

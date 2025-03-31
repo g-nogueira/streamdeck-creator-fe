@@ -3,7 +3,7 @@
     // Icons
     import IconCollection from 'lucide-svelte/icons/library';
     import Search from 'lucide-svelte/icons/search';
-    import IconSearch from './IconSearch.svelte';
+    import IconSearch from './icons/IconSearch.svelte';
     import CollectionList from './Sidebar/CollectionList.svelte';
 
     let selectedTile = $state('icons'); // Default to 'icons'

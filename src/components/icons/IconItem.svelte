@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { serviceBaseUrl } from "../lib/constants";
-	import type { Icon } from "../models/Icon";
-    import * as _iconPreview from '../models/CustomizableIcon';
-	import { customizedIcon } from "../stores/icon-customizations.store";
+	import { serviceBaseUrl } from "../../lib/constants";
+	import type { Icon } from "../../models/Icon";
+    import * as _iconPreview from '../../models/CustomizableIcon';
+	import { customizedIcon } from "../../stores/icon-customizations.store";
 
 
   export let icon: Icon;

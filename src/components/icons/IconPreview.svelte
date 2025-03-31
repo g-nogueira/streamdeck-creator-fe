@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { customizedIcon } from "../stores/icon-customizations.store";
+    import { customizedIcon } from "../../stores/icon-customizations.store";
     import DOMPurify from 'dompurify';
 
 

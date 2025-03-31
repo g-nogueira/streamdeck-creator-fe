@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/svelte';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import IconPreview from './IconPreview.svelte';
+import IconPreview from './icons/IconPreview.svelte';
 import { mkEmpty, type CustomizableIcon } from '../models/CustomizableIcon';
 import { beforeEach } from 'node:test';
 

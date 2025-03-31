@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import * as _selectedIcon from '../models/CustomizableIcon';
+  import * as _selectedIcon from '../../models/CustomizableIcon';
 	import IconItem from './IconItem.svelte';
-	import { icons } from '../stores/icon.store';
+	import { icons } from '../../stores/icon.store';
 
   onMount(async () => {
     icons.loadDefault();

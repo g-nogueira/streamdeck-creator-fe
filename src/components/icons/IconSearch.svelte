@@ -2,8 +2,8 @@
 	import IconList from './IconList.svelte';
 	import { onMount } from 'svelte';
 	import { debounce } from 'lodash-es';
-	import { icons } from '../stores/icon.store';
-	import { IconService } from '../services/icon.service';
+	import { icons } from '../../stores/icon.store';
+	import { IconService } from '../../services/icon.service';
 
 	let searchTerm = '';
 	let placeholder = '';
