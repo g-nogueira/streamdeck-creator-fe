@@ -5,22 +5,18 @@
 	import { selectedCollection } from "../stores/selected-collection.store";
 	import { toUserIcon, type CustomizableIcon } from "../models/CustomizableIcon";
 	import type { UserIconCollection } from "../models/UserIconCollection";
-	import { ImageProcessing } from "$lib";
+	import * as ImageProcessing from "$lib/utils/dom";
 	import Tooltip from "./Tooltip.svelte";
 	import _ from "lodash";
 
 	function downloadIcon() {
 		const node = document.querySelector(`#iconToCapture`);
 
-		if (!node) {
-			throw new Error('No HTML element #iconToCapture found to save');
-		}
-
 		if (!$customizedIcon?.styles.label) {
 			throw new Error('No label found to save');
 		}
 
-		ImageProcessing.DownloadIcon(node, $customizedIcon?.styles.label);
+		ImageProcessing.downloadIcon(node!, $customizedIcon?.styles.label);
 	}
 
 	// Save the customized icon
@@ -37,7 +33,7 @@
 			throw new Error('No HTML element #iconToCapture found to save');
 		}
 
-		let iconPng = await ImageProcessing.NodeToBase64Png(node);
+		let iconPng = await ImageProcessing.nodeToBase64Png(node);
 		let iconThumbnail = iconPng;
 
 		_.flow(toUserIcon, selectedCollection.addIconToSelectedCollection)(customizableIcon, iconThumbnail, iconPng);

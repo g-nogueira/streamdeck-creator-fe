@@ -1,4 +1,4 @@
-import { UUID } from "$lib";
+import * as UUID from "$lib/utils/uuid";
 import { iconsEndpoint } from "../constants";
 import type { Icon } from "../models/Icon";
 import type { UserIcon } from "../models/UserIcon";

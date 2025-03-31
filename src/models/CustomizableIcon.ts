@@ -1,4 +1,4 @@
-import { UUID } from "$lib";
+import * as UUID from "$lib/utils/uuid";
 import type { IconOrigin } from "./Icon";
 import type { UserIcon } from "./UserIcon";
 import type { IconGradient } from "./IconGradient";

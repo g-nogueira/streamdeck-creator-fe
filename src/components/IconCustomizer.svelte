@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { UUID } from '$lib';
+	import { empty } from '$lib/utils/uuid';
 	import * as _selectedIcon from '../models/CustomizableIcon';
 	import { IconService } from '../services/icon.service';
 	import { customizedIcon } from '../stores/icon-customizations.store';
@@ -7,7 +7,7 @@
 
 	let previousIconId: string | null = null;
 
-	$: if ($customizedIcon?.userIconId && $customizedIcon.userIconId !== UUID.empty) {
+	$: if ($customizedIcon?.userIconId && $customizedIcon.userIconId !== empty) {
 		// Has userIconId and isn't empty uuid?
 		if (isContentTypeSvg($customizedIcon.contentType) && $customizedIcon.svgContent) {
 			customizedIcon.selectSvgIcon($customizedIcon.svgContent);
@@ -17,7 +17,7 @@
 		}
 	}
 
-	$: if ($customizedIcon?.iconId && (!$customizedIcon.userIconId || $customizedIcon.userIconId === UUID.empty)) {
+	$: if ($customizedIcon?.iconId && (!$customizedIcon.userIconId || $customizedIcon.userIconId === empty)) {
 		// Has iconId and userIconId is empty uuid?
 		// Then keeps the state.styles as it is, so that the user can reuse the previous styles
 		if (previousIconId !== $customizedIcon.iconId)

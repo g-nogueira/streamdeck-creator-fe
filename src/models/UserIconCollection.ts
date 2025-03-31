@@ -1,4 +1,4 @@
-import { UUID } from "$lib";
+import * as UUID from "$lib/utils/uuid";
 import type { UserIcon } from "./UserIcon";
 
 export type UserIconCollection = {

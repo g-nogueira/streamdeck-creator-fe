@@ -1,6 +1,6 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import JSZip from 'jszip';
-import { UUID } from "$lib";
+import * as UUID from "$lib/utils/uuid";
 import { v4 as uuidv4 } from 'uuid';
 import type { UserIcon } from "../models/UserIcon";
 import type { UserIconCollection } from "../models/UserIconCollection";
