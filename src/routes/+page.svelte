@@ -3,7 +3,7 @@
 	import '../app.css';
 	import Sidenav from '../components/Sidenav.svelte';
 	import IconPreview from '../components/icons/IconPreview.svelte';
-	import Toolbar from '../components/Toolbar/Toolbar.svelte';
+	import Toolbar from '../components/toolbar/Toolbar.svelte';
 	import ShortcutsBar from '../components/ShortcutsBar.svelte';
 	
 </script>

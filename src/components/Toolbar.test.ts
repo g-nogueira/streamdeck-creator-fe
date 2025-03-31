@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import Toolbar from './Toolbar.svelte';
+import Toolbar from './toolbar/Toolbar.svelte';
 import _ from 'lodash';
 
-const iconCustomizationsStorePromise = vi.hoisted(() => import('../../../tests/icon-customizations.store.mock'));
+const iconCustomizationsStorePromise = vi.hoisted(() => import('../../tests/icon-customizations.store.mock'));
 
 vi.mock('../../stores/icon-customizations.store', async () => await iconCustomizationsStorePromise);
 

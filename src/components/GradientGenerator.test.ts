@@ -1,10 +1,10 @@
 import { render, fireEvent, screen, act } from '@testing-library/svelte';
 import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest';
-import GradientGenerator from './GradientGenerator.svelte';
-import type { IconGradient } from '../../models/IconGradient';
-import { mkEmpty, type CustomizableIcon } from "../../models/CustomizableIcon";
+import GradientGenerator from './toolbar/GradientGenerator.svelte';
+import type { IconGradient } from '../models/IconGradient'
+import { mkEmpty, type CustomizableIcon } from "../models/CustomizableIcon"
 
-const iconCustomizationsStorePromise = vi.hoisted(() => import('../../../tests/icon-customizations.store.mock'));
+const iconCustomizationsStorePromise = vi.hoisted(() => import('../../tests/icon-customizations.store.mock'));
 
 vi.mock('../../stores/icon-customizations.store', async () => await iconCustomizationsStorePromise);
 
