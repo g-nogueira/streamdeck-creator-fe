@@ -59,11 +59,12 @@ beforeEach(() => setupIntersectionObserverMock({ observe: vi.fn() }));
 
 describe("IconItem Component", () => {
 	const mockIcon = { ..._icon.mkEmpty(), label: "test-icon" } as Icon;
+	const mockOnSelectIcon = vi.fn();
 	const getIconButton = () => screen.getByTestId("icon-button");
 
 	it("renders a clickable icon", () => {
 		const mdiIcon = { ...mockIcon, origin: "mdi" } as Icon;
-		render(IconItem, { icon: mdiIcon });
+		render(IconItem, { icon: mdiIcon, onSelectIcon: mockOnSelectIcon });
 
 		const button = getIconButton();
 		const iconName = screen.getByText(mdiIcon.label);
@@ -75,7 +76,8 @@ describe("IconItem Component", () => {
 
 	it("calls selectIcon on icon click", async () => {
 		const mdiIcon = { ...mockIcon, id: "1", origin: "mdi" } as Icon;
-		render(IconItem, { icon: mdiIcon });
+		const mockOnSelectIcon = vi.fn();
+		render(IconItem, { icon: mdiIcon, onSelectIcon: mockOnSelectIcon });
 
 		const button = getIconButton();
 
@@ -102,15 +104,16 @@ describe("IconItem Component", () => {
 });
 
 describe("IconItem Component - MDI Icon", () => {
-	const mockIcon = { ..._icon.mkEmpty(), label: "test-icon", origin: "mdi" } as Icon;
+	const baseMockIcon = { ..._icon.mkEmpty(), label: "test-icon", origin: "mdi" } as Icon;
 	const getIconButton = () => screen.getByTestId("icon-button");
 
 	it("renders a valid icon glyph", () => {
-		const mdiIcon = { ...mockIcon, origin: "mdi" } as Icon;
-		render(IconItem, { icon: mdiIcon });
+		const mockIcon = { ...baseMockIcon, origin: "mdi" } as Icon;
+		const mockOnSelectIcon = vi.fn();
+		render(IconItem, { icon: baseMockIcon, onSelectIcon: mockOnSelectIcon });
 
 		const button = getIconButton();
-		const iconName = screen.getByText(mdiIcon.label);
+		const iconName = screen.getByText(mockIcon.label);
 		const iconGlyph = screen.getByTestId("mdi-icon");
 
 		// Check if everything is visible
@@ -119,12 +122,13 @@ describe("IconItem Component - MDI Icon", () => {
 		expect(iconGlyph).toBeVisible();
 		// Check if the icon has the correct classes
 		expect(iconGlyph).toHaveClass("mdi");
-		expect(iconGlyph).toHaveClass(`mdi-${mockIcon.label}`);
+		expect(iconGlyph).toHaveClass(`mdi-${baseMockIcon.label}`);
 	});
 
 	it("DOES NOT render a streamdeck icon", () => {
-		const mdiIcon = { ...mockIcon, origin: "mdi" } as Icon;
-		render(IconItem, { icon: mdiIcon });
+		const mockIcon = { ...baseMockIcon, origin: "mdi" } as Icon;
+		const mockOnSelectIcon = vi.fn();
+		render(IconItem, { icon: mockIcon, onSelectIcon: mockOnSelectIcon });
 
 		const button = getIconButton();
 		const iconName = screen.queryByTestId("streamdeck-label");
@@ -133,5 +137,20 @@ describe("IconItem Component - MDI Icon", () => {
 		expect(button).toBeVisible();
 		expect(iconName).toBeNull();
 		expect(iconGlyph).toBeNull();
+	});
+
+	it("calls onSelectIcon when the button is clicked", async () => {
+		const mockOnSelectIcon = vi.fn();
+		const mockIcon = { ...baseMockIcon, origin: "mdi" } as Icon;
+
+		const { getByTestId } = render(IconItem, {
+			icon: mockIcon,
+			onSelectIcon: mockOnSelectIcon
+		});
+
+		const button = getByTestId("icon-button");
+		await fireEvent.click(button);
+
+		expect(mockOnSelectIcon).toHaveBeenCalledWith(mockIcon);
 	});
 });
