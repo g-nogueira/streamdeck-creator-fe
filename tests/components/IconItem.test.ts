@@ -1,11 +1,11 @@
-import { render, fireEvent, screen, getByTestId } from '@testing-library/svelte';
-import { describe, it, expect, vi, test, beforeEach } from 'vitest';
-import { customizedIcon } from '../stores/icon-customizations.store';
-import * as _icon from '../models/Icon';
-import * as _iconPreview from '../models/CustomizableIcon';
+import { render, fireEvent, screen } from '@testing-library/svelte';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { customizedIcon } from '../../src/stores/icon-customizations.store';
+import * as _icon from '../../src/models/Icon';
+import * as _iconPreview from '../../src/models/CustomizableIcon';
 
-import IconItem from './icons/IconItem.svelte';
-import type { Icon } from '../models/Icon';
+import IconItem from '../../src/components/icons/IconItem.svelte';
+import type { Icon } from '../../src/models/Icon';
 
 // Mock the stores
 vi.mock('../stores/icon-customizations.store', () => ({

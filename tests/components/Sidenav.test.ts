@@ -1,13 +1,13 @@
 import { render, screen, fireEvent, act } from '@testing-library/svelte';
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import Sidenav from './sidenav/Sidenav.svelte';
+import Sidenav from '../../src/components/sidenav/Sidenav.svelte';
 
 // Mock the `animate` method globally. 
 // This is to avoid the error "TypeError: element.animate is not a function"
 Element.prototype.animate = () => ({ cancel: vi.fn(), finished: Promise.resolve() }) as unknown as Animation;
 
 // Mocks
-vi.mock('../services/user-icon-collection.service', async () => await import('../../tests/user-icon-collection.service.mock'));
+vi.mock('../services/user-icon-collection.service', async () => await import('../user-icon-collection.service.mock'));
 vi.mock('../services/user-icon-collection-indexeddb.service', async () => {
     const mockIcon = {
         id: 'icon-id',
