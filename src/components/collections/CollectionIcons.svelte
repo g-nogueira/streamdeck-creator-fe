@@ -1,20 +1,16 @@
 <script lang="ts">
-	import * as _selectedIcon from "../../models/CustomizableIcon";
 	import RemoveFromCollectionIcon from "lucide-svelte/icons/x";
 	import type { UserIcon } from "../../models/UserIcon";
 	import type { UserIconCollection } from "../../models/UserIconCollection";
-	import { customizedIcon } from "../../stores/icon-customizations.store";
-	import { UserIconCollectionDBService } from "../../services/user-icon-collection-indexeddb.service";
 
-	let { collection }: { collection: UserIconCollection } = $props();
+	// Props
+	export let collection: UserIconCollection;
+	export let onRemoveIcon: (icon: UserIcon, collection: UserIconCollection) => void;
+	export let onSelectUserIcon: (icon: UserIcon) => void;
 
-	if (collection === null) {
-		console.log("No collection selected.");
+	if (!collection) {
+		console.error("No collection selected.");
 		throw new Error("No collection selected.");
-	}
-
-	function removeIcon(icon: UserIcon, collection: UserIconCollection) {
-		UserIconCollectionDBService.removeIcon(collection.id, icon.id);
 	}
 </script>
 
@@ -25,7 +21,7 @@
 				<button
 					id="removeBtn"
 					type="button"
-					onclick={() => removeIcon(icon, collection)}
+					onclick={() => onRemoveIcon(icon, collection)}
 					aria-label={`Remove icon ${icon.label}`}
 					class="badge-icon absolute -right-0 -top-0 z-10 hidden bg-error-900 hover:bg-error-950">
 					<RemoveFromCollectionIcon size={20} />
@@ -33,7 +29,7 @@
 				<button
 					type="button"
 					class="flex h-fit w-24 cursor-pointer flex-col items-center gap-3 rounded-md p-2 transition-all"
-					onclick={() => customizedIcon.selectUserIcon(icon)}
+					onclick={() => onSelectUserIcon(icon)}
 					aria-label={`Select icon ${icon.label}`}>
 					<img src={icon.base64Thumbnail} alt={icon.label} class="h-15 w-15" />
 					<span class="w-full truncate text-sm font-semibold">{icon.label}</span>

@@ -7,6 +7,9 @@
 	import LibraryIcon from "lucide-svelte/icons/library";
 	import CollectionIcons from "./CollectionIcons.svelte";
 	import CollectionToolbar from "./CollectionToolbar.svelte";
+	import { UserIconCollectionDBService } from "../../services/user-icon-collection-indexeddb.service";
+	import { customizedIcon } from "../../stores/icon-customizations.store";
+	import type { UserIcon } from "../../models/UserIcon";
 
 	let selectedCollectionId = $state<string[]>([]);
 
@@ -54,6 +57,14 @@
 
 		selectedCollectionId = [$selectedCollection.id];
 	});
+
+	function handleRemoveIcon(icon: UserIcon, collection: _userIconCollection.UserIconCollection) {
+		UserIconCollectionDBService.removeIcon(collection.id, icon.id);
+	}
+
+	function handleSelectUserIcon(icon: UserIcon) {
+		customizedIcon.selectUserIcon(icon);
+	}
 </script>
 
 <Accordion bind:value={selectedCollectionId} collapsible>
@@ -65,7 +76,7 @@
 			<!-- Panel -->
 			{#snippet panel()}
 				<CollectionToolbar {collection} />
-				<CollectionIcons {collection} />
+				<CollectionIcons {collection} onRemoveIcon={handleRemoveIcon} onSelectUserIcon={handleSelectUserIcon} />
 			{/snippet}
 		</Accordion.Item>
 		<hr class="hr" />
