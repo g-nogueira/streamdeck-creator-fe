@@ -1,6 +1,6 @@
-import { render, screen, fireEvent, act } from '@testing-library/svelte';
+import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import Sidenav from '../../src/components/sidenav/Sidenav.svelte';
+import Sidenav from '../../components/sidenav/Sidenav.svelte';
 
 // Mock the `animate` method globally. 
 // This is to avoid the error "TypeError: element.animate is not a function"

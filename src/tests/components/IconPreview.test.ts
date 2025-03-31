@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/svelte';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import IconPreview from '../../src/components/icons/IconPreview.svelte';
-import { mkEmpty, type CustomizableIcon } from '../../src/models/CustomizableIcon';
+import IconPreview from '../../components/icons/IconPreview.svelte';
+import { mkEmpty, type CustomizableIcon } from '../../models/CustomizableIcon';
 import { beforeEach } from 'node:test';
 
 const iconCustomizationsStorePromise = vi.hoisted(() => import('../mocks/icon-customizations.store.mock'));

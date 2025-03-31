@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store";
 import { vi } from "vitest";
-import { mkEmpty, type CustomizableIcon } from "../../src/models/CustomizableIcon";
+import { mkEmpty, type CustomizableIcon } from "../../models/CustomizableIcon";
 
 function createIconPreviewStore() {
     const { subscribe, set } = writable<CustomizableIcon>(mkEmpty());
