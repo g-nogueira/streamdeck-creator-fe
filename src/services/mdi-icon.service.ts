@@ -1,7 +1,6 @@
-import { getWeight } from '$lib/mdi-search';
+import { getWeight } from '$lib/utils/mdi-search';
 import mdiIcons from '../assets/icons.min.json'; // Assuming you have a JSON file with MDI icons
 import type { MdiIcon } from '../models/MdiIcon';
-import type { UserIcon } from '../models/UserIcon';
 import * as _mdiIcon from '../models/MdiIcon';
 import type { Icon } from '../models/Icon';
 

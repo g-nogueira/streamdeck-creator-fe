@@ -3,7 +3,7 @@
  * Search
  */
 import { intersect } from './mdi-array';
-import type { MdiIcon } from '../models/MdiIcon';
+import type { MdiIcon } from '../../models/MdiIcon';
 
 /**
  * Returns specified icon score according to current search expr.
