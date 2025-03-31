@@ -1,6 +1,5 @@
 import { render, fireEvent, screen } from "@testing-library/svelte";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { customizedIcon } from "../../stores/icon-customizations.store";
 import * as _icon from "../../models/Icon";
 import * as _iconPreview from "../../models/CustomizableIcon";
 
