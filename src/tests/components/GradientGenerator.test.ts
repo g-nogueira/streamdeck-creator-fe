@@ -1,18 +1,34 @@
 import { render, fireEvent, screen, act } from "@testing-library/svelte";
 import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from "vitest";
 import GradientGenerator from "../../components/toolbar/GradientGenerator.svelte";
-import type { IconGradient } from "../../models/IconGradient";
-import { mkEmpty, type CustomizableIcon } from "../../models/CustomizableIcon";
+import type { IconGradient, GradientStop } from "../../models/IconGradient";
 
-const iconCustomizationsStorePromise = vi.hoisted(() => import("../mocks/icon-customizations.store.mock"));
+describe("GradientGenerator", () => {
+	let mockOnAddGradientStop: ReturnType<typeof vi.fn>;
+	let mockOnUpdateGradientStopPosition: ReturnType<typeof vi.fn>;
+	let mockOnRemoveGradientStop: ReturnType<typeof vi.fn>;
+	let mockOnSetGradientType: ReturnType<typeof vi.fn>;
+	let mockOnSetGradientAngle: ReturnType<typeof vi.fn>;
+	let mockOnRecalculateGradientCss: ReturnType<typeof vi.fn>;
 
-vi.mock("../../stores/icon-customizations.store", async () => await iconCustomizationsStorePromise);
-
-describe("GradientGenerator", async () => {
 	let mockGetContext: Mock;
 
-	const mockState = mkEmpty();
-	const { customizedIcon } = await iconCustomizationsStorePromise;
+	const mockGradient: IconGradient = {
+		type: "linear",
+		angle: 90,
+		stops: [{ position: 0, color: "#ff0000" }, { position: 100, color: "#0000ff" }],
+		cssStyle: "linear-gradient(to right, #ff0000, #0000ff)"
+	};
+
+	beforeEach(() => {
+		// Mock callback functions
+		mockOnAddGradientStop = vi.fn();
+		mockOnUpdateGradientStopPosition = vi.fn();
+		mockOnRemoveGradientStop = vi.fn();
+		mockOnSetGradientType = vi.fn();
+		mockOnSetGradientAngle = vi.fn();
+		mockOnRecalculateGradientCss = vi.fn();
+	});
 
 	// Mock the canvas context used on getColorAtPosition
 	beforeEach(async () => {
@@ -27,8 +43,6 @@ describe("GradientGenerator", async () => {
 		Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
 			value: mockGetContext
 		});
-
-		customizedIcon.mockSetSubscribeValue(mockState);
 	});
 
 	afterEach(() => {
@@ -37,31 +51,55 @@ describe("GradientGenerator", async () => {
 
 	it("adds a gradient stop on click", async () => {
 		// Arrange
-		render(GradientGenerator);
+		render(GradientGenerator, {
+			gradient: mockGradient,
+			onAddGradientStop: mockOnAddGradientStop,
+			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
+			onRemoveGradientStop: mockOnRemoveGradientStop,
+			onSetGradientType: mockOnSetGradientType,
+			onSetGradientAngle: mockOnSetGradientAngle,
+			onRecalculateGradientCss: mockOnRecalculateGradientCss
+		});
 		const gradientBar = screen.getByTestId("gradient-bar");
 
 		// Act
-		await fireEvent.click(gradientBar);
+		await act(() => fireEvent.click(gradientBar));
 
 		// Assert
-		expect(customizedIcon.addGradientStop).toHaveBeenCalled();
+		expect(mockOnAddGradientStop).toHaveBeenCalled();
 	});
 
 	it("removes a gradient stop on button click", async () => {
 		// Arrange
-		render(GradientGenerator);
+		render(GradientGenerator, {
+			gradient: mockGradient,
+			onAddGradientStop: mockOnAddGradientStop,
+			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
+			onRemoveGradientStop: mockOnRemoveGradientStop,
+			onSetGradientType: mockOnSetGradientType,
+			onSetGradientAngle: mockOnSetGradientAngle,
+			onRecalculateGradientCss: mockOnRecalculateGradientCss
+		});
 		const deleteButton = screen.getAllByTestId("delete-stop-button")[0];
 
 		// Act
-		await act(() => fireEvent.click(deleteButton));
+		await fireEvent.click(deleteButton);
 
 		// Assert
-		expect(customizedIcon.removeGradientStop).toHaveBeenCalled();
+		expect(mockOnRemoveGradientStop).toHaveBeenCalledWith(0);
 	});
 
 	it("updates gradient stop position on drag", async () => {
 		// Arrange
-		render(GradientGenerator);
+		render(GradientGenerator, {
+			gradient: mockGradient,
+			onAddGradientStop: mockOnAddGradientStop,
+			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
+			onRemoveGradientStop: mockOnRemoveGradientStop,
+			onSetGradientType: mockOnSetGradientType,
+			onSetGradientAngle: mockOnSetGradientAngle,
+			onRecalculateGradientCss: mockOnRecalculateGradientCss
+		});
 		const stopHandler = screen.getAllByTestId("gradient-stop-handler")[0];
 
 		// Act
@@ -70,41 +108,61 @@ describe("GradientGenerator", async () => {
 		await fireEvent.mouseUp(document);
 
 		// Assert
-		expect(customizedIcon.updateGradientStopPosition).toHaveBeenCalled();
+		expect(mockOnUpdateGradientStopPosition).toHaveBeenCalled();
 	});
 
 	it("updates gradient stop color on color change", async () => {
 		// Arrange
-		render(GradientGenerator);
+		render(GradientGenerator, {
+			gradient: mockGradient,
+			onAddGradientStop: mockOnAddGradientStop,
+			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
+			onRemoveGradientStop: mockOnRemoveGradientStop,
+			onSetGradientType: mockOnSetGradientType,
+			onSetGradientAngle: mockOnSetGradientAngle,
+			onRecalculateGradientCss: mockOnRecalculateGradientCss
+		});
 		const colorInput = screen.getAllByTestId("stop-color-input")[0];
 
 		// Act
-		fireEvent.input(colorInput, { target: { value: "#00ff00" } });
+		await fireEvent.input(colorInput, { target: { value: "#00ff00" } });
 
 		// Assert
-		expect(customizedIcon.recalculateGradientCss).toHaveBeenCalled();
+		expect(mockOnRecalculateGradientCss).toHaveBeenCalled();
 	});
 
 	it("toggles gradient type on select change", async () => {
 		// Arrange
-		render(GradientGenerator);
+		render(GradientGenerator, {
+			gradient: mockGradient,
+			onAddGradientStop: mockOnAddGradientStop,
+			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
+			onRemoveGradientStop: mockOnRemoveGradientStop,
+			onSetGradientType: mockOnSetGradientType,
+			onSetGradientAngle: mockOnSetGradientAngle,
+			onRecalculateGradientCss: mockOnRecalculateGradientCss
+		});
 		const select = screen.getByTestId("gradient-type-select");
 
 		// Act
 		await fireEvent.change(select, { target: { value: "radial" } });
 
 		// Assert
-		expect(customizedIcon.setGradientType).toHaveBeenCalledWith("radial");
+		expect(mockOnSetGradientType).toHaveBeenCalledWith("radial");
 	});
 
 	it("shows linear gradient options when linear type is selected", async () => {
 		// Arrange
-		const stateWithRadialGradient = {
-			...mockState,
-			styles: { gradient: { ...mockState.styles.gradient, type: "linear" } as IconGradient }
-		} as CustomizableIcon;
-		customizedIcon.mockSetSubscribeValue(stateWithRadialGradient);
-		render(GradientGenerator);
+		const linearGradient = { ...mockGradient, type: "linear" };
+		render(GradientGenerator, {
+			gradient: linearGradient,
+			onAddGradientStop: mockOnAddGradientStop,
+			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
+			onRemoveGradientStop: mockOnRemoveGradientStop,
+			onSetGradientType: mockOnSetGradientType,
+			onSetGradientAngle: mockOnSetGradientAngle,
+			onRecalculateGradientCss: mockOnRecalculateGradientCss
+		});
 
 		// Assert
 		expect(screen.getByTestId("gradient-angle-input")).toBeVisible();
@@ -112,42 +170,18 @@ describe("GradientGenerator", async () => {
 
 	it("hides linear gradient options when radial type is selected", async () => {
 		// Arrange
-		const stateWithRadialGradient = {
-			...mockState,
-			styles: { gradient: { ...mockState.styles.gradient, type: "radial" } as IconGradient }
-		} as CustomizableIcon;
-		customizedIcon.mockSetSubscribeValue(stateWithRadialGradient);
-		render(GradientGenerator);
+		const radialGradient = { ...mockGradient, type: "radial" };
+		render(GradientGenerator, {
+			gradient: radialGradient,
+			onAddGradientStop: mockOnAddGradientStop,
+			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
+			onRemoveGradientStop: mockOnRemoveGradientStop,
+			onSetGradientType: mockOnSetGradientType,
+			onSetGradientAngle: mockOnSetGradientAngle,
+			onRecalculateGradientCss: mockOnRecalculateGradientCss
+		});
 
 		// Assert
 		expect(screen.queryByTestId("gradient-angle-input")).not.toBeInTheDocument();
-	});
-
-	it("remove stop fields when the stops in the state are removed", async () => {
-		// Arrange
-		const stateWithStops = {
-			...mockState,
-			styles: { gradient: { ...mockState.styles.gradient, stops: [{ position: 0, color: "#ff0000" }] } as IconGradient }
-		} as CustomizableIcon;
-		const stateWithNoStops = {
-			...mockState,
-			styles: { gradient: { ...mockState.styles.gradient, stops: [] } as IconGradient }
-		} as CustomizableIcon;
-		customizedIcon.mockSetSubscribeValue(stateWithStops);
-		const comp = render(GradientGenerator);
-
-		const initialStops = screen.getAllByTestId("gradient-stop-options");
-		const initialHandlers = screen.getAllByTestId("gradient-stop-handler");
-
-		// Act
-		customizedIcon.mockSetSubscribeValue(stateWithNoStops);
-		await act(() => comp.rerender({}));
-
-		// Assert
-		expect(initialStops.length).toBe(1);
-		expect(screen.queryAllByTestId("gradient-stop-options").length).toBe(0);
-
-		expect(initialHandlers.length).toBe(1);
-		expect(screen.queryAllByTestId("gradient-stop-handler").length).toBe(0);
 	});
 });

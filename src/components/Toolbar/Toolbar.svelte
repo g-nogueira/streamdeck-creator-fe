@@ -5,6 +5,31 @@
 	import IconSprayCan from "lucide-svelte/icons/spray-can";
 	import ToolbarSection from "./ToolbarSection.svelte";
 	import Tooltip from "../common/Tooltip.svelte";
+	import type { GradientStop, IconGradient } from "../../models/IconGradient";
+
+	const handleAddGradientStop = (stop: GradientStop) => {
+		customizedIcon.addGradientStop(stop);
+	};
+
+	const handleUpdateGradientStopPosition = (index: number, position: number) => {
+		customizedIcon.updateGradientStopPosition(index, position);
+	};
+
+	const handleRemoveGradientStop = (index: number) => {
+		customizedIcon.removeGradientStop(index);
+	};
+
+	const handleSetGradientType = (type: IconGradient["type"]) => {
+		customizedIcon.setGradientType(type);
+	};
+
+	const handleSetGradientAngle = (angle: number) => {
+		customizedIcon.setGradientAngle(angle);
+	};
+
+	const handleRecalculateGradientCss = () => {
+		customizedIcon.recalculateGradientCss();
+	};
 </script>
 
 <div
@@ -127,7 +152,14 @@
 				</button>
 			</div>
 			{#if $customizedIcon.styles.useGradient}
-				<GradientGenerator />
+				<GradientGenerator
+					gradient={$customizedIcon.styles.gradient}
+					onAddGradientStop={handleAddGradientStop}
+					onUpdateGradientStopPosition={handleUpdateGradientStopPosition}
+					onRemoveGradientStop={handleRemoveGradientStop}
+					onSetGradientType={handleSetGradientType}
+					onSetGradientAngle={handleSetGradientAngle}
+					onRecalculateGradientCss={handleRecalculateGradientCss} />
 			{:else}
 				<div data-testid="solid-fill-controls" class="grid grid-cols-[auto_1fr] gap-2">
 					<input
