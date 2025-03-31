@@ -3,7 +3,7 @@
 	import "../app.css";
 	import Sidenav from "../components/sidenav/Sidenav.svelte";
 	import IconPreview from "../components/icons/IconPreview.svelte";
-	import Toolbar from "../components/toolbar/Toolbar.svelte";
+	import Toolbar from "../components/Toolbar/Toolbar.svelte";
 	import { IconService } from "../services/icon.service";
 	import { toUserIcon, type CustomizableIcon } from "../models/CustomizableIcon";
 	import { customizedIcon } from "../stores/icon-customizations.store";
