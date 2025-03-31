@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { iconsEndpoint } from "../constants";
+import { iconsEndpoint } from "../lib/constants";
 import type { Icon, IconOrigin } from "../models/Icon";
 import * as _userIconDto from "./dto/UserIconDto";
 import { MdiIconService } from "./mdi-icon.service";

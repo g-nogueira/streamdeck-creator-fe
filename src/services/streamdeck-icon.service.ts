@@ -1,7 +1,6 @@
 import * as UUID from "$lib/utils/uuid";
-import { iconsEndpoint } from "../constants";
+import { iconsEndpoint } from "../lib/constants";
 import type { Icon } from "../models/Icon";
-import type { UserIcon } from "../models/UserIcon";
 import * as _userIconDto from "./dto/UserIconDto";
 import * as _iconDto from "./dto/IconDto";
 

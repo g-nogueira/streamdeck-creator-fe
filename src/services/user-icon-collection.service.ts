@@ -1,5 +1,5 @@
 import * as UUID from "$lib/utils/uuid";
-import { userCollectionEndpoint } from "../constants";
+import { userCollectionEndpoint } from "../lib/constants";
 import type { UserIcon } from "../models/UserIcon";
 import type { UserIconCollection } from "../models/UserIconCollection";
 import type { UserIconCollectionDto } from "./dto/UserIconCollectionDto";
