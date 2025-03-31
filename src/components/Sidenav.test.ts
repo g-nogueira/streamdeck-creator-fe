@@ -1,21 +1,27 @@
-import { render, screen, fireEvent } from '@testing-library/svelte';
+import { render, screen, fireEvent, act } from '@testing-library/svelte';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import Sidenav from './Sidenav.svelte';
 
-// Mocks import { DEFAULT_COLLECTION_ID, UserIconCollectionDBService } from "../services/user-icon-collection-indexeddb.service";
+// Mock the `animate` method globally. 
+// This is to avoid the error "TypeError: element.animate is not a function"
+Element.prototype.animate = () => ({ cancel: vi.fn(), finished: Promise.resolve() }) as unknown as Animation;
+
+// Mocks
 vi.mock('../services/user-icon-collection.service', async () => await import('../../tests/user-icon-collection.service.mock'));
 vi.mock('../services/user-icon-collection-indexeddb.service', async () => {
+    const mockIcon = {
+        id: 'icon-id',
+        name: 'Icon Name',
+        origin: 'origin-url',
+        collectionId: 'default-collection-id',
+        svgContent: '<svg></svg>',
+    };
     return {
         UserIconCollectionDBService: {
-            fetchList: vi.fn().mockResolvedValue([]),
             create: vi.fn().mockResolvedValue('new-collection-id'),
             addUserIcon: vi.fn().mockResolvedValue('new-icon-id'),
-            getList: vi.fn().mockResolvedValue([]),
-            getById: vi.fn().mockResolvedValue({
-                id: 'default-collection-id',
-                name: 'Default Collection',
-                icons: [],
-            }),
+            getList: vi.fn().mockResolvedValue([mockIcon]),
+            getById: vi.fn().mockResolvedValue(mockIcon),
             subscribe: vi.fn().mockReturnValue({
                 unsubscribe: vi.fn(),
             })
