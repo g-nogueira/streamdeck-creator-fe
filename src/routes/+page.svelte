@@ -1,7 +1,7 @@
 <script>
 	import IconCustomizer from '../components/icons/IconCustomizer.svelte';
 	import '../app.css';
-	import Sidenav from '../components/Sidenav.svelte';
+	import Sidenav from '../components/sidenav/Sidenav.svelte';
 	import IconPreview from '../components/icons/IconPreview.svelte';
 	import Toolbar from '../components/toolbar/Toolbar.svelte';
 	import ShortcutsBar from '../components/ShortcutsBar.svelte';

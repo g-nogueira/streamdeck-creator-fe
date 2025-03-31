@@ -3,8 +3,8 @@
     // Icons
     import IconCollection from 'lucide-svelte/icons/library';
     import Search from 'lucide-svelte/icons/search';
-    import IconSearch from './icons/IconSearch.svelte';
-    import CollectionList from './collections/CollectionList.svelte';
+    import IconSearch from '../icons/IconSearch.svelte';
+    import CollectionList from '../collections/CollectionList.svelte';
 
     let selectedTile = $state('icons'); // Default to 'icons'
 
