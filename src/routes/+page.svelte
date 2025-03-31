@@ -4,7 +4,7 @@
 	import Sidenav from '../components/sidenav/Sidenav.svelte';
 	import IconPreview from '../components/icons/IconPreview.svelte';
 	import Toolbar from '../components/toolbar/Toolbar.svelte';
-	import ShortcutsBar from '../components/ShortcutsBar.svelte';
+	import ShortcutsBar from '../components/shortcuts/ShortcutsBar.svelte';
 	
 </script>
 

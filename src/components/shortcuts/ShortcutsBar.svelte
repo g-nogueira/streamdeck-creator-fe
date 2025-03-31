@@ -1,12 +1,12 @@
 <script lang="ts">
     import DownloadIcon from "lucide-svelte/icons/download";
     import AddToCollection from "lucide-svelte/icons/save";
-	import { customizedIcon } from "../stores/icon-customizations.store";
-	import { selectedCollection } from "../stores/selected-collection.store";
-	import { toUserIcon, type CustomizableIcon } from "../models/CustomizableIcon";
-	import type { UserIconCollection } from "../models/UserIconCollection";
+	import { customizedIcon } from "../../stores/icon-customizations.store";
+	import { selectedCollection } from "../../stores/selected-collection.store";
+	import { toUserIcon, type CustomizableIcon } from "../../models/CustomizableIcon";
+	import type { UserIconCollection } from "../../models/UserIconCollection";
 	import * as ImageProcessing from "$lib/utils/dom";
-	import Tooltip from "./common/Tooltip.svelte";
+	import Tooltip from "../common/Tooltip.svelte";
 	import _ from "lodash";
 
 	function downloadIcon() {
