@@ -153,7 +153,7 @@ describe("GradientGenerator", () => {
 
 	it("shows linear gradient options when linear type is selected", async () => {
 		// Arrange
-		const linearGradient = { ...mockGradient, type: "linear" };
+		const linearGradient = { ...mockGradient, type: "linear" } as IconGradient;
 		render(GradientGenerator, {
 			gradient: linearGradient,
 			onAddGradientStop: mockOnAddGradientStop,
@@ -170,7 +170,7 @@ describe("GradientGenerator", () => {
 
 	it("hides linear gradient options when radial type is selected", async () => {
 		// Arrange
-		const radialGradient = { ...mockGradient, type: "radial" };
+		const radialGradient = { ...mockGradient, type: "radial" } as IconGradient;
 		render(GradientGenerator, {
 			gradient: radialGradient,
 			onAddGradientStop: mockOnAddGradientStop,
