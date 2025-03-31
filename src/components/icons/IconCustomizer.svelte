@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { empty } from '$lib/utils/uuid';
-	import * as _selectedIcon from '../models/CustomizableIcon';
-	import { IconService } from '../services/icon.service';
-	import { customizedIcon } from '../stores/icon-customizations.store';
+	import * as _selectedIcon from '../../models/CustomizableIcon';
+	import { IconService } from '../../services/icon.service';
+	import { customizedIcon } from '../../stores/icon-customizations.store';
 	import _ from 'lodash';
 
 	let previousIconId: string | null = null;

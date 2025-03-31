@@ -1,5 +1,5 @@
 <script>
-	import IconCustomizer from '../components/IconCustomizer.svelte';
+	import IconCustomizer from '../components/icons/IconCustomizer.svelte';
 	import '../app.css';
 	import Sidenav from '../components/Sidenav.svelte';
 	import IconPreview from '../components/IconPreview.svelte';
