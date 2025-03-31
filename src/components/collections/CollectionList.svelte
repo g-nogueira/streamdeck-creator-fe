@@ -65,6 +65,18 @@
 	function handleSelectUserIcon(icon: UserIcon) {
 		customizedIcon.selectUserIcon(icon);
 	}
+
+	function handleDownloadCollection(collectionId: string) {
+		UserIconCollectionDBService.download(collectionId);
+	}
+
+	async function handleDeleteCollection(collectionId: string) {
+		await UserIconCollectionDBService.remove(collectionId);
+		const collections = $userIconCollections;
+		if (collections.length > 0) {
+			selectedCollection.selectCollection(collections[0].id);
+		}
+	}
 </script>
 
 <Accordion bind:value={selectedCollectionId} collapsible>
@@ -75,7 +87,10 @@
 			{#snippet control()}{collection.name}{/snippet}
 			<!-- Panel -->
 			{#snippet panel()}
-				<CollectionToolbar {collection} />
+				<CollectionToolbar
+					{collection}
+					onDownloadCollection={handleDownloadCollection}
+					onDeleteCollection={handleDeleteCollection} />
 				<CollectionIcons {collection} onRemoveIcon={handleRemoveIcon} onSelectUserIcon={handleSelectUserIcon} />
 			{/snippet}
 		</Accordion.Item>
