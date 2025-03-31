@@ -30,7 +30,7 @@
 				{selectImageIcon}
 				{setSvgFillColor}
 				{fetchIconWithContentType} />
-			<IconPreview />
+			<IconPreview customizableIcon={$customizedIcon} />
 		</div>
 		<!-- <Footer /> -->
 	</main>
