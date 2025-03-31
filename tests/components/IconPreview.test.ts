@@ -4,7 +4,7 @@ import IconPreview from '../../src/components/icons/IconPreview.svelte';
 import { mkEmpty, type CustomizableIcon } from '../../src/models/CustomizableIcon';
 import { beforeEach } from 'node:test';
 
-const iconCustomizationsStorePromise = vi.hoisted(() => import('../icon-customizations.store.mock'));
+const iconCustomizationsStorePromise = vi.hoisted(() => import('../mocks/icon-customizations.store.mock'));
 
 vi.mock('../stores/icon-customizations.store', async () => await iconCustomizationsStorePromise);
 

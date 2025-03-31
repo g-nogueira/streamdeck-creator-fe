@@ -4,7 +4,7 @@ import GradientGenerator from '../../src/components/toolbar/GradientGenerator.sv
 import type { IconGradient } from '../../src/models/IconGradient';
 import { mkEmpty, type CustomizableIcon } from "../../src/models/CustomizableIcon";
 
-const iconCustomizationsStorePromise = vi.hoisted(() => import('../icon-customizations.store.mock'));
+const iconCustomizationsStorePromise = vi.hoisted(() => import('../mocks/icon-customizations.store.mock'));
 
 vi.mock('../../stores/icon-customizations.store', async () => await iconCustomizationsStorePromise);
 

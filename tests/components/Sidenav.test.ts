@@ -7,7 +7,7 @@ import Sidenav from '../../src/components/sidenav/Sidenav.svelte';
 Element.prototype.animate = () => ({ cancel: vi.fn(), finished: Promise.resolve() }) as unknown as Animation;
 
 // Mocks
-vi.mock('../services/user-icon-collection.service', async () => await import('../user-icon-collection.service.mock'));
+vi.mock('../services/user-icon-collection.service', async () => await import('../mocks/user-icon-collection.service.mock'));
 vi.mock('../services/user-icon-collection-indexeddb.service', async () => {
     const mockIcon = {
         id: 'icon-id',

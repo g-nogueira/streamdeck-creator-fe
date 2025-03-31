@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store";
 import { vi } from "vitest";
-import type { Icon } from "../src/models/Icon";
+import type { Icon } from "../../src/models/Icon";
 
 function createIconStore() {
     const { subscribe, set } = writable<Icon[]>([]);

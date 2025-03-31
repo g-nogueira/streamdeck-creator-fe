@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import Toolbar from '../../src/components/toolbar/Toolbar.svelte';
 import _ from 'lodash';
 
-const iconCustomizationsStorePromise = vi.hoisted(() => import('../icon-customizations.store.mock'));
+const iconCustomizationsStorePromise = vi.hoisted(() => import('../mocks/icon-customizations.store.mock'));
 
 vi.mock('../../stores/icon-customizations.store', async () => await iconCustomizationsStorePromise);
 

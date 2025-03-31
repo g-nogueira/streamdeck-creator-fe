@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import IconList from '../../src/components/icons/IconList.svelte';
 import * as _icon from '../../src/models/Icon';
 
-const iconsPromise = vi.hoisted(() => import('../icon.store.mock'));
+const iconsPromise = vi.hoisted(() => import('../mocks/icon.store.mock'));
 
 
 // Mock the stores
