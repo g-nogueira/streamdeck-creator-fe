@@ -16,9 +16,8 @@ afterEach(() => {
 
 describe("IconList Component", () => {
 	it("correctly renders the list of icons in the store", async () => {
-		const { icons } = await iconsPromise;
-		icons.mockSetSubscribeValue(new Array(50).fill({ ..._icon.mkEmpty() }));
-		render(IconList);
+		let icons = new Array(50).fill({ ..._icon.mkEmpty() })
+		render(IconList, { icons, onSelectIcon: vi.fn() });
 
 		expect(screen.getAllByTestId("icon-button").length).toEqual(50);
 	});

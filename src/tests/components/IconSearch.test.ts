@@ -1,6 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/svelte";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import IconList from "../../components/icons/IconList.svelte";
+import { setupIntersectionObserverMock } from "../utils/interceptionObserverHelper";
+
+beforeEach(() => setupIntersectionObserverMock({ observe: vi.fn() }));
 
 describe("IconList", () => {
     it("renders the list of icons", () => {

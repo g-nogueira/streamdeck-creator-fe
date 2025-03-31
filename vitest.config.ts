@@ -15,16 +15,16 @@ export default defineConfig({
 	// }],
 	test: {
 		environment: "jsdom",
-		setupFiles: ["./tests/vitest-setup.ts"],
+		setupFiles: ["./src/tests/vitest-setup.ts"],
 		alias: {
-			"$env/dynamic/public": resolve("./tests/env.dynamic.public.mock.ts")
+			"$env/dynamic/public": resolve("./src/tests/mocks/env.dynamic.public.mock.ts")
 		},
 		coverage: {
 			enabled: true,
 			exclude: [
 				"**/node_modules/**",
 				"**/cypress/**",
-				"**/tests/**",
+				"**/src/tests/**",
 				"**/.svelte-kit/**",
 				"**/*.test.ts",
 				"*.config.ts",
