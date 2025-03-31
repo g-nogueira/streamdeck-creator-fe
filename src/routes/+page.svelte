@@ -5,6 +5,13 @@
 	import IconPreview from "../components/icons/IconPreview.svelte";
 	import Toolbar from "../components/toolbar/Toolbar.svelte";
 	import ShortcutsBar from "../components/shortcuts/ShortcutsBar.svelte";
+	import { customizedIcon } from "../stores/icon-customizations.store";
+	import { IconService } from "../services/icon.service";
+
+	const selectSvgIcon = customizedIcon.selectSvgIcon;
+	const selectImageIcon = customizedIcon.selectImageIcon;
+	const setSvgFillColor = customizedIcon.setSvgFillColor;
+	const fetchIconWithContentType = IconService.fetchIconWithContentType;
 </script>
 
 <svelte:head>
@@ -17,7 +24,12 @@
 	<Sidenav />
 	<main class="flex h-screen w-screen flex-col overflow-hidden">
 		<div class="flex h-full w-full items-center justify-center">
-			<IconCustomizer />
+			<IconCustomizer
+				customizableIcon={$customizedIcon}
+				{selectSvgIcon}
+				{selectImageIcon}
+				{setSvgFillColor}
+				{fetchIconWithContentType} />
 			<IconPreview />
 		</div>
 		<!-- <Footer /> -->
