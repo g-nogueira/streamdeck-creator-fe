@@ -3,6 +3,8 @@
 	import { onMount } from "svelte";
 	import { debounce } from "lodash-es";
 	import { icons } from "../../stores/icon.store";
+	import { customizedIcon } from "../../stores/icon-customizations.store";
+	import type { Icon } from "../../models/Icon";
 
 	let searchTerm = "";
 	let placeholder = "";
@@ -37,6 +39,10 @@
 			placeholder = placeholders[currentIndex + 1] ?? placeholders[0];
 		}, 3000);
 	});
+
+	const handleSelectIcon = (icon: Icon) => {
+		customizedIcon.selectIcon(icon);
+	};
 </script>
 
 <input
@@ -63,5 +69,5 @@
 {/if}
 
 <div class="h-full overflow-y-scroll">
-	<IconList />
+	<IconList icons={$icons} onSelectIcon={handleSelectIcon} />
 </div>
