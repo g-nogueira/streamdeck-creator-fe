@@ -1,12 +1,30 @@
 <script lang="ts">
 	import { Nav } from "@skeletonlabs/skeleton-svelte";
-	// Icons
 	import IconCollection from "lucide-svelte/icons/library";
 	import Search from "lucide-svelte/icons/search";
 	import IconSearch from "../icons/IconSearch.svelte";
 	import CollectionList from "../collections/CollectionList.svelte";
+	import { icons } from "../../stores/icon.store";
+	import { customizedIcon } from "../../stores/icon-customizations.store";
+	import type { Icon } from "../../models/Icon";
 
-	let selectedTile = $state("icons"); // Default to 'icons'
+	let selectedTile = $state("icons");
+
+	const handleSearchIcons = async (searchTerm: string) => {
+		await icons.search(searchTerm);
+	};
+
+	const handleLoadDefaultIcons = () => {
+		icons.loadDefault();
+	};
+
+	const handleSetEmptyIcons = () => {
+		icons.setEmpty();
+	};
+
+	const handleSelectIcon = (icon: Icon) => {
+		customizedIcon.selectIcon(icon);
+	};
 </script>
 
 <div class="flex h-full flex-row">
@@ -30,7 +48,12 @@
 	<div
 		class="flex h-full w-[375px] flex-col gap-3 border-[1px] p-3 border-surface-100-900 preset-filled-surface-50-950">
 		{#if selectedTile === "icons"}
-			<IconSearch />
+			<IconSearch
+				icons={$icons}
+				onSearchIcons={handleSearchIcons}
+				onLoadDefaultIcons={handleLoadDefaultIcons}
+				onSetEmptyIcons={handleSetEmptyIcons}
+				onSelectIcon={handleSelectIcon} />
 		{/if}
 		{#if selectedTile === "collections"}
 			<CollectionList />

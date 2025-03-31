@@ -1,17 +1,30 @@
-import { render, screen, fireEvent } from "@testing-library/svelte";
+import { render, screen, fireEvent, act } from "@testing-library/svelte";
 import { describe, it, expect, afterEach, vi } from "vitest";
 import Sidenav from "../../components/sidenav/Sidenav.svelte";
+import { writable } from "svelte/store";
+import type { UserIconCollection } from "../../models/UserIconCollection";
 
 // Mock the `animate` method globally.
 // This is to avoid the error "TypeError: element.animate is not a function"
 Element.prototype.animate = () => ({ cancel: vi.fn(), finished: Promise.resolve() }) as unknown as Animation;
 
 // Mocks
-vi.mock(
-	"../services/user-icon-collection.service",
-	async () => await import("../mocks/user-icon-collection.service.mock")
-);
-vi.mock("../services/user-icon-collection-indexeddb.service", async () => {
+//../../stores/icon.store
+vi.mock("../stores/icon.store", async () => await import("../mocks/icon.store.mock"));
+vi.mock("../../stores/user-icon-collection.store", async () => await import("../mocks/user-icon-collection.store.mock"));
+vi.mock("../stores/icon-customizations.store", async () => await import("../mocks/icon-customizations.store.mock"));
+
+vi.mock("../../stores/selected-collection.store", () => ({
+	selectedCollection: {
+		subscribe: vi.fn().mockReturnValue({
+			unsubscribe: vi.fn()
+		}),
+		set: vi.fn(),
+		selectCollection: vi.fn()
+	}
+}));
+
+const getUserIconCollectionDbMock = vi.hoisted(() => {
 	const mockIcon = {
 		id: "icon-id",
 		name: "Icon Name",
@@ -32,6 +45,9 @@ vi.mock("../services/user-icon-collection-indexeddb.service", async () => {
 		DEFAULT_COLLECTION_ID: "default-collection-id"
 	};
 });
+
+vi.mock("../services/user-icon-collection-indexeddb.service", () => getUserIconCollectionDbMock);
+vi.mock("../../services/user-icon-collection-indexeddb.service", () => getUserIconCollectionDbMock);
 
 describe("Sidenav", () => {
 	afterEach(() => {
@@ -66,7 +82,7 @@ describe("Sidenav", () => {
 		const collectionsTile = screen.queryAllByTestId("nav-tile")[1];
 
 		// Act
-		await fireEvent.click(collectionsTile);
+		await act(() => fireEvent.click(collectionsTile));
 
 		// Assert
 		expect(screen.getByTestId("accordion")).toBeVisible();

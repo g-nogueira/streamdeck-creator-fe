@@ -2,9 +2,26 @@
 	import IconList from "./IconList.svelte";
 	import { onMount } from "svelte";
 	import { debounce } from "lodash-es";
-	import { icons } from "../../stores/icon.store";
-	import { customizedIcon } from "../../stores/icon-customizations.store";
 	import type { Icon } from "../../models/Icon";
+
+	export let icons: Icon[] = [];
+	/**
+	 * Function called to search for icons.
+	 * @param searchTerm The term to search for.
+	 */
+	export let onSearchIcons: (searchTerm: string) => Promise<void>;
+	/**
+	 * Function called to load the default set of icons.
+	 * Called when the search term is empty.
+	 */
+	export let onLoadDefaultIcons: () => void;
+	/**
+	 * Function called to set the icons to an empty state.
+	 * Called when the search term does not match any icons.
+	 */
+	export let onSetEmptyIcons: () => void;
+	export let onSelectIcon: (icon: Icon) => void;
+	export let debounceTimeMs = 500;
 
 	let searchTerm = "";
 	let placeholder = "";
@@ -14,23 +31,23 @@
 
 	const searchIcons = debounce(async () => {
 		if (!searchTerm) {
-			icons.loadDefault();
+			onLoadDefaultIcons();
 			return;
 		} else if (searchTerm.length <= 2) {
-			icons.setEmpty();
+			onSetEmptyIcons();
 			return;
 		}
 
 		isLoading = true;
 		error = "";
 		try {
-			await icons.search(searchTerm);
+			await onSearchIcons(searchTerm);
 		} catch (e: any) {
 			error = e.message;
 		} finally {
 			isLoading = false;
 		}
-	}, 500); // Debounce for 500ms
+	}, debounceTimeMs);
 
 	onMount(() => {
 		placeholder = placeholders[0];
@@ -39,10 +56,6 @@
 			placeholder = placeholders[currentIndex + 1] ?? placeholders[0];
 		}, 3000);
 	});
-
-	const handleSelectIcon = (icon: Icon) => {
-		customizedIcon.selectIcon(icon);
-	};
 </script>
 
 <input
@@ -69,5 +82,5 @@
 {/if}
 
 <div class="h-full overflow-y-scroll">
-	<IconList icons={$icons} onSelectIcon={handleSelectIcon} />
+	<IconList {icons} {onSelectIcon} />
 </div>
