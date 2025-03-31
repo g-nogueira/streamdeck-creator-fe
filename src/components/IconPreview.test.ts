@@ -167,20 +167,6 @@ describe('Icon Customization', async () => {
         expect(iconWrapper.querySelector('svg')).toBeVisible();
     });
 
-    it('renders image when SVG content is not provided', () => {
-        // Arrange
-        const stateWithoutSvg = { ...mockState, imageUrl: 'http://example.com/image.png' };
-        customizedIcon.mockSetSubscribeValue(stateWithoutSvg);
-
-        // Act
-        render(IconPreview);
-        const img = screen.getByTestId("icon-image") as HTMLImageElement;
-
-        // Assert
-        expect(img).toBeVisible();
-        expect(img.src).toBe(stateWithoutSvg.imageUrl);
-    });
-
     it('applies glyph color correctly', () => {
         // Arrange
         const glyphColorState = { ...mockState, svgContent: '<svg></svg>', styles: { ...mockState.styles, glyphColor: '#00FF00' } };

@@ -33,6 +33,7 @@ describe('MdiIcon', () => {
             useGradient: false,
             gradient: null,
             pngData: '',
+            base64Thumbnail: '',
             originalIconId: mdiIcon.id,
             label: mdiIcon.name,
             origin: 'mdi',

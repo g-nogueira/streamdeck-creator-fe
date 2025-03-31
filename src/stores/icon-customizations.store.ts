@@ -84,18 +84,16 @@ function createIconCustomizationsStore() {
             const cleanedSvg = _.flow(updateSvgFill(state.styles.glyphColor), removeSvgSizeAttributes)(svg);
 
             state.svgContent = cleanedSvg;
-            state.imageUrl = '';
-            state.styles.pngData = '';
 
             return state;
         }),
 
+        /** @deprecated A way to handle image icons will be implemented */
         selectImageIcon: (url: string) => update(state => {
             if (!state) return state;
 
             verboseMode && console.log("Setting image icon");
 
-            state.imageUrl = url;
             state.svgContent = '';
 
             return state;
@@ -233,15 +231,6 @@ function createIconCustomizationsStore() {
 
             state.styles.gradient ||= mkDefaultGradient();
             state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
-            return state;
-        }),
-
-        updatePngData: (data: string) => update(state => {
-            if (!state) return state;
-
-            verboseMode && console.log("Updating PNG data");
-
-            state.styles.pngData = data;
             return state;
         }),
 

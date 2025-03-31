@@ -26,6 +26,7 @@
 					if (isContentTypeSvg(contentType)) {
 						customizedIcon.selectSvgIcon(iconContent);
 					} else {
+						/** @deprecated A way to handle png icons will be implemented */
 						_.flow(IconService.mkIconUrl, customizedIcon.selectImageIcon)($customizedIcon.iconId);
 					}
 				})

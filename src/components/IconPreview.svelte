@@ -21,8 +21,6 @@
                 <div data-testid="icon-wrapper" class="flex-grow p-5 w-full max-h-[223px] flex justify-center" style="color: {$customizedIcon?.styles.glyphColor}; transform: scale({$customizedIcon?.styles.iconScale}) translate({$customizedIcon?.styles.imgX}px, {$customizedIcon?.styles.imgY}px);">
                     {#if $customizedIcon.svgContent}
                         {@html DOMPurify.sanitize($customizedIcon.svgContent)}
-                    {:else}
-                        <img src={$customizedIcon.imageUrl} alt={$customizedIcon.styles.label} class="w-full h-full" data-testid="icon-image"/>
                     {/if}
                 </div>
                 <!-- Label -->

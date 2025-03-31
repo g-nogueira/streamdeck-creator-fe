@@ -38,10 +38,9 @@
 		}
 
 		let iconPng = await ImageProcessing.NodeToBase64Png(node);
+		let iconThumbnail = iconPng;
 
-        customizedIcon.updatePngData(iconPng);
-
-		_.flow(toUserIcon, selectedCollection.addIconToSelectedCollection)(customizableIcon);
+		_.flow(toUserIcon, selectedCollection.addIconToSelectedCollection)(customizableIcon, iconThumbnail, iconPng);
 	}
 </script>
 
