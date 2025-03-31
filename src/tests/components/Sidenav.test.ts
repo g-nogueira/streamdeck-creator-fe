@@ -1,8 +1,6 @@
 import { render, screen, fireEvent, act } from "@testing-library/svelte";
 import { describe, it, expect, afterEach, vi } from "vitest";
 import Sidenav from "../../components/sidenav/Sidenav.svelte";
-import { writable } from "svelte/store";
-import type { UserIconCollection } from "../../models/UserIconCollection";
 
 // Mock the `animate` method globally.
 // This is to avoid the error "TypeError: element.animate is not a function"
@@ -13,16 +11,7 @@ Element.prototype.animate = () => ({ cancel: vi.fn(), finished: Promise.resolve(
 vi.mock("../stores/icon.store", async () => await import("../mocks/icon.store.mock"));
 vi.mock("../../stores/user-icon-collection.store", async () => await import("../mocks/user-icon-collection.store.mock"));
 vi.mock("../stores/icon-customizations.store", async () => await import("../mocks/icon-customizations.store.mock"));
-
-vi.mock("../../stores/selected-collection.store", () => ({
-	selectedCollection: {
-		subscribe: vi.fn().mockReturnValue({
-			unsubscribe: vi.fn()
-		}),
-		set: vi.fn(),
-		selectCollection: vi.fn()
-	}
-}));
+vi.mock("../../stores/selected-collection.store", async () => await import("../mocks/selected-collection.store.mock"));
 
 const getUserIconCollectionDbMock = vi.hoisted(() => {
 	const mockIcon = {
