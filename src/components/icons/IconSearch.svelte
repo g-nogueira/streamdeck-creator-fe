@@ -1,28 +1,26 @@
 <script lang="ts">
-	import IconList from './IconList.svelte';
-	import { onMount } from 'svelte';
-	import { debounce } from 'lodash-es';
-	import { icons } from '../../stores/icon.store';
-	import { IconService } from '../../services/icon.service';
+	import IconList from "./IconList.svelte";
+	import { onMount } from "svelte";
+	import { debounce } from "lodash-es";
+	import { icons } from "../../stores/icon.store";
 
-	let searchTerm = '';
-	let placeholder = '';
-	let placeholders = ['icon1', 'icon2', 'icon3']; // Example placeholders
+	let searchTerm = "";
+	let placeholder = "";
+	let placeholders = ["icon1", "icon2", "icon3"]; // Example placeholders
 	let isLoading = false;
-	let error = '';
+	let error = "";
 
 	const searchIcons = debounce(async () => {
 		if (!searchTerm) {
 			icons.loadDefault();
 			return;
-		}
-		else if (searchTerm.length <= 2) {
+		} else if (searchTerm.length <= 2) {
 			icons.setEmpty();
 			return;
 		}
 
 		isLoading = true;
-		error = '';
+		error = "";
 		try {
 			await icons.search(searchTerm);
 		} catch (e: any) {
@@ -35,13 +33,19 @@
 	onMount(() => {
 		placeholder = placeholders[0];
 		setInterval(() => {
-			const currentIndex = placeholders.findIndex((str) => str === placeholder);
+			const currentIndex = placeholders.findIndex(str => str === placeholder);
 			placeholder = placeholders[currentIndex + 1] ?? placeholders[0];
 		}, 3000);
 	});
 </script>
 
-<input class="input" type="search" placeholder="Search..." data-testid="search-field" bind:value={searchTerm} on:input={() => searchIcons()}/>
+<input
+	class="input"
+	type="search"
+	placeholder="Search..."
+	data-testid="search-field"
+	bind:value={searchTerm}
+	on:input={() => searchIcons()} />
 <select class="select" placeholder="Collection...">
 	<option value="1">Option 1</option>
 	<option value="2">Option 2</option>
@@ -51,11 +55,11 @@
 </select>
 
 {#if isLoading}
-<div class="loading-indicator">Loading...</div>
+	<div class="loading-indicator">Loading...</div>
 {/if}
 
 {#if error}
-<div class="error-message">{error}</div>
+	<div class="error-message">{error}</div>
 {/if}
 
 <div class="h-full overflow-y-scroll">

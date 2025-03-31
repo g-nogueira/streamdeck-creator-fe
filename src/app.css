@@ -1,21 +1,21 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-
-.input-toolbar, .input-toolbar[type='color'] {
-    height: calc(1.75rem * var(--space-scale-factor));
+.input-toolbar,
+.input-toolbar[type="color"] {
+	height: calc(1.75rem * var(--space-scale-factor));
 }
-.input-toolbar[type='color'] {
-    width: calc(1.75rem * var(--space-scale-factor));
-    min-width: calc(1.75rem * var(--space-scale-factor));
+.input-toolbar[type="color"] {
+	width: calc(1.75rem * var(--space-scale-factor));
+	min-width: calc(1.75rem * var(--space-scale-factor));
 }
 
 .select-toolbar {
-    padding-top: 0.1rem;
-    padding-bottom: 0.1rem;
+	padding-top: 0.1rem;
+	padding-bottom: 0.1rem;
 }
 
 .btn-icon {
-    width: auto;
+	width: auto;
 }

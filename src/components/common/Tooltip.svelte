@@ -1,13 +1,12 @@
 <script lang="ts">
 	import type { Snippet } from "svelte";
 
-    let {text, children, ...divProps}: {text: string, children?: Snippet} = $props();
-
+	let { text, children, ...divProps }: { text: string; children?: Snippet } = $props();
 </script>
 
 <div class="tooltip-handler" {...divProps}>
-    {@render children?.()}
-    <span class="tooltip preset-filled-surface-50-950 border-surface-100-950 border-[1px] rounded-md p-1">{text}</span>
+	{@render children?.()}
+	<span class="tooltip border-surface-100-950 rounded-md border-[1px] p-1 preset-filled-surface-50-950">{text}</span>
 </div>
 
 <style lang="postcss">

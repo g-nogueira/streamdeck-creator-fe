@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { empty } from '$lib/utils/uuid';
-	import * as _selectedIcon from '../../models/CustomizableIcon';
-	import { IconService } from '../../services/icon.service';
-	import { customizedIcon } from '../../stores/icon-customizations.store';
-	import _ from 'lodash';
+	import { empty } from "$lib/utils/uuid";
+	import * as _selectedIcon from "../../models/CustomizableIcon";
+	import { IconService } from "../../services/icon.service";
+	import { customizedIcon } from "../../stores/icon-customizations.store";
+	import _ from "lodash";
 
 	let previousIconId: string | null = null;
 
@@ -13,7 +13,7 @@
 			customizedIcon.selectSvgIcon($customizedIcon.svgContent);
 		} else {
 			// _.flow(IconService.mkIconUrl, customizedIcon.selectImageIcon)($customizedIcon.originalIconId);
-			throw new Error('User icon is not an SVG. Only SVGs are supported for now.');
+			throw new Error("User icon is not an SVG. Only SVGs are supported for now.");
 		}
 	}
 
@@ -30,8 +30,8 @@
 						_.flow(IconService.mkIconUrl, customizedIcon.selectImageIcon)($customizedIcon.iconId);
 					}
 				})
-				.catch((error) => {
-					throw new Error('Error fetching icon', error);
+				.catch(error => {
+					throw new Error("Error fetching icon", error);
 				})
 				.finally(() => {
 					previousIconId = $customizedIcon.iconId;
@@ -43,6 +43,6 @@
 	}
 
 	function isContentTypeSvg(contentType: string): boolean {
-		return contentType === 'image/svg+xml';
+		return contentType === "image/svg+xml";
 	}
 </script>

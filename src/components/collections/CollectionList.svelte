@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import * as _userIconCollection from '../../models/UserIconCollection';
-	import { userIconCollections } from '../../stores/user-icon-collection.store';
-	import { selectedCollection } from '../../stores/selected-collection.store';
-	import { Accordion } from '@skeletonlabs/skeleton-svelte';
-	import LibraryIcon from 'lucide-svelte/icons/library';
-	import CollectionIcons from './CollectionIcons.svelte';
-	import CollectionToolbar from './CollectionToolbar.svelte';
+	import { onMount } from "svelte";
+	import * as _userIconCollection from "../../models/UserIconCollection";
+	import { userIconCollections } from "../../stores/user-icon-collection.store";
+	import { selectedCollection } from "../../stores/selected-collection.store";
+	import { Accordion } from "@skeletonlabs/skeleton-svelte";
+	import LibraryIcon from "lucide-svelte/icons/library";
+	import CollectionIcons from "./CollectionIcons.svelte";
+	import CollectionToolbar from "./CollectionToolbar.svelte";
 
 	let selectedCollectionId = $state<string[]>([]);
 
@@ -28,7 +28,7 @@
 	 */
 	function selectCollectionById(id: string) {
 		const collections = $userIconCollections;
-		const collection = collections.find((c) => c.id === id);
+		const collection = collections.find(c => c.id === id);
 
 		if (!collection) {
 			throw new Error(`Collection with id ${id} not found`);
@@ -37,14 +37,14 @@
 		selectedCollection.selectCollection(collection.id);
 	}
 
-	let lastSelectedCollectionId: string = '';
+	let lastSelectedCollectionId: string = "";
 
 	// Watch for changes in the selected collection
 	$effect(() => {
 		if (!selectedCollectionId[0]) return;
 		if (lastSelectedCollectionId === selectedCollectionId[0]) return;
-		
-		$inspect('selectedAccordionItem:', selectedCollectionId);
+
+		$inspect("selectedAccordionItem:", selectedCollectionId);
 		selectCollectionById(selectedCollectionId[0]);
 		lastSelectedCollectionId = selectedCollectionId[0];
 	});

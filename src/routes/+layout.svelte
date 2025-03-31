@@ -1,11 +1,10 @@
 <script>
-	import { startUnleash } from '$lib/feature-flags';
-	import '../app.css';
+	import { startUnleash } from "$lib/feature-flags";
+	import "../app.css";
 </script>
 
-
-{#await startUnleash()} 
-	<p>Loading...</p> 
+{#await startUnleash()}
+	<p>Loading...</p>
 {:then}
 	<slot></slot>
 {:catch error}

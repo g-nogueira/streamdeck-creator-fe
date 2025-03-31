@@ -5,17 +5,16 @@ import { UserIconCollectionDBService } from "../services/user-icon-collection-in
 import { selectedCollection } from "./selected-collection.store";
 
 function createCollectionsStore() {
-    
-    const { subscribe, set } = writable<UserIconCollection[]>([]);
-    
-    UserIconCollectionDBService.getList().then(set).then(selectedCollection.selectDefault);
-    // Subscribe to changes in the IndexedDB service
-    const unsubscribe = UserIconCollectionDBService.subscribe(set);
+	const { subscribe, set } = writable<UserIconCollection[]>([]);
 
-    return {
-        subscribe,
-        set
-    };
+	UserIconCollectionDBService.getList().then(set).then(selectedCollection.selectDefault);
+	// Subscribe to changes in the IndexedDB service
+	const unsubscribe = UserIconCollectionDBService.subscribe(set);
+
+	return {
+		subscribe,
+		set
+	};
 }
 
 export const userIconCollections = createCollectionsStore();

@@ -1,23 +1,23 @@
 <script lang="ts">
-	import * as _userIconCollection from '../../models/UserIconCollection';
-	import { UserIconCollectionDBService } from '../../services/user-icon-collection-indexeddb.service';
-	import DownloadIcon from 'lucide-svelte/icons/download';
-	import DeleteIcon from 'lucide-svelte/icons/trash';
-	import Tooltip from '../common/Tooltip.svelte';
-	import type { UserIconCollection } from '../../models/UserIconCollection';
-	import { userIconCollections } from '../../stores/user-icon-collection.store';
-	import { selectedCollection } from '../../stores/selected-collection.store';
+	import * as _userIconCollection from "../../models/UserIconCollection";
+	import { UserIconCollectionDBService } from "../../services/user-icon-collection-indexeddb.service";
+	import DownloadIcon from "lucide-svelte/icons/download";
+	import DeleteIcon from "lucide-svelte/icons/trash";
+	import Tooltip from "../common/Tooltip.svelte";
+	import type { UserIconCollection } from "../../models/UserIconCollection";
+	import { userIconCollections } from "../../stores/user-icon-collection.store";
+	import { selectedCollection } from "../../stores/selected-collection.store";
 
-	let { collection } : { collection : UserIconCollection} = $props()
+	let { collection }: { collection: UserIconCollection } = $props();
 
 	if (collection === null) {
-		console.log('No collection selected.');
-		throw new Error('No collection selected.');
+		console.log("No collection selected.");
+		throw new Error("No collection selected.");
 	}
 
 	function donwloadUserCollection() {
 		if (collection === null) {
-			throw new Error('No collection selected to download');
+			throw new Error("No collection selected to download");
 		}
 
 		UserIconCollectionDBService.download(collection.id);
@@ -25,7 +25,7 @@
 
 	async function deleteUserCollection() {
 		if (collection === null) {
-			throw new Error('No collection selected to delete');
+			throw new Error("No collection selected to delete");
 		}
 		await UserIconCollectionDBService.remove(collection.id);
 		selectedCollection.selectCollection($userIconCollections[0].id);
@@ -37,8 +37,7 @@
 		type="button"
 		onclick={() => donwloadUserCollection()}
 		class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900"
-		aria-label="Download Collection"
-	>
+		aria-label="Download Collection">
 		<Tooltip text="Download Collection">
 			<DownloadIcon size={20} />
 		</Tooltip>
@@ -47,8 +46,7 @@
 		type="button"
 		onclick={() => deleteUserCollection()}
 		class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-warning-900"
-		aria-label="Delete Collection"
-	>
+		aria-label="Delete Collection">
 		<Tooltip text="Delete Collection">
 			<DeleteIcon size={20} />
 		</Tooltip>
