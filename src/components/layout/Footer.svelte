@@ -1,6 +1,6 @@
 <div class="footer">
 	<p>FontAwesome Pro</p>
-	<a href="https://buymeacoffee.com/stephan">Buy Gustavo a Coffee</a>
+	<a href="https://buymeacoffee.com/gustavo">Buy Gustavo a Coffee</a>
 </div>
 
 <style>
