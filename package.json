@@ -72,6 +72,7 @@
 		"idb": "^8.0.2",
 		"jszip": "^3.10.1",
 		"lucide-svelte": "^0.453.0",
+		"tinygradient": "^2.0.1",
 		"unleash-proxy-client": "^3.6.1",
 		"uuid": "^11.1.0"
 	},
