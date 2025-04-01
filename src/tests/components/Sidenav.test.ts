@@ -8,7 +8,10 @@ Element.prototype.animate = () => ({ cancel: vi.fn(), finished: Promise.resolve(
 
 // Mocks
 vi.mock("../stores/icon.store", async () => await import("../mocks/icon.store.mock"));
-vi.mock("../../stores/user-icon-collection.store", async () => await import("../mocks/user-icon-collection.store.mock"));
+vi.mock(
+	"../../stores/user-icon-collection.store",
+	async () => await import("../mocks/user-icon-collection.store.mock")
+);
 vi.mock("../stores/icon-customizations.store", async () => await import("../mocks/icon-customizations.store.mock"));
 vi.mock("../../stores/selected-collection.store", async () => await import("../mocks/selected-collection.store.mock"));
 

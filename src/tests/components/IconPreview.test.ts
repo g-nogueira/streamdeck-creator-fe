@@ -12,7 +12,10 @@ describe("Background Customization", () => {
 
 	it("applies background color correctly", () => {
 		// Arrange
-		const bgColorState = { ...mockState, styles: { ...mockState.styles, backgroundColor: "#FF0000" } } as CustomizableIcon;
+		const bgColorState = {
+			...mockState,
+			styles: { ...mockState.styles, backgroundColor: "#FF0000" }
+		} as CustomizableIcon;
 
 		// Act
 		render(IconPreview, { customizableIcon: bgColorState });

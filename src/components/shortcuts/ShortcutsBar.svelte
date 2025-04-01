@@ -46,7 +46,10 @@
 
 <div class="sticky bottom-3 left-2/4 w-fit rounded-md bg-surface-800">
 	{#if customizableIcon}
-		<button on:click={downloadIcon} class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900" data-testid="download-btn">
+		<button
+			on:click={downloadIcon}
+			class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900"
+			data-testid="download-btn">
 			<Tooltip text="Download Icon">
 				<DownloadIcon />
 			</Tooltip>

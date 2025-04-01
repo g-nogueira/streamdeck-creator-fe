@@ -9,7 +9,7 @@ function createSelectedCollectionStore() {
 		subscribe,
 		selectDefault: vi.fn(),
 		selectCollection: vi.fn(),
-		addIconToSelectedCollection: vi.fn(),
+		addIconToSelectedCollection: vi.fn()
 	};
 }
 

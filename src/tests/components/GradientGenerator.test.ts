@@ -16,7 +16,10 @@ describe("GradientGenerator", () => {
 	const mockGradient: IconGradient = {
 		type: "linear",
 		angle: 90,
-		stops: [{ position: 0, color: "#ff0000" }, { position: 100, color: "#0000ff" }],
+		stops: [
+			{ position: 0, color: "#ff0000" },
+			{ position: 100, color: "#0000ff" }
+		],
 		cssStyle: "linear-gradient(to right, #ff0000, #0000ff)"
 	};
 
