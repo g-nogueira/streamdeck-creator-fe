@@ -1,8 +1,11 @@
 ## Docker Container
+
 ```bash
 docker compose up -d
 ```
+
 or
+
 ```bash
 docker compose up -d --build
 ```

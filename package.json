@@ -51,7 +51,7 @@
 		"material-scss-colors": "^1.1.2",
 		"postcss": "^8.4.47",
 		"prettier": "^3.1.1",
-		"prettier-plugin-svelte": "^3.1.2",
+		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.5",
 		"request": "^2.88.2",
 		"rimraf": "^4.1.2",
