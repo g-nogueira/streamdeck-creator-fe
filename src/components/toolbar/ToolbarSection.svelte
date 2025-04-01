@@ -3,6 +3,6 @@
 </script>
 
 <div class="flex flex-col gap-3">
-	<h7 class="h7">{title}</h7>
+	<span>{title}</span>
 	<slot />
 </div>
