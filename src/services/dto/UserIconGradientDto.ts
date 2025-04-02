@@ -1,32 +1,24 @@
-import type { IconGradient } from "../../models/IconGradient";
+import type { GradientState, GradientStop, LinearDirection, RadialPosition, RadialShape, RadialSize } from "$lib/gradient";
 
+
+/**
+ * Defines the internal state structure managed by the GradientBuilder.
+ * This is not typically exported directly but used internally.
+ */
 export interface UserIconGradientDto {
-	stops: { position: number; color: string }[];
-	type: "linear" | "radial";
-	angle: number;
-	cssStyle: string;
+	type?: "linear" | "radial";
+	stops: GradientStop[];
+	direction: LinearDirection;
+	shape: RadialShape;
+	size: RadialSize;
+	position: RadialPosition;
 }
 
-export function toDomain(userIconGradientDto: UserIconGradientDto): IconGradient {
-	return {
-		stops: userIconGradientDto.stops.map(stop => ({
-			position: stop.position,
-			color: stop.color
-		})),
-		type: userIconGradientDto.type,
-		angle: userIconGradientDto.angle,
-		cssStyle: userIconGradientDto.cssStyle
-	};
+
+export function toDomain(userIconGradientDto: UserIconGradientDto): GradientState {
+	return userIconGradientDto as GradientState;
 }
 
-export function fromDomain(userIconGradient: IconGradient): UserIconGradientDto {
-	return {
-		stops: userIconGradient.stops.map(stop => ({
-			position: stop.pos,
-			color: stop.color
-		})),
-		type: userIconGradient.type,
-		angle: userIconGradient.angle,
-		cssStyle: userIconGradient.cssStyle
-	};
+export function fromDomain(userIconGradient: GradientState): UserIconGradientDto {
+	return userIconGradient as UserIconGradientDto;
 }

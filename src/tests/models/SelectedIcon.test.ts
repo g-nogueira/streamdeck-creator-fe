@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { fromUserIcon, mkEmpty, type CustomizableIcon } from "./CustomizableIcon";
-import type { UserIcon } from "./UserIcon";
-import type { IconGradient } from "./IconGradient";
+import type { UserIcon } from "../../models/UserIcon";
+import { GradientBuilder } from "$lib/gradient";
+import { fromUserIcon, type CustomizableIcon } from "../../models/CustomizableIcon";
 
 describe("SelectedIcon", () => {
 	const userIcon: UserIcon = {
@@ -20,15 +20,7 @@ describe("SelectedIcon", () => {
 		labelY: 40,
 		pngData: "data:image/png;base64,...",
 		base64Thumbnail: "data:image/png;base64,...",
-		gradient: {
-			stops: [
-				{ color: "#FF0000", position: 0 },
-				{ color: "#00FF00", position: 100 }
-			],
-			type: "linear",
-			angle: 45,
-			cssStyle: "linear-gradient(45deg, #FF0000 0%, #00FF00 100%)"
-		},
+		gradient: new GradientBuilder().linear().direction("90deg").addStop("#ea62e5", 0).addStop("#0000ff", 1).getState(),
 		origin: "mdi",
 		useGradient: false,
 		collectionId: "",
@@ -58,14 +50,7 @@ describe("SelectedIcon", () => {
 				labelY: userIcon.labelY,
 
 				useGradient: userIcon.useGradient,
-				gradient: userIcon.gradient
-					? {
-							stops: userIcon.gradient.stops,
-							type: userIcon.gradient.type,
-							angle: userIcon.gradient.angle,
-							cssStyle: userIcon.gradient.cssStyle
-						}
-					: null
+				gradient:  userIcon.gradient ? new GradientBuilder(userIcon.gradient).getState() : undefined
 			},
 			iconOrigin: userIcon.origin,
 			contentType: userIcon.contentType
@@ -80,7 +65,7 @@ describe("SelectedIcon", () => {
 
 	it("handles UserIcon without gradient correctly", () => {
 		// Arrange
-		const userIconWithoutGradient: UserIcon = { ...userIcon, gradient: null };
+		const userIconWithoutGradient: UserIcon = { ...userIcon, gradient: undefined };
 		const expectedSelectedIcon: CustomizableIcon = {
 			iconId: userIconWithoutGradient.originalIconId,
 			userIconId: userIconWithoutGradient.id,
@@ -98,7 +83,7 @@ describe("SelectedIcon", () => {
 				imgY: userIconWithoutGradient.imgY,
 				labelX: userIconWithoutGradient.labelX,
 				labelY: userIconWithoutGradient.labelY,
-				gradient: null
+				gradient: undefined
 			},
 			iconOrigin: userIconWithoutGradient.origin,
 			contentType: userIconWithoutGradient.contentType

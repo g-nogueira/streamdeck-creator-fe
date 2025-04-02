@@ -4,9 +4,8 @@ import type { Icon } from "../models/Icon";
 import { type UserIcon } from "../models/UserIcon";
 import * as _iconPreview from "../models/CustomizableIcon";
 import _ from "lodash";
-import type { IconGradient } from "../models/IconGradient";
 import { GradientBuilder } from "../lib/gradient/gradientBuilder";
-import type { GradientStop } from "$lib/gradient";
+import type { GradientState, GradientStop } from "$lib/gradient";
 
 let fromIcon = (icon: Icon) => {
 	let iconPreview = _iconPreview.mkEmpty();
@@ -203,7 +202,7 @@ function createIconCustomizationsStore() {
 				return state;
 			}),
 
-		setGradientType: (type: IconGradient["type"]) =>
+		setGradientType: (type: GradientState["type"]) =>
 			update(state => {
 				if (!state) return state;
 
@@ -216,7 +215,7 @@ function createIconCustomizationsStore() {
 				return state;
 			}),
 
-		setLinearGradientDirection: (direction: IconGradient["direction"]) =>
+		setLinearGradientDirection: (direction: GradientState["direction"]) =>
 			update(state => {
 				if (!state) return state;
 

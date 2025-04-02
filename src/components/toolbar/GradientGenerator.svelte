@@ -1,7 +1,6 @@
 <script lang="ts">
 	import _ld from "lodash";
 	import { ColorTranslator } from "colortranslator";
-	import type { IconGradient } from "../../models/IconGradient";
 	import DeleteIcon from "lucide-svelte/icons/trash";
 	import type { GradientState, GradientStop } from "$lib/gradient";
 
@@ -11,7 +10,7 @@
 	export let onAddGradientStop: (stop: GradientStop) => void; // Callback for adding a gradient stop
 	export let onUpdateGradientStopPosition: (index: number, position: number) => void; // Callback for updating stop position
 	export let onRemoveGradientStop: (index: number) => void; // Callback for removing a gradient stop
-	export let onSetGradientType: (type: IconGradient["type"]) => void; // Callback for setting gradient type
+	export let onSetGradientType: (type: GradientState["type"]) => void; // Callback for setting gradient type
 	export let onSetLinearGradientDirection: (angle: string) => void; // Callback for setting gradient angle
 	export let onRecalculateGradientCss: () => void; // Callback for recalculating gradient CSS
 
@@ -108,7 +107,7 @@
 		if (type !== "linear" && type !== "radial") {
 			throw new Error("Invalid gradient type");
 		}
-		onSetGradientType(type as IconGradient["type"]);
+		onSetGradientType(type as GradientState["type"]);
 		onRecalculateGradientCss();
 	}
 </script>

@@ -45,7 +45,7 @@ export function toUserIcon(userIconDto: UserIconDto): UserIcon {
 		pngData: userIconDto.pngData,
 		useGradient: userIconDto.useGradient,
 		base64Thumbnail: userIconDto.base64Thumbnail,
-		gradient: userIconDto.gradient ? _userIconGradientDto.toDomain(userIconDto.gradient) : null,
+		gradient: userIconDto.gradient ? _userIconGradientDto.toDomain(userIconDto.gradient) : undefined,
 		origin: userIconDto.origin,
 		collectionId: userIconDto.collectionId,
 		contentType: userIconDto.contentType

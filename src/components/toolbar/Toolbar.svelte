@@ -5,8 +5,7 @@
 	import IconSprayCan from "lucide-svelte/icons/spray-can";
 	import ToolbarSection from "./ToolbarSection.svelte";
 	import Tooltip from "../common/Tooltip.svelte";
-	import type { IconGradient } from "../../models/IconGradient";
-	import type { GradientStop } from "$lib/gradient";
+	import type { GradientState, GradientStop } from "$lib/gradient";
 
 	const handleAddGradientStop = (stop: GradientStop) => {
 		customizedIcon.addGradientStop(stop);
@@ -20,7 +19,7 @@
 		customizedIcon.removeGradientStop(index);
 	};
 
-	const handleSetGradientType = (type: IconGradient["type"]) => {
+	const handleSetGradientType = (type: GradientState["type"]) => {
 		customizedIcon.setGradientType(type);
 	};
 
