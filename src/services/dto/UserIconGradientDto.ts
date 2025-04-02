@@ -22,7 +22,7 @@ export function toDomain(userIconGradientDto: UserIconGradientDto): IconGradient
 export function fromDomain(userIconGradient: IconGradient): UserIconGradientDto {
 	return {
 		stops: userIconGradient.stops.map(stop => ({
-			position: stop.position,
+			position: stop.pos,
 			color: stop.color
 		})),
 		type: userIconGradient.type,

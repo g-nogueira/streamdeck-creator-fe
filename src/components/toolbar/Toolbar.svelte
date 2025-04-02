@@ -5,7 +5,8 @@
 	import IconSprayCan from "lucide-svelte/icons/spray-can";
 	import ToolbarSection from "./ToolbarSection.svelte";
 	import Tooltip from "../common/Tooltip.svelte";
-	import type { GradientStop, IconGradient } from "../../models/IconGradient";
+	import type { IconGradient } from "../../models/IconGradient";
+	import type { GradientStop } from "$lib/gradient";
 
 	const handleAddGradientStop = (stop: GradientStop) => {
 		customizedIcon.addGradientStop(stop);
@@ -23,8 +24,8 @@
 		customizedIcon.setGradientType(type);
 	};
 
-	const handleSetGradientAngle = (angle: number) => {
-		customizedIcon.setGradientAngle(angle);
+	const handleSetLinearGradientDirection = (direction: string) => {
+		customizedIcon.setLinearGradientDirection(direction);
 	};
 
 	const handleRecalculateGradientCss = () => {
@@ -154,11 +155,12 @@
 			{#if $customizedIcon.styles.useGradient}
 				<GradientGenerator
 					gradient={$customizedIcon.styles.gradient}
+					grandientCss={$customizedIcon.styles.gradientCss}
 					onAddGradientStop={handleAddGradientStop}
 					onUpdateGradientStopPosition={handleUpdateGradientStopPosition}
 					onRemoveGradientStop={handleRemoveGradientStop}
 					onSetGradientType={handleSetGradientType}
-					onSetGradientAngle={handleSetGradientAngle}
+					onSetLinearGradientDirection={handleSetLinearGradientDirection}
 					onRecalculateGradientCss={handleRecalculateGradientCss} />
 			{:else}
 				<div data-testid="solid-fill-controls" class="grid grid-cols-[auto_1fr] gap-2">

@@ -1,5 +1,5 @@
+import type { GradientState } from "$lib/gradient";
 import type { Icon, IconOrigin } from "./Icon";
-import type { IconGradient } from "./IconGradient";
 
 /**
  * Represents a user-created icon.
@@ -24,7 +24,7 @@ export type UserIcon = {
 	labelY: number;
 
 	useGradient: boolean;
-	gradient: IconGradient | null;
+	gradient?: GradientState;
 
 	/** Base64 encoded PNG representation of the user icon. This is what the user downloads */
 	pngData: string;

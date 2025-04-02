@@ -1,10 +1,12 @@
-import { writable, get } from "svelte/store";
+import { writable } from "svelte/store";
 import type { CustomizableIcon } from "../models/CustomizableIcon";
 import type { Icon } from "../models/Icon";
 import { type UserIcon } from "../models/UserIcon";
 import * as _iconPreview from "../models/CustomizableIcon";
 import _ from "lodash";
-import type { GradientStop, IconGradient } from "../models/IconGradient";
+import type { IconGradient } from "../models/IconGradient";
+import { GradientBuilder } from "../lib/gradient/gradientBuilder";
+import type { GradientStop } from "$lib/gradient";
 
 let fromIcon = (icon: Icon) => {
 	let iconPreview = _iconPreview.mkEmpty();
@@ -28,47 +30,25 @@ let fromUserIcon = (userIcon: UserIcon) => {
  */
 const updateSvgFill =
 	(color: string) =>
-	(svgContent: string): string => {
-		if (typeof window === "undefined") {
-			console.error("Trying to use DomParser on the server side. Returning the SVG content as is.");
-			return svgContent;
-		}
-		const parser = new DOMParser();
-		const doc = parser.parseFromString(svgContent, "image/svg+xml");
-		const svgElement = doc.querySelectorAll("svg");
+		(svgContent: string): string => {
+			if (typeof window === "undefined") {
+				console.error("Trying to use DomParser on the server side. Returning the SVG content as is.");
+				return svgContent;
+			}
+			const parser = new DOMParser();
+			const doc = parser.parseFromString(svgContent, "image/svg+xml");
+			const svgElement = doc.querySelectorAll("svg");
 
-		_.forEach(svgElement, element => {
-			element.setAttribute("fill", color);
-		});
+			_.forEach(svgElement, element => {
+				element.setAttribute("fill", color);
+			});
 
-		return new XMLSerializer().serializeToString(doc);
-	};
+			return new XMLSerializer().serializeToString(doc);
+		};
 
 const removeSvgSizeAttributes = (svgContent: string): string => {
 	return svgContent.replace(/(width|height)="[^"]*"/g, "");
 };
-
-function mkDefaultGradient(): IconGradient {
-	return {
-		stops: [
-			{ position: 0, color: "#fc466b" },
-			{ position: 100, color: "#3f5efb" }
-		],
-		type: "linear",
-		angle: 90,
-		cssStyle: "linear-gradient(90deg, #fc466b 0%, #3f5efb 100%)"
-	};
-}
-
-function mkCssStyle({ stops, type, angle }: IconGradient): string {
-	if (!type) {
-		return "linear-gradient(90deg, #45fc8b 0%, #212a54 100%)";
-	}
-
-	return type === "linear"
-		? `linear-gradient(${angle}deg, ${stops.map(s => `${s.color} ${s.position}%`).join(", ")})`
-		: "radial-gradient(circle, " + stops.map(s => `${s.color} ${s.position}%`).join(", ") + ")";
-}
 
 function createIconCustomizationsStore() {
 	const { subscribe, set, update } = writable<CustomizableIcon | null>(null);
@@ -145,50 +125,38 @@ function createIconCustomizationsStore() {
 				return state;
 			}),
 
-		upsertGradient: (gradient: Partial<IconGradient>) => {
-			const uiState = get({ subscribe });
-
-			if (!uiState || !uiState.styles) throw new Error("IconPreview state is not initialized yet.");
-
-			const oldGradient: any = _.cloneDeep(uiState.styles.gradient || {});
-
-			const newUiState = ((state: CustomizableIcon) => {
-				state.styles.gradient ||= mkDefaultGradient();
-				state.styles.gradient = { ...state.styles.gradient, ...gradient };
-				state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
-				return state;
-			})(uiState);
-
-			// Checkes if any prop has changed
-			if (_.isEqual(oldGradient, newUiState.styles.gradient)) return;
-
-			verboseMode && console.log("Upserting gradient");
-
-			update(_ => newUiState);
-		},
-
 		addGradientStop: (stop: GradientStop) =>
 			update(state => {
 				if (!state) return state;
 
 				verboseMode && console.log("Adding gradient stop");
 
-				state.styles.gradient ||= mkDefaultGradient();
-				state.styles.gradient.stops = [...state.styles.gradient.stops, stop].sort((a, b) => a.position - b.position);
-				state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const updatedGradient = builder.addStop(stop.color, stop.pos).getState();
+
+				state.styles.gradient = updatedGradient;
+
 				return state;
 			}),
 
-		updateGradientStopPosition: (index: number, position: GradientStop["position"]) =>
+		updateGradientStopPosition: (index: number, position: GradientStop["pos"]) =>
 			update(state => {
 				if (!state) return state;
 
 				verboseMode && console.log("Updating gradient stop position");
 
-				state.styles.gradient ||= mkDefaultGradient();
-				state.styles.gradient.stops[index].position = position;
-				state.styles.gradient.stops = state.styles.gradient.stops.sort((a, b) => a.position - b.position);
-				state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+				if (state.styles.gradient === undefined) {
+					throw new Error("Gradient is not defined");
+				}
+
+				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const stops = [...builder.getStops()];
+				stops[index].pos = position;
+
+				const updatedGradient = builder.withStops(stops).getState();
+
+				state.styles.gradient = updatedGradient;
+
 				return state;
 			}),
 
@@ -198,9 +166,18 @@ function createIconCustomizationsStore() {
 
 				verboseMode && console.log("Updating gradient stop color");
 
-				state.styles.gradient ||= mkDefaultGradient();
-				state.styles.gradient.stops[index].color = color;
-				state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+				if (state.styles.gradient === undefined) {
+					throw new Error("Gradient is not defined");
+				}
+
+				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const stops = [...builder.getStops()];
+				stops[index].color = color;
+
+				const updatedGradient = builder.withStops(stops).getState();
+
+				state.styles.gradient = updatedGradient;
+
 				return state;
 			}),
 
@@ -210,9 +187,19 @@ function createIconCustomizationsStore() {
 
 				verboseMode && console.log("Removing gradient stop");
 
-				state.styles.gradient ||= mkDefaultGradient();
-				state.styles.gradient.stops = state.styles.gradient.stops.filter((_, i) => i !== index);
-				state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+				if (state.styles.gradient === undefined) {
+					throw new Error("Gradient is not defined");
+				}
+
+				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const stops = [...builder.getStops()];
+
+				stops.splice(index, 1);
+
+				const updatedGradient = builder.withStops(stops).getState();
+
+				state.styles.gradient = updatedGradient;
+
 				return state;
 			}),
 
@@ -222,21 +209,24 @@ function createIconCustomizationsStore() {
 
 				verboseMode && console.log("Setting gradient type");
 
-				state.styles.gradient ||= mkDefaultGradient();
-				state.styles.gradient.type = type;
-				state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const updatedGradient = type === "linear" ? builder.linear() : builder.radial();
+
+				state.styles.gradient = updatedGradient.getState();
 				return state;
 			}),
 
-		setGradientAngle: (angle: IconGradient["angle"]) =>
+		setLinearGradientDirection: (direction: IconGradient["direction"]) =>
 			update(state => {
 				if (!state) return state;
 
 				verboseMode && console.log("Setting gradient angle");
 
-				state.styles.gradient ||= mkDefaultGradient();
-				state.styles.gradient.angle = angle;
-				state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const updatedGradient = builder.direction(direction).getState();
+
+				state.styles.gradient = updatedGradient;
+
 				return state;
 			}),
 
@@ -246,8 +236,11 @@ function createIconCustomizationsStore() {
 
 				verboseMode && console.log("Recalculating gradient css");
 
-				state.styles.gradient ||= mkDefaultGradient();
-				state.styles.gradient.cssStyle = mkCssStyle(state.styles.gradient);
+				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const updatedGradient = builder.getCss();
+
+				state.styles.gradientCss = updatedGradient;
+
 				return state;
 			}),
 
