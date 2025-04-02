@@ -1,24 +1,24 @@
 import { render, fireEvent, screen, act } from "@testing-library/svelte";
 import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from "vitest";
 import GradientGenerator from "../../components/toolbar/GradientGenerator.svelte";
-import type { IconGradient, GradientStop } from "../../models/IconGradient";
+import { GradientBuilder } from "$lib/gradient";
 
 describe("GradientGenerator", () => {
 	let mockOnAddGradientStop: ReturnType<typeof vi.fn>;
 	let mockOnUpdateGradientStopPosition: ReturnType<typeof vi.fn>;
 	let mockOnRemoveGradientStop: ReturnType<typeof vi.fn>;
 	let mockOnSetGradientType: ReturnType<typeof vi.fn>;
-	let mockOnSetGradientAngle: ReturnType<typeof vi.fn>;
+	let mockOnSetLinearGradientDirection: ReturnType<typeof vi.fn>;
 	let mockOnRecalculateGradientCss: ReturnType<typeof vi.fn>;
 
 	let mockGetContext: Mock;
 
-	const mockGradient: IconGradient = {
-		type: "linear",
-		angle: 90,
-		stops: [{ position: 0, color: "#ff0000" }, { position: 100, color: "#0000ff" }],
-		cssStyle: "linear-gradient(to right, #ff0000, #0000ff)"
-	};
+	const mockGradient = new GradientBuilder()
+		.linear()
+		.direction("90deg")
+		.addStop("#ea62e5", 0)
+		.addStop("#0000ff", 1)
+		.getState();
 
 	beforeEach(() => {
 		// Mock callback functions
@@ -26,7 +26,7 @@ describe("GradientGenerator", () => {
 		mockOnUpdateGradientStopPosition = vi.fn();
 		mockOnRemoveGradientStop = vi.fn();
 		mockOnSetGradientType = vi.fn();
-		mockOnSetGradientAngle = vi.fn();
+		mockOnSetLinearGradientDirection = vi.fn();
 		mockOnRecalculateGradientCss = vi.fn();
 	});
 
@@ -57,7 +57,7 @@ describe("GradientGenerator", () => {
 			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
 			onRemoveGradientStop: mockOnRemoveGradientStop,
 			onSetGradientType: mockOnSetGradientType,
-			onSetGradientAngle: mockOnSetGradientAngle,
+			onSetLinearGradientDirection: mockOnSetLinearGradientDirection,
 			onRecalculateGradientCss: mockOnRecalculateGradientCss
 		});
 		const gradientBar = screen.getByTestId("gradient-bar");
@@ -77,7 +77,7 @@ describe("GradientGenerator", () => {
 			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
 			onRemoveGradientStop: mockOnRemoveGradientStop,
 			onSetGradientType: mockOnSetGradientType,
-			onSetGradientAngle: mockOnSetGradientAngle,
+			onSetLinearGradientDirection: mockOnSetLinearGradientDirection,
 			onRecalculateGradientCss: mockOnRecalculateGradientCss
 		});
 		const deleteButton = screen.getAllByTestId("delete-stop-button")[0];
@@ -97,7 +97,7 @@ describe("GradientGenerator", () => {
 			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
 			onRemoveGradientStop: mockOnRemoveGradientStop,
 			onSetGradientType: mockOnSetGradientType,
-			onSetGradientAngle: mockOnSetGradientAngle,
+			onSetLinearGradientDirection: mockOnSetLinearGradientDirection,
 			onRecalculateGradientCss: mockOnRecalculateGradientCss
 		});
 		const stopHandler = screen.getAllByTestId("gradient-stop-handler")[0];
@@ -119,7 +119,7 @@ describe("GradientGenerator", () => {
 			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
 			onRemoveGradientStop: mockOnRemoveGradientStop,
 			onSetGradientType: mockOnSetGradientType,
-			onSetGradientAngle: mockOnSetGradientAngle,
+			onSetLinearGradientDirection: mockOnSetLinearGradientDirection,
 			onRecalculateGradientCss: mockOnRecalculateGradientCss
 		});
 		const colorInput = screen.getAllByTestId("stop-color-input")[0];
@@ -139,7 +139,7 @@ describe("GradientGenerator", () => {
 			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
 			onRemoveGradientStop: mockOnRemoveGradientStop,
 			onSetGradientType: mockOnSetGradientType,
-			onSetGradientAngle: mockOnSetGradientAngle,
+			onSetLinearGradientDirection: mockOnSetLinearGradientDirection,
 			onRecalculateGradientCss: mockOnRecalculateGradientCss
 		});
 		const select = screen.getByTestId("gradient-type-select");
@@ -153,14 +153,14 @@ describe("GradientGenerator", () => {
 
 	it("shows linear gradient options when linear type is selected", async () => {
 		// Arrange
-		const linearGradient = { ...mockGradient, type: "linear" } as IconGradient;
+		const linearGradient = new GradientBuilder().linear().getState();
 		render(GradientGenerator, {
 			gradient: linearGradient,
 			onAddGradientStop: mockOnAddGradientStop,
 			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
 			onRemoveGradientStop: mockOnRemoveGradientStop,
 			onSetGradientType: mockOnSetGradientType,
-			onSetGradientAngle: mockOnSetGradientAngle,
+			onSetLinearGradientDirection: mockOnSetLinearGradientDirection,
 			onRecalculateGradientCss: mockOnRecalculateGradientCss
 		});
 
@@ -170,14 +170,14 @@ describe("GradientGenerator", () => {
 
 	it("hides linear gradient options when radial type is selected", async () => {
 		// Arrange
-		const radialGradient = { ...mockGradient, type: "radial" } as IconGradient;
+		const radialGradient = new GradientBuilder().radial().getState();
 		render(GradientGenerator, {
 			gradient: radialGradient,
 			onAddGradientStop: mockOnAddGradientStop,
 			onUpdateGradientStopPosition: mockOnUpdateGradientStopPosition,
 			onRemoveGradientStop: mockOnRemoveGradientStop,
 			onSetGradientType: mockOnSetGradientType,
-			onSetGradientAngle: mockOnSetGradientAngle,
+			onSetLinearGradientDirection: mockOnSetLinearGradientDirection,
 			onRecalculateGradientCss: mockOnRecalculateGradientCss
 		});
 

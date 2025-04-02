@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { toUserIcon, toIcon, type MdiIcon } from "./MdiIcon";
-import { mkEmpty as mkEmptyUserIcon } from "./UserIcon";
-import type { UserIcon } from "./UserIcon";
-import type { Icon } from "./Icon";
+import { toUserIcon, toIcon, type MdiIcon } from "../../models/MdiIcon";
+import { mkEmpty as mkEmptyUserIcon } from "../../models/UserIcon";
+import type { UserIcon } from "../../models/UserIcon";
+import type { Icon } from "../../models/Icon";
 
 describe("MdiIcon", () => {
 	const mdiIcon: MdiIcon = {
@@ -31,7 +31,7 @@ describe("MdiIcon", () => {
 			labelX: 0,
 			labelY: 0,
 			useGradient: false,
-			gradient: null,
+			gradient: undefined,
 			pngData: "",
 			base64Thumbnail: "",
 			originalIconId: mdiIcon.id,

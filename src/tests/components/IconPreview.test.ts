@@ -12,7 +12,10 @@ describe("Background Customization", () => {
 
 	it("applies background color correctly", () => {
 		// Arrange
-		const bgColorState = { ...mockState, styles: { ...mockState.styles, backgroundColor: "#FF0000" } } as CustomizableIcon;
+		const bgColorState = {
+			...mockState,
+			styles: { ...mockState.styles, backgroundColor: "#FF0000" }
+		} as CustomizableIcon;
 
 		// Act
 		render(IconPreview, { customizableIcon: bgColorState });
@@ -26,7 +29,7 @@ describe("Background Customization", () => {
 		// Arrange
 		const bgGradientState = { ...mockState } as CustomizableIcon;
 		bgGradientState.styles.useGradient = true;
-		bgGradientState.styles.gradient!.cssStyle = "linear-gradient(to right, red, blue)";
+		bgGradientState.styles.gradientCss = "linear-gradient(to right, red, blue)";
 
 		// Act
 		render(IconPreview, { customizableIcon: bgGradientState });

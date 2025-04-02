@@ -15,7 +15,7 @@ afterEach(vi.restoreAllMocks);
 
 describe("IconList", () => {
 	it("correctly renders the list of icons in the store", async () => {
-		let icons = new Array(50).fill({ ..._icon.mkEmpty() })
+		let icons = new Array(50).fill({ ..._icon.mkEmpty() });
 		render(IconList, { icons, onSelectIcon: vi.fn() });
 
 		expect(screen.getAllByTestId("icon-button").length).toEqual(50);

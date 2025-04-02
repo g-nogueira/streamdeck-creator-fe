@@ -7,7 +7,7 @@
 	let backgroundStyle = "";
 
 	$: if (customizableIcon?.styles.useGradient && customizableIcon?.styles.gradient) {
-		backgroundStyle = `background: ${customizableIcon.styles.gradient.cssStyle};`;
+		backgroundStyle = `background: ${customizableIcon.styles.gradientCss};`;
 	} else {
 		backgroundStyle = `background: ${customizableIcon?.styles.backgroundColor};`;
 	}

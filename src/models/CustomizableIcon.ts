@@ -1,7 +1,7 @@
 import * as UUID from "$lib/utils/uuid";
 import type { IconOrigin } from "./Icon";
 import type { UserIcon } from "./UserIcon";
-import type { IconGradient } from "./IconGradient";
+import { type GradientState, GradientBuilder } from "$lib/gradient";
 
 /**
  * Represents an icon, either user-created or original, that has been selected for modification in the app.
@@ -26,7 +26,8 @@ export type CustomizableIcon = {
 		labelY: number;
 
 		useGradient: boolean;
-		gradient: IconGradient | null;
+		gradient?: GradientState;
+		gradientCss?: string;
 	};
 
 	/** For ex, 'image/svg+xml' */
@@ -59,15 +60,7 @@ export function mkEmpty(): CustomizableIcon {
 			labelY: 0,
 
 			useGradient: false,
-			gradient: {
-				type: "linear",
-				angle: 90,
-				cssStyle: "linear-gradient(to right, #ea62e5, #0000ff)",
-				stops: [
-					{ position: 0, color: "#ea62e5" },
-					{ position: 100, color: "#0000ff" }
-				]
-			}
+			gradient: new GradientBuilder().linear().direction("90deg").addStop("#ea62e5", 0).addStop("#0000ff", 1).getState()
 		},
 
 		contentType: "image/svg+xml",
@@ -94,14 +87,7 @@ export function fromUserIcon(userIcon: UserIcon, collectionId: string): Customiz
 			labelX: userIcon.labelX,
 			labelY: userIcon.labelY,
 			useGradient: userIcon.useGradient,
-			gradient: userIcon.gradient
-				? {
-						stops: userIcon.gradient.stops,
-						type: userIcon.gradient.type,
-						angle: userIcon.gradient.angle,
-						cssStyle: userIcon.gradient.cssStyle
-					}
-				: null
+			gradient: userIcon.gradient ? new GradientBuilder(userIcon.gradient).getState() : undefined
 		},
 
 		svgContent: userIcon.svgContent,

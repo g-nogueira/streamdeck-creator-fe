@@ -1,5 +1,5 @@
+import { GradientBuilder, type GradientState } from "$lib/gradient";
 import type { Icon, IconOrigin } from "./Icon";
-import type { IconGradient } from "./IconGradient";
 
 /**
  * Represents a user-created icon.
@@ -24,7 +24,7 @@ export type UserIcon = {
 	labelY: number;
 
 	useGradient: boolean;
-	gradient: IconGradient | null;
+	gradient?: GradientState;
 
 	/** Base64 encoded PNG representation of the user icon. This is what the user downloads */
 	pngData: string;
@@ -57,7 +57,7 @@ export function createFromIcon(icon: Icon): UserIcon {
 		labelX: 0,
 		labelY: 0,
 		useGradient: false,
-		gradient: null,
+		gradient: new GradientBuilder().linear().direction("90deg").addStop("#ea62e5", 0).addStop("#0000ff", 1).getState(),
 		pngData: "",
 		base64Thumbnail: "",
 		origin: icon.origin,
@@ -82,7 +82,7 @@ export function mkEmpty(): UserIcon {
 		labelX: 0,
 		labelY: 0,
 		useGradient: false,
-		gradient: null,
+		gradient: undefined,
 		pngData: "",
 		base64Thumbnail: "",
 		origin: "mdi",

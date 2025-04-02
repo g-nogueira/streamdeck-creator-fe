@@ -5,7 +5,7 @@
 	import IconSprayCan from "lucide-svelte/icons/spray-can";
 	import ToolbarSection from "./ToolbarSection.svelte";
 	import Tooltip from "../common/Tooltip.svelte";
-	import type { GradientStop, IconGradient } from "../../models/IconGradient";
+	import type { GradientState, GradientStop } from "$lib/gradient";
 
 	const handleAddGradientStop = (stop: GradientStop) => {
 		customizedIcon.addGradientStop(stop);
@@ -19,12 +19,12 @@
 		customizedIcon.removeGradientStop(index);
 	};
 
-	const handleSetGradientType = (type: IconGradient["type"]) => {
+	const handleSetGradientType = (type: GradientState["type"]) => {
 		customizedIcon.setGradientType(type);
 	};
 
-	const handleSetGradientAngle = (angle: number) => {
-		customizedIcon.setGradientAngle(angle);
+	const handleSetLinearGradientDirection = (direction: string) => {
+		customizedIcon.setLinearGradientDirection(direction);
 	};
 
 	const handleRecalculateGradientCss = () => {
@@ -131,7 +131,7 @@
 				<button
 					data-testid="button-use-solid-fill"
 					type="button"
-					on:click={() => customizedIcon.setUseGradient(false)}
+					on:click={() => (customizedIcon.setUseGradient(false), handleRecalculateGradientCss())}
 					class="{$customizedIcon.styles.useGradient
 						? ''
 						: 'bg-secondary-950'} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
@@ -142,7 +142,7 @@
 				<button
 					data-testid="button-use-gradient-fill"
 					type="button"
-					on:click={() => customizedIcon.setUseGradient(true)}
+					on:click={() => (customizedIcon.setUseGradient(true), handleRecalculateGradientCss())}
 					class="{!$customizedIcon.styles.useGradient
 						? ''
 						: 'bg-secondary-950'} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
@@ -154,11 +154,12 @@
 			{#if $customizedIcon.styles.useGradient}
 				<GradientGenerator
 					gradient={$customizedIcon.styles.gradient}
+					gradientCss={$customizedIcon.styles.gradientCss}
 					onAddGradientStop={handleAddGradientStop}
 					onUpdateGradientStopPosition={handleUpdateGradientStopPosition}
 					onRemoveGradientStop={handleRemoveGradientStop}
 					onSetGradientType={handleSetGradientType}
-					onSetGradientAngle={handleSetGradientAngle}
+					onSetLinearGradientDirection={handleSetLinearGradientDirection}
 					onRecalculateGradientCss={handleRecalculateGradientCss} />
 			{:else}
 				<div data-testid="solid-fill-controls" class="grid grid-cols-[auto_1fr] gap-2">
