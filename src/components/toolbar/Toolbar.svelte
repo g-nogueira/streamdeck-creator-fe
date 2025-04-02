@@ -132,7 +132,7 @@
 				<button
 					data-testid="button-use-solid-fill"
 					type="button"
-					on:click={() => customizedIcon.setUseGradient(false)}
+					on:click={() => (customizedIcon.setUseGradient(false), handleRecalculateGradientCss())}
 					class="{$customizedIcon.styles.useGradient
 						? ''
 						: 'bg-secondary-950'} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
@@ -143,7 +143,7 @@
 				<button
 					data-testid="button-use-gradient-fill"
 					type="button"
-					on:click={() => customizedIcon.setUseGradient(true)}
+					on:click={() => (customizedIcon.setUseGradient(true), handleRecalculateGradientCss())}
 					class="{!$customizedIcon.styles.useGradient
 						? ''
 						: 'bg-secondary-950'} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
