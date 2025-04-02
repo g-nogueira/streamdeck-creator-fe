@@ -154,7 +154,7 @@
 			{#if $customizedIcon.styles.useGradient}
 				<GradientGenerator
 					gradient={$customizedIcon.styles.gradient}
-					grandientCss={$customizedIcon.styles.gradientCss}
+					gradientCss={$customizedIcon.styles.gradientCss}
 					onAddGradientStop={handleAddGradientStop}
 					onUpdateGradientStopPosition={handleUpdateGradientStopPosition}
 					onRemoveGradientStop={handleRemoveGradientStop}

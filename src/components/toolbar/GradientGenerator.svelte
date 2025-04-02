@@ -6,7 +6,7 @@
 
 	// Props
 	export let gradient: GradientState | null = null; // Gradient data passed as a prop
-	export let grandientCss: string | null = null; // CSS string for the gradient
+	export let gradientCss: string | null = null; // CSS string for the gradient
 	export let onAddGradientStop: (stop: GradientStop) => void; // Callback for adding a gradient stop
 	export let onUpdateGradientStopPosition: (index: number, position: number) => void; // Callback for updating stop position
 	export let onRemoveGradientStop: (index: number) => void; // Callback for removing a gradient stop
@@ -151,7 +151,7 @@
 			if (event.target !== event.currentTarget) return; // Prevent clicks on child elements
 			addStop(event); // Add a new gradient stop
 		}}
-		style="background: {grandientCss || 'transparent'}">
+		style="background: {gradientCss || 'transparent'}">
 		{#each gradient?.stops || [] as stop, index}
 			<!-- Gradient stop handlers -->
 			<div
