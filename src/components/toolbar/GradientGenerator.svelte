@@ -1,5 +1,4 @@
 <script lang="ts">
-	import _ld from "lodash";
 	import { ColorTranslator } from "colortranslator";
 	import DeleteIcon from "lucide-svelte/icons/trash";
 	import type { GradientState, GradientStop } from "$lib/gradient";
