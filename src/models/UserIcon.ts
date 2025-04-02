@@ -57,13 +57,7 @@ export function createFromIcon(icon: Icon): UserIcon {
 		labelX: 0,
 		labelY: 0,
 		useGradient: false,
-		gradient:
-			new GradientBuilder()
-				.linear()
-				.direction("90deg")
-				.addStop("#ea62e5", 0)
-				.addStop("#0000ff", 1)
-				.getState(),
+		gradient: new GradientBuilder().linear().direction("90deg").addStop("#ea62e5", 0).addStop("#0000ff", 1).getState(),
 		pngData: "",
 		base64Thumbnail: "",
 		origin: icon.origin,

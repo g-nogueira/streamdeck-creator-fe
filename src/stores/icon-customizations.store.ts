@@ -30,21 +30,21 @@ let fromUserIcon = (userIcon: UserIcon) => {
  */
 const updateSvgFill =
 	(color: string) =>
-		(svgContent: string): string => {
-			if (typeof window === "undefined") {
-				console.error("Trying to use DomParser on the server side. Returning the SVG content as is.");
-				return svgContent;
-			}
-			const parser = new DOMParser();
-			const doc = parser.parseFromString(svgContent, "image/svg+xml");
-			const svgElement = doc.querySelectorAll("svg");
+	(svgContent: string): string => {
+		if (typeof window === "undefined") {
+			console.error("Trying to use DomParser on the server side. Returning the SVG content as is.");
+			return svgContent;
+		}
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(svgContent, "image/svg+xml");
+		const svgElement = doc.querySelectorAll("svg");
 
-			_.forEach(svgElement, element => {
-				element.setAttribute("fill", color);
-			});
+		_.forEach(svgElement, element => {
+			element.setAttribute("fill", color);
+		});
 
-			return new XMLSerializer().serializeToString(doc);
-		};
+		return new XMLSerializer().serializeToString(doc);
+	};
 
 const removeSvgSizeAttributes = (svgContent: string): string => {
 	return svgContent.replace(/(width|height)="[^"]*"/g, "");
@@ -131,7 +131,7 @@ function createIconCustomizationsStore() {
 
 				verboseMode && console.log("Adding gradient stop");
 
-				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const builder = (state.styles.gradient && new GradientBuilder(state.styles.gradient)) || new GradientBuilder();
 				const updatedGradient = builder.addStop(stop.color, stop.pos).getState();
 
 				state.styles.gradient = updatedGradient;
@@ -149,7 +149,7 @@ function createIconCustomizationsStore() {
 					throw new Error("Gradient is not defined");
 				}
 
-				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const builder = (state.styles.gradient && new GradientBuilder(state.styles.gradient)) || new GradientBuilder();
 				const stops = [...builder.getStops()];
 				stops[index].pos = position;
 
@@ -170,7 +170,7 @@ function createIconCustomizationsStore() {
 					throw new Error("Gradient is not defined");
 				}
 
-				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const builder = (state.styles.gradient && new GradientBuilder(state.styles.gradient)) || new GradientBuilder();
 				const stops = [...builder.getStops()];
 				stops[index].color = color;
 
@@ -191,7 +191,7 @@ function createIconCustomizationsStore() {
 					throw new Error("Gradient is not defined");
 				}
 
-				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const builder = (state.styles.gradient && new GradientBuilder(state.styles.gradient)) || new GradientBuilder();
 				const stops = [...builder.getStops()];
 
 				stops.splice(index, 1);
@@ -209,7 +209,7 @@ function createIconCustomizationsStore() {
 
 				verboseMode && console.log("Setting gradient type");
 
-				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const builder = (state.styles.gradient && new GradientBuilder(state.styles.gradient)) || new GradientBuilder();
 				const updatedGradient = type === "linear" ? builder.linear() : builder.radial();
 
 				state.styles.gradient = updatedGradient.getState();
@@ -222,7 +222,7 @@ function createIconCustomizationsStore() {
 
 				verboseMode && console.log("Setting gradient angle");
 
-				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const builder = (state.styles.gradient && new GradientBuilder(state.styles.gradient)) || new GradientBuilder();
 				const updatedGradient = builder.direction(direction).getState();
 
 				state.styles.gradient = updatedGradient;
@@ -236,7 +236,7 @@ function createIconCustomizationsStore() {
 
 				verboseMode && console.log("Recalculating gradient css");
 
-				const builder = state.styles.gradient && new GradientBuilder(state.styles.gradient) || new GradientBuilder();
+				const builder = (state.styles.gradient && new GradientBuilder(state.styles.gradient)) || new GradientBuilder();
 				const updatedGradient = builder.getCss();
 
 				state.styles.gradientCss = updatedGradient;

@@ -4,7 +4,7 @@ export type IconGradient = {
 	stops: GradientStop[];
 	angle: number;
 	cssStyle: string;
-	type: 'linear' | 'radial';
+	type: "linear" | "radial";
 	direction: LinearDirection;
 	shape: RadialShape;
 	size: RadialSize;

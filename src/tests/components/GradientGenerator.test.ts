@@ -13,13 +13,12 @@ describe("GradientGenerator", () => {
 
 	let mockGetContext: Mock;
 
-	const mockGradient =
-		new GradientBuilder()
-			.linear()
-			.direction("90deg")
-			.addStop("#ea62e5", 0)
-			.addStop("#0000ff", 1)
-			.getState();
+	const mockGradient = new GradientBuilder()
+		.linear()
+		.direction("90deg")
+		.addStop("#ea62e5", 0)
+		.addStop("#0000ff", 1)
+		.getState();
 
 	beforeEach(() => {
 		// Mock callback functions

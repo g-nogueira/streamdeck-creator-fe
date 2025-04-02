@@ -57,7 +57,7 @@
 	 */
 	function addStop(event: MouseEvent) {
 		const bar = event.currentTarget as HTMLDivElement;
-		const clickPosition = (event.offsetX / bar.clientWidth); // Normalize position to 0-1 range
+		const clickPosition = event.offsetX / bar.clientWidth; // Normalize position to 0-1 range
 
 		// Get the color at the clicked position
 		const colorAtClick = getColorAtPosition(clickPosition);
@@ -79,9 +79,9 @@
 	function updateStopPosition(index: number, event: MouseEvent) {
 		const bar = document.getElementById("gradientBar") as HTMLDivElement;
 		const rect = bar.getBoundingClientRect();
-		
+
 		// Calculate the new position based on the mouse position
-		const newPosition = Math.min(Math.max(((event.clientX - rect.left) / bar.clientWidth), 0), 1);
+		const newPosition = Math.min(Math.max((event.clientX - rect.left) / bar.clientWidth, 0), 1);
 
 		// Round the position to two decimal places
 		const roundedPosition = Math.round(newPosition * 100) / 100;

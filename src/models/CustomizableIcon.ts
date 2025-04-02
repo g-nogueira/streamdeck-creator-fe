@@ -60,13 +60,7 @@ export function mkEmpty(): CustomizableIcon {
 			labelY: 0,
 
 			useGradient: false,
-			gradient:
-				new GradientBuilder()
-					.linear()
-					.direction("90deg")
-					.addStop("#ea62e5", 0)
-					.addStop("#0000ff", 1)
-					.getState()
+			gradient: new GradientBuilder().linear().direction("90deg").addStop("#ea62e5", 0).addStop("#0000ff", 1).getState()
 		},
 
 		contentType: "image/svg+xml",
@@ -75,8 +69,7 @@ export function mkEmpty(): CustomizableIcon {
 }
 export function fromUserIcon(userIcon: UserIcon, collectionId: string): CustomizableIcon {
 	return {
-		iconId: userIcon
-			.originalIconId,
+		iconId: userIcon.originalIconId,
 		userIconId: userIcon.id,
 		userIconCollectionId: collectionId,
 

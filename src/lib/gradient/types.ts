@@ -23,18 +23,14 @@ export type LinearDirection = string;
 /**
  * Possible shape values for radial gradients.
  */
-export type RadialShape = 'circle' | 'ellipse';
+export type RadialShape = "circle" | "ellipse";
 
 /**
  * Possible size keywords for radial gradients.
  * Refer to CSS radial-gradient documentation for details:
  * https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/radial-gradient#size
  */
-export type RadialSizeKeyword =
-	| 'closest-side'
-	| 'closest-corner'
-	| 'farthest-side'
-	| 'farthest-corner';
+export type RadialSizeKeyword = "closest-side" | "closest-corner" | "farthest-side" | "farthest-corner";
 
 /**
  * Represents the size of a radial gradient (keyword or potentially length/percentage in the future).
@@ -54,7 +50,7 @@ export type RadialPosition = string;
  * This is not typically exported directly but used internally.
  */
 export interface GradientState {
-	type?: 'linear' | 'radial';
+	type?: "linear" | "radial";
 	stops: GradientStop[];
 	direction: LinearDirection; // Default 'to bottom'
 	shape: RadialShape; // Default 'ellipse'
