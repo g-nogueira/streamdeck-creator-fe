@@ -41,7 +41,7 @@
 		ctx!.fillRect(0, 0, 1, canvas.height);
 
 		// Calculate the vertical position on the canvas based on the input position
-		const y = (position / 100) * canvas.height;
+		const y = position * canvas.height;
 
 		// Get the color data at the calculated position
 		const imageData = ctx!.getImageData(0, y, 1, 1).data;
@@ -56,7 +56,7 @@
 	 */
 	function addStop(event: MouseEvent) {
 		const bar = event.currentTarget as HTMLDivElement;
-		const clickPosition = event.offsetX / bar.clientWidth; // Normalize position to 0-1 range
+		const clickPosition = event.offsetX / bar.clientWidth;
 
 		// Get the color at the clicked position
 		const colorAtClick = getColorAtPosition(clickPosition);
