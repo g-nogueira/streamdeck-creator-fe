@@ -29,7 +29,7 @@ describe("Background Customization", () => {
 		// Arrange
 		const bgGradientState = { ...mockState } as CustomizableIcon;
 		bgGradientState.styles.useGradient = true;
-		bgGradientState.styles.gradient!.cssStyle = "linear-gradient(to right, red, blue)";
+		bgGradientState.styles.gradientCss = "linear-gradient(to right, red, blue)";
 
 		// Act
 		render(IconPreview, { customizableIcon: bgGradientState });
