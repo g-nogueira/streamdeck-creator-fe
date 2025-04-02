@@ -15,9 +15,6 @@ type TinyGradientStop = tinygradient.StopInput;
 
 // Helper to map our stop format to tinygradient's, though they might be compatible
 function mapStopsToTinygradient(stops: GradientStop[]): TinyGradientStop[] {
-    // tinygradient likely expects {color: string, pos: number (0-1)} which matches our GradientStop
-    // If tinygradient had a different structure, we would map here.
-    // For now, assume direct compatibility or slight adjustments if needed.
     // Ensure positions are clamped between 0 and 1 just in case.
     return stops.map(stop => ({
         color: stop.color,
@@ -61,24 +58,55 @@ export class GradientBuilder {
 
     /**
      * Creates a shallow clone of the current state and returns a new Builder instance.
-     * Handles creating new array for stops to ensure immutability.
+       * Handles creating new array for stops to ensure immutability.
      */
     private clone(updates: Partial<GradientState>): GradientBuilder {
         const newState: GradientState = {
             ...this.state,
             ...updates,
         };
+
         // Ensure the stops array is a new instance if stops weren't part of the update
-        // or if they were, ensure the provided one is used.
+        // or if they were, ensure the provided one is used and cloned defensively.
         if (!updates.stops) {
+            // If no new stops provided, clone existing ones
             newState.stops = [...this.state.stops];
         } else {
-            // Ensure the passed stops array is cloned if it came from outside potentially
+            // If new stops are provided, ensure we use a copy of that array
             newState.stops = [...updates.stops];
         }
 
         return new GradientBuilder(newState);
     }
+
+    // --- NEW: Stop Access and Replacement ---
+
+    /**
+     * Gets a copy of the current gradient stops.
+     * @returns A new array containing the current GradientStop objects.
+     */
+    getStops(): GradientStop[] {
+        // Return a shallow copy to prevent external mutation of internal state
+        return [...this.state.stops];
+    }
+
+    /**
+     * Creates a new GradientBuilder instance with a completely replaced set of stops.
+     * This is useful for operations like updating or reordering stops.
+     * @param newStops The new array of GradientStop objects.
+     * @returns A new GradientBuilder instance with the specified stops.
+     */
+    withStops(newStops: GradientStop[]): GradientBuilder {
+
+        // Ensure the stops are ordered
+        newStops.sort((a, b) => a.pos - b.pos);
+
+        // Use clone, providing the new stops array.
+        // The clone method handles making a defensive copy of the provided array.
+        return this.clone({ stops: newStops });
+    }
+
+    // --- Existing Methods ---
 
     /**
      * Sets the gradient type to linear.
@@ -118,7 +146,12 @@ export class GradientBuilder {
      */
     addStop(color: ColorInput, position: number): GradientBuilder {
         const newStop: GradientStop = { color, pos: position };
-        return this.clone({ stops: [...this.state.stops, newStop] });
+
+        // Ensure the stops are ordered
+        const stops = [...this.state.stops, newStop].sort((a, b) => a.pos - b.pos);
+
+        // Use the existing stops from state and add the new one
+        return this.clone({ stops });
     }
 
     /**
@@ -131,9 +164,14 @@ export class GradientBuilder {
             // Return a new instance with the same state to ensure immutability
             return this.clone({});
         }
+
+        // Ensure the stops are ordered
+        stops.sort((a, b) => a.pos - b.pos);
+
         // Concatenate with existing stops into the new clone's state
         return this.clone({ stops: [...this.state.stops, ...stops] });
     }
+
     /**
      * Sets the direction for a linear gradient (e.g., 'to right', '45deg').
      * This setting is ignored if the gradient type is not 'linear'.
@@ -203,12 +241,12 @@ export class GradientBuilder {
 
         if (!this.state.stops || this.state.stops.length < 2) {
             throw new Error(
-                'At least two gradient stops must be added before calling .getCss(). Requires ' +
-                `${this.state.stops?.length ?? 0} stops.` // Corrected error message
+                `At least two gradient stops must be added before calling .getCss(). Found ${this.state.stops?.length ?? 0
+                } stops.`
             );
         }
 
-        // Map our stops to the format tinygradient expects (assuming minor adjustments needed)
+        // Map our stops to the format tinygradient expects
         const tinygradientStops = mapStopsToTinygradient(this.state.stops);
 
         // Create the tinygradient instance
@@ -216,46 +254,15 @@ export class GradientBuilder {
 
 
         try {
-            // Generate CSS based on type
-            // tinygradient().css([type], [direction])
-            // type can be 'linear' or 'radial'
-            // direction combines all other params for radial/linear
-
             let cssString: string;
 
             if (this.state.type === 'linear') {
-                // tinygradient uses the second arg for direction/angle
                 cssString = gradientInstance.css('linear', this.state.direction);
 
             } else { // type === 'radial'
-                // For radial, tinygradient combines shape, size, and position into the 'direction' parameter.
-                // Format: "[shape] [size] at [position]"
-                // We need to construct this string carefully, omitting parts if they are defaults
-                // or if tinygradient handles defaults automatically.
-                // Let's check tinygradient docs... It seems it expects the full radial params string.
-
-                // Construct the radial parameters string: "[shape] [size] at [position]"
-                // Only include parts if they are non-default? Or always include? CSS usually omits defaults.
-                // Let's try including them if they are set (they have defaults in our state).
-                // Need to be careful with order and syntax.
-                // Example: "circle farthest-corner at center"
-
-                // Note: tinygradient's documentation on complex radial CSS generation is sparse.
-                // We might need experimentation or look at its source/tests.
-                // Let's assume a simple concatenation works for now.
                 const radialParams = `${this.state.shape} ${this.state.size} at ${this.state.position}`;
-
-                // According to types/usage, it might just be .css('radial', radialParams)
                 cssString = gradientInstance.css('radial', radialParams.trim());
-
-                // Alternative check: Does tinygradient handle object config? Its types suggest not directly for css().
-
             }
-
-            // The output from tinygradient.css() might already include "background-image: ...".
-            // Need to check. Docs say it returns the *gradient* part, not the full property.
-            // Example: "linear-gradient(...)" or "radial-gradient(...)"
-            // If it includes the full property, we need to strip it. Assuming it doesn't.
 
             return cssString;
 
@@ -264,5 +271,9 @@ export class GradientBuilder {
             // Rethrow a more specific error or handle it
             throw new Error(`Failed to generate gradient CSS: ${error.message}`);
         }
+    }
+
+    getState(): GradientState {
+        return this.clone({}).state; // Return a clone of the current state to prevent external mutations
     }
 }

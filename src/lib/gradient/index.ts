@@ -2,6 +2,7 @@ export { GradientBuilder } from './gradientBuilder';
 
 // Export public types that consumers might need
 export type {
+	GradientState,
 	GradientStop,
 	ColorInput,
 	LinearDirection,

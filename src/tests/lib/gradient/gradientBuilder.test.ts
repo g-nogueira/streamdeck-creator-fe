@@ -239,11 +239,11 @@ describe('GradientBuilder', () => {
 
         it('should generate correct complex linear gradient CSS', () => {
             const css = builder.linear()
-                    .direction('45deg')
-                    .addStop('rgba(255, 0, 0, 0.5)', 0.1)
-                    .addStop('hsl(120, 100%, 50%)', 0.8) // Input: HSL Green
-                    .getCss();
-        
+                .direction('45deg')
+                .addStop('rgba(255, 0, 0, 0.5)', 0.1)
+                .addStop('hsl(120, 100%, 50%)', 0.8) // Input: HSL Green
+                .getCss();
+
             // Check key parts
             expect(css).toMatch(/linear-gradient\(45deg/);
             // Check first stop (rgba red at 10%)
@@ -275,6 +275,88 @@ describe('GradientBuilder', () => {
             expect(css).toMatch(/rgb\(255,\s*0,\s*0\)\s*0%/); // red
             expect(css).toMatch(/rgb\(0,\s*255,\s*0\)\s*50%/); // #0f0 -> lime
             expect(css).toMatch(/rgb\(0,\s*0,\s*255\)\s*100%/); // blue
+        });
+    });
+
+    // Stop Access and Replacement Tests ---
+    describe('Stop Access and Replacement', () => {
+        let builderWithStops: GradientBuilder;
+        const initialStops: GradientStop[] = [
+            { color: 'red', pos: 0 },
+            { color: 'blue', pos: 1 }
+        ];
+
+        beforeEach(() => {
+            // Start with a builder that has some stops and a type
+            builderWithStops = new GradientBuilder()
+                .linear() // Set type to avoid errors in subsequent calls if needed
+                .withStops(initialStops); // Use the new method to set initial state
+        });
+
+        // Tests for getStops()
+        describe('getStops()', () => {
+            it('should return the current list of stops', () => {
+                const stops = builderWithStops.getStops();
+                expect(stops).toEqual(initialStops);
+            });
+
+            it('should return a copy of the stops array, not the internal one', () => {
+                const stops = builderWithStops.getStops();
+                // Attempt to mutate the returned array
+                stops.push({ color: 'green', pos: 0.5 });
+
+                // Get the stops again from the original builder
+                const stopsAgain = builderWithStops.getStops();
+
+                // Verify the original builder's stops were not affected
+                expect(stopsAgain).toEqual(initialStops);
+                expect(stopsAgain.length).toBe(2);
+            });
+        });
+
+        // Tests for withStops()
+        describe('withStops()', () => {
+            const newStops: GradientStop[] = [
+                { color: 'yellow', pos: 0.2 },
+                { color: 'lime', pos: 0.8 }
+            ];
+
+            it('should return a new instance', () => {
+                const newBuilder = builderWithStops.withStops(newStops);
+                expect(newBuilder).toBeInstanceOf(GradientBuilder);
+                expect(newBuilder).not.toBe(builderWithStops);
+            });
+
+            it('should replace the stops in the new instance', () => {
+                const newBuilder = builderWithStops.withStops(newStops);
+                const retrievedStops = newBuilder.getStops();
+                expect(retrievedStops).toEqual(newStops);
+                expect(retrievedStops).not.toBe(newStops); // Ensure it's a copy
+            });
+
+            it('should allow replacing with an empty array', () => {
+                const newBuilder = builderWithStops.withStops([]);
+                expect(newBuilder.getStops()).toEqual([]);
+                // Calling getCss should now throw because there are < 2 stops
+                expect(() => newBuilder.getCss()).toThrow(/At least two gradient stops must be added/);
+            });
+
+            it('should not modify the original instance', () => {
+                builderWithStops.withStops(newStops); // Call the method but don't store the result
+                const originalStops = builderWithStops.getStops();
+                expect(originalStops).toEqual(initialStops); // Original stops should be unchanged
+            });
+
+            it('should preserve other state properties', () => {
+                const directedBuilder = builderWithStops.direction('to right'); // Modify another property
+                const newStopsBuilder = directedBuilder.withStops(newStops);
+
+                // Check if stops are updated AND direction is preserved
+                expect(newStopsBuilder.getStops()).toEqual(newStops);
+                // Test direction behaviorally via getCss
+                const css = newStopsBuilder.getCss();
+                expect(css).toContain('linear-gradient(to right');
+            });
         });
     });
 });
