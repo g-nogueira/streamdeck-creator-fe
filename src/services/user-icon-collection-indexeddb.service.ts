@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { UserIcon } from "../models/UserIcon";
 import type { UserIconCollection } from "../models/UserIconCollection";
 import * as _userIconCollectionDto from "./dto/UserIconCollectionDto";
-import type { UserIconCollectionDB } from "./interfaces/UserIconCollectionDB";
+import type { UserIconCollectionDB } from "./types/UserIconCollectionDB";
 import * as _userIconDto from "./dto/UserIconDto";
 
 const DB_NAME = "UserIconCollectionDB";
