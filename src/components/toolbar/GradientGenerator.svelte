@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { ErrorService } from "$lib/services/error.service";
+	import { GradientError } from "$lib/services/types";
 	import { ColorTranslator } from "colortranslator";
 	import DeleteIcon from "lucide-svelte/icons/trash";
 	import type { GradientState, GradientStop } from "$lib/gradient";
@@ -12,6 +14,8 @@
 	export let onSetGradientType: (type: GradientState["type"]) => void; // Callback for setting gradient type
 	export let onSetLinearGradientDirection: (angle: string) => void; // Callback for setting gradient angle
 	export let onRecalculateGradientCss: () => void; // Callback for recalculating gradient CSS
+
+	const errorService = ErrorService.getInstance();
 
 	let isDraggingGradientHandler = false;
 
@@ -103,11 +107,15 @@
 	 * @param type The new gradient type.
 	 */
 	function toggleGradientType(type: string) {
-		if (type !== "linear" && type !== "radial") {
-			throw new Error("Invalid gradient type");
+		try {
+			if (type !== "linear" && type !== "radial") {
+				throw new GradientError(`Invalid gradient type: ${type}`);
+			}
+			onSetGradientType(type as GradientState["type"]);
+			onRecalculateGradientCss();
+		} catch (error) {
+			errorService.handleError(error instanceof Error ? error : new GradientError("Failed to toggle gradient type"));
 		}
-		onSetGradientType(type as GradientState["type"]);
-		onRecalculateGradientCss();
 	}
 </script>
 
@@ -147,8 +155,14 @@
 		class="relative h-10 w-full cursor-copy rounded-sm"
 		data-testid="gradient-bar"
 		onclick={event => {
-			if (event.target !== event.currentTarget) return; // Prevent clicks on child elements
-			addStop(event); // Add a new gradient stop
+			try {
+				if (event.target !== event.currentTarget) return;
+				addStop(event);
+			} catch (error) {
+				errorService.handleError(
+					error instanceof Error ? error : new GradientError("Failed to handle gradient bar click")
+				);
+			}
 		}}
 		style="background: {gradientCss || 'transparent'}">
 		{#each gradient?.stops || [] as stop, index}
