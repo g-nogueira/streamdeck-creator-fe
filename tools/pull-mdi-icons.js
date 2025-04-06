@@ -5,22 +5,28 @@
  * in the right folder.
  */
 
-const fs = require("fs");
-const path = require("path");
-const chalk = require("chalk");
-const rimraf = require("rimraf");
-const upstream = require("./lib/upstream");
+import fs from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+import pkg from "chalk";
+import { sync } from "rimraf";
+import upstream from "./lib/upstream.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const { readFileSync, existsSync, mkdirSync, copyFileSync, writeFileSync } = fs;
+const { blue, underline, red, green } = pkg;
+const { downloadWebfontZip, extractZip, downloadSvgZip, getMeta } = upstream;
 
 const log = console.log;
-const workspace = path.resolve(__dirname, "../temp");
-const dist = path.resolve(__dirname, "../public");
+const workspace = resolve(__dirname, "../temp");
+const dist = resolve(__dirname, "../public");
 
 const readPackageJson = () => {
-	return JSON.parse(fs.readFileSync(path.resolve(__dirname, "../package.json"), "utf8"));
+	return JSON.parse(readFileSync(resolve(__dirname, "../package.json"), "utf8"));
 };
 
 const pullIcons = async () => {
-	log(chalk.blue.bold("MaterialDesignIcons icons parser🔍"));
+	log(blue.bold("MaterialDesignIcons icons parser🔍"));
 
 	// Check requested version
 	const packageJson = readPackageJson();
@@ -31,12 +37,12 @@ const pullIcons = async () => {
 	const dirs = [workspace, dist + "/css/", dist + "/fonts/", dist + "/data/", dist + "/data/svg/"];
 	for (let directory of dirs) {
 		// Remove it if exists
-		if (fs.existsSync(directory)) {
-			rimraf.sync(directory);
+		if (existsSync(directory)) {
+			sync(directory);
 		}
 
 		// Re-create it
-		fs.mkdirSync(directory);
+		mkdirSync(directory);
 	}
 
 	let data = {
@@ -51,32 +57,32 @@ const pullIcons = async () => {
 	};
 
 	for (let flavour of ["default", "light"]) {
-		log(chalk.blue(`Handling flavour "${flavour}" 🔍`));
+		log(blue(`Handling flavour "${flavour}" 🔍`));
 
 		// Get requested version
 		const version = (data.version[flavour] = versions[flavour]);
-		log(`Requested version: ${chalk.underline(version)} ✔️`);
+		log(`Requested version: ${underline(version)} ✔️`);
 
 		// Download CSS file (in dist/css/), woff2 webfont (in dist/fonts/)
 		const escapedVersion = version.replace(".", `\\.`);
 		const webfontZipPath = `${workspace}/${flavour}-webfont.zip`;
 		const webfontExtractedZipPath = `${workspace}/${flavour}-webfont`;
-		fs.mkdirSync(webfontExtractedZipPath);
+		mkdirSync(webfontExtractedZipPath);
 		try {
-			await upstream.downloadWebfontZip(webfontZipPath, flavour, version);
+			await downloadWebfontZip(webfontZipPath, flavour, version);
 		} catch (e) {
-			log(chalk.red("Failed."));
+			log(red("Failed."));
 			return;
 		}
 		log(`Downloaded webfont ZIP ✔️`);
 		try {
-			await upstream.extractZip(
+			await extractZip(
 				webfontZipPath,
 				webfontExtractedZipPath,
 				`^MaterialDesign(Light)?-Webfont-${escapedVersion}\/(css\/materialdesignicons(-light)?\.min\.css|fonts\/materialdesignicons(-light)?-webfont\.woff2?)$`
 			);
 		} catch (e) {
-			log(chalk.red("Failed."));
+			log(red("Failed."));
 			return;
 		}
 		log(`Extracted webfont ZIP ✔️`);
@@ -88,13 +94,13 @@ const pullIcons = async () => {
 		];
 		for (const file of webfontZipFiles) {
 			const filename = file.split("/")[1]; // css/file.ext -> file.ext
-			fs.copyFileSync(`${webfontExtractedZipPath}/${filename}`, `${dist}/${file}`);
+			copyFileSync(`${webfontExtractedZipPath}/${filename}`, `${dist}/${file}`);
 		}
-		fs.copyFileSync(
+		copyFileSync(
 			`${webfontExtractedZipPath}/materialdesignicons${flavour === "light" ? "-light" : ""}.min.css`,
 			`${dist}/css/materialdesignicons${flavour === "light" ? "-light" : ""}.min.css`
 		);
-		fs.copyFileSync(
+		copyFileSync(
 			`${webfontExtractedZipPath}/materialdesignicons${flavour === "light" ? "-light" : ""}-webfont.woff2`,
 			`${dist}/fonts/materialdesignicons${flavour === "light" ? "-light" : ""}-webfont.woff2`
 		);
@@ -102,22 +108,22 @@ const pullIcons = async () => {
 		// Download SVG files
 		const svgZipPath = `${workspace}/${flavour}-svg.zip`;
 		const svgExtractedZipPath = `${workspace}/${flavour}-svg`;
-		fs.mkdirSync(svgExtractedZipPath);
-		await upstream.downloadSvgZip(svgZipPath, flavour, version);
+		mkdirSync(svgExtractedZipPath);
+		await downloadSvgZip(svgZipPath, flavour, version);
 		log(`Downloaded SVG ZIP ✔️`);
-		await upstream.extractZip(
+		await extractZip(
 			svgZipPath,
 			svgExtractedZipPath,
 			`^MaterialDesign(Light)?-SVG-${escapedVersion}\/svg\/.+$`
 		);
 		log(`Extracted SVG ZIP ✔️`);
 
-		const iconsMetas = await upstream.getMeta(version, flavour);
+		const iconsMetas = await getMeta(version, flavour);
 		log(`Downloaded meta file ✔️`);
 
 		for (let icon of iconsMetas) {
 			// Get svg, fine-tune it
-			let svg = fs.readFileSync(`${svgExtractedZipPath}/${icon.name}.svg`, "utf-8");
+			let svg = readFileSync(`${svgExtractedZipPath}/${icon.name}.svg`, "utf-8");
 
 			// Remove xml header
 			svg = svg.replace(
@@ -132,7 +138,7 @@ const pullIcons = async () => {
 			// Remove id="{icon_name}" attribute
 			svg = svg.replace(` id=\"mdi-${icon.name}\"`, "");
 
-			fs.writeFileSync(`${dist}/data/svg/${icon.id}.svg`, svg);
+			writeFileSync(`${dist}/data/svg/${icon.id}.svg`, svg);
 
 			// Compute 2 "searchable" attributes, to achieve weighted search
 			const buildSearchable = strings => {
@@ -173,12 +179,12 @@ const pullIcons = async () => {
 
 	// Dump to file
 	log("Writing JSON files...");
-	fs.writeFileSync(`${dist}/data/icons.json`, JSON.stringify(data, null, 4));
-	fs.writeFileSync(`${dist}/data/icons.min.json`, JSON.stringify(data));
-	log(chalk.green(`Done! ✔`));
+	writeFileSync(`${dist}/data/icons.json`, JSON.stringify(data, null, 4));
+	writeFileSync(`${dist}/data/icons.min.json`, JSON.stringify(data));
+	log(green(`Done! ✔`));
 
 	// Clean
-	rimraf.sync(workspace);
+	sync(workspace);
 
 	// Report
 	log("Download finished!");
