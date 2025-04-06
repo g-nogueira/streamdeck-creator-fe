@@ -19,7 +19,7 @@ const { downloadWebfontZip, extractZip, downloadSvgZip, getMeta } = upstream;
 
 const log = console.log;
 const workspace = resolve(__dirname, "../temp");
-const dist = resolve(__dirname, "../public");
+const dist = resolve(__dirname, "../static");
 
 const readPackageJson = () => {
 	return JSON.parse(readFileSync(resolve(__dirname, "../package.json"), "utf8"));
