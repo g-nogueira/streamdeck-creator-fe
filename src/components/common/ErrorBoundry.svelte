@@ -1,56 +1,33 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import { ErrorService } from "$lib/services/error.service";
+	import { Toaster, createToaster } from '@skeletonlabs/skeleton-svelte';
 
-	export let fallback: string | undefined = undefined;
-
-	let error: Error | null = null;
 	let errorService = ErrorService.getInstance();
 
-	onMount(() => {
-		if (error) {
-			errorService.handleError(error);
-		}
+	// Toast helper
+	const toaster = createToaster();
+
+	// Catch global errors
+	window.onerror = (message, source, lineno, colno, error) => {
+		const errorMessage = `Global Error at ${source}:${lineno}:${colno}`;
+		errorService.handleError(error || new Error(String(message)), errorMessage);
+		toaster.error({title: errorMessage});
+	};
+
+	// Catch unhandled promise rejections
+	window.addEventListener("unhandledrejection", event => {
+		const errorMessage = "Unhandled Promise Rejection";
+		errorService.handleError(event.reason || new Error(errorMessage), errorMessage);
+		toaster.error({title: errorMessage});
 	});
 </script>
 
-{#if error}
-    <div class="error-boundary" role="alert">
-        {#if fallback}
-            {fallback}
-        {:else}
-            <p class="error-title">Something went wrong</p>
-            {#if import.meta.env.DEV && error != null}
-                <pre class="error-details">{(error as Error).message}</pre>
-            {/if}
-        {/if}
-    </div>
-{:else}
-    <slot />
-{/if}
+<Toaster {toaster}></Toaster>
 
 <style lang="postcss">
-    .error-boundary {
-        @apply p-4 m-4 rounded-md;
-        background-color: theme('colors.error.100');
-        border: 1px solid theme('colors.error.500');
-        color: theme('colors.error.900');
-    }
-
-    .error-title {
-        @apply text-lg font-semibold mb-2;
-    }
-
-    .error-details {
-        @apply mt-2 p-2 rounded bg-error-50 text-sm font-mono;
-        border: 1px solid theme('colors.error.200');
-    }
-
-    :global(.error-gradient) {
-        @apply border-2 border-error-500 bg-error-100/50;
-    }
-
-    :global(.error-input) {
-        @apply border-error-500 bg-error-50;
-    }
+	/* global.css or inside a <style> */
+	:global(.toast-glow) {
+		box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+		border: 1px solid #38bdf8;
+	}
 </style>
