@@ -1,5 +1,5 @@
 import { render, waitFor } from "@testing-library/svelte";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance, type Mock } from "vitest";
 import ErrorBoundry from "../../components/common/ErrorBoundry.svelte";
 import { ErrorService } from "$lib/services/error.service";
 import * as skeletonSvelte from "@skeletonlabs/skeleton-svelte";
@@ -14,8 +14,8 @@ vi.mock("@skeletonlabs/skeleton-svelte", () => ({
 
 describe("ErrorBoundry", () => {
     let errorService: ErrorService;
-    let handleErrorSpy: vi.SpyInstance;
-    let mockToaster: { error: vi.Mock };
+    let handleErrorSpy: MockInstance;
+    let mockToaster: { error: Mock };
     let windowSpy: any;
 
     beforeEach(() => {
@@ -27,7 +27,7 @@ describe("ErrorBoundry", () => {
         mockToaster = {
             error: vi.fn()
         };
-        (skeletonSvelte.createToaster as vi.Mock).mockReturnValue(mockToaster);
+        (skeletonSvelte.createToaster as Mock).mockReturnValue(mockToaster);
 
         // Store original window.open
         windowSpy = vi.spyOn(window, "open");
