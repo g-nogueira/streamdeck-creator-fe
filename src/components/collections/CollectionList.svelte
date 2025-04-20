@@ -79,7 +79,7 @@
 	}
 </script>
 
-<Accordion bind:value={selectedCollectionId} collapsible>
+<Accordion value={selectedCollectionId} onValueChange={e => (selectedCollectionId = e.value)} collapsible>
 	{#each $userIconCollections as collection}
 		<Accordion.Item value={collection.id}>
 			<!-- Control -->
