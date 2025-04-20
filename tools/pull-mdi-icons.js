@@ -71,7 +71,7 @@ const pullIcons = async () => {
 		try {
 			await downloadWebfontZip(webfontZipPath, flavour, version);
 		} catch (e) {
-			log(red("Failed."));
+			log(red(`Failed to download webfont ZIP: ${e.message || e}`));
 			return;
 		}
 		log(`Downloaded webfont ZIP ✔️`);
@@ -82,7 +82,7 @@ const pullIcons = async () => {
 				`^MaterialDesign(Light)?-Webfont-${escapedVersion}\/(css\/materialdesignicons(-light)?\.min\.css|fonts\/materialdesignicons(-light)?-webfont\.woff2?)$`
 			);
 		} catch (e) {
-			log(red("Failed."));
+			log(red(`Failed to extract webfont ZIP: ${e.message || e}`));
 			return;
 		}
 		log(`Extracted webfont ZIP ✔️`);
@@ -109,8 +109,13 @@ const pullIcons = async () => {
 		const svgZipPath = `${workspace}/${flavour}-svg.zip`;
 		const svgExtractedZipPath = `${workspace}/${flavour}-svg`;
 		mkdirSync(svgExtractedZipPath);
-		await downloadSvgZip(svgZipPath, flavour, version);
-		log(`Downloaded SVG ZIP ✔️`);
+		try {
+			await downloadSvgZip(svgZipPath, flavour, version);
+			log(`Downloaded SVG ZIP ✔️`);
+		} catch (e) {
+			log(red(`Failed to download SVG ZIP: ${e.message || e}`));
+			return;
+		}
 		await extractZip(
 			svgZipPath,
 			svgExtractedZipPath,
