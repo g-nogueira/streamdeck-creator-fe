@@ -25,6 +25,11 @@
 	const handleSelectIcon = (icon: Icon) => {
 		customizedIcon.selectIcon(icon);
 	};
+
+	// This is a workaround to avoid the error "Object literal may only specify known properties, and '"data-testid"' does not exist in type 'NavTileProps'"
+	const testAttrbutes = {
+		"data-testid": "nav-tile",
+	} as any;
 </script>
 
 <div class="flex h-full flex-row">
@@ -32,7 +37,7 @@
 		<!-- Component -->
 		<Navigation.Rail value={selectedTile} onValueChange={(newValue) => (selectedTile = newValue)}>
 			{#snippet header()}
-				<Navigation.Tile id="icons" label="Icons" href="#" data-testid="nav-tile">
+				<Navigation.Tile id="icons" label="Icons" href="#" {...testAttrbutes}>
 					<Search />
 				</Navigation.Tile>
 				<Navigation.Tile id="collections" label="Collections" href="#">
