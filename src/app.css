@@ -1,6 +1,10 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss';
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton/optional/presets';
+@import '@skeletonlabs/skeleton/themes/wintry';
+
+@plugin '@tailwindcss/forms';
+@source '../node_modules/@skeletonlabs/skeleton-svelte/dist';
 
 .input-toolbar,
 .input-toolbar[type="color"] {

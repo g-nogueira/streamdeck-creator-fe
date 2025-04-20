@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Nav } from "@skeletonlabs/skeleton-svelte";
+	import { Navigation } from "@skeletonlabs/skeleton-svelte";
 	import IconCollection from "lucide-svelte/icons/library";
 	import Search from "lucide-svelte/icons/search";
 	import IconSearch from "../icons/IconSearch.svelte";
@@ -25,21 +25,26 @@
 	const handleSelectIcon = (icon: Icon) => {
 		customizedIcon.selectIcon(icon);
 	};
+
+	// This is a workaround to avoid the error "Object literal may only specify known properties, and '"data-testid"' does not exist in type 'NavTileProps'"
+	const testAttrbutes = {
+		"data-testid": "nav-tile",
+	} as any;
 </script>
 
 <div class="flex h-full flex-row">
 	<div class="card grid h-full w-[96px] grid-cols-[auto_1fr] border-[1px] border-surface-100-900">
 		<!-- Component -->
-		<Nav.Rail bind:value={selectedTile}>
+		<Navigation.Rail value={selectedTile} onValueChange={(newValue) => (selectedTile = newValue)}>
 			{#snippet header()}
-				<Nav.Tile id="icons" label="Icons" href="#" data-testid="nav-tile">
+				<Navigation.Tile id="icons" label="Icons" href="#" {...testAttrbutes}>
 					<Search />
-				</Nav.Tile>
-				<Nav.Tile id="collections" label="Collections" href="#">
+				</Navigation.Tile>
+				<Navigation.Tile id="collections" label="Collections" href="#">
 					<IconCollection />
-				</Nav.Tile>
+				</Navigation.Tile>
 			{/snippet}
-		</Nav.Rail>
+		</Navigation.Rail>
 		<!-- Content -->
 		<!-- <div class="flex items-center justify-center">
             <p class="opacity-20">(Content)</p>

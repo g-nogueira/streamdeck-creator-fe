@@ -2,16 +2,16 @@
  * MaterialDesignIcons
  */
 
-const request = require("request");
-const fs = require("fs");
-const path = require("path");
-const yauzl = require("yauzl");
+import request from "request";
+import { createWriteStream } from "fs";
+import { basename } from "path";
+import { open } from "yauzl";
 
 const repo = {
 	default: "MaterialDesign",
 	light: "MaterialDesignLight"
 };
-const package = {
+const mdiPackages = {
 	default: "@mdi/svg",
 	light: "@mdi/light-svg"
 };
@@ -46,7 +46,7 @@ const getLatestVersion = async (flavour = "default") => {
  * Downloads the meta.json file for the specified version and flavour.
  */
 const getMeta = async (version, flavour = "default") => {
-	const url = `https://cdn.jsdelivr.net/npm/${package[flavour]}@${version}/meta.json`;
+	const url = `https://cdn.jsdelivr.net/npm/${mdiPackages[flavour]}@${version}/meta.json`;
 	return await getJson(url);
 };
 
@@ -61,7 +61,7 @@ const download = async (url, destPath) => {
 					return;
 				}
 
-				res.pipe(fs.createWriteStream(destPath));
+				res.pipe(createWriteStream(destPath));
 			})
 			.on("end", () => {
 				setTimeout(() => {
@@ -89,7 +89,7 @@ const extractZip = async (zipPath, destDir, filePattern) => {
 
 	// Extract ZIP
 	return new Promise((resolve, reject) => {
-		yauzl.open(zipPath, (err, zipfile) => {
+		open(zipPath, (err, zipfile) => {
 			if (err) {
 				reject(err);
 			}
@@ -102,7 +102,7 @@ const extractZip = async (zipPath, destDir, filePattern) => {
 								reject(err);
 							}
 
-							readStream.pipe(fs.createWriteStream(`${destDir}/${path.basename(entry.fileName)}`));
+							readStream.pipe(createWriteStream(`${destDir}/${basename(entry.fileName)}`));
 						});
 					}
 				})
@@ -113,7 +113,7 @@ const extractZip = async (zipPath, destDir, filePattern) => {
 	});
 };
 
-module.exports = {
+export default {
 	getLatestVersion,
 	getMeta,
 	downloadSvgZip,
