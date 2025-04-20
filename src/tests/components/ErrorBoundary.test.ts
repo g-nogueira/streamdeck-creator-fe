@@ -1,6 +1,6 @@
 import { render, waitFor } from "@testing-library/svelte";
 import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance, type Mock } from "vitest";
-import ErrorBoundry from "../../components/common/ErrorBoundry.svelte";
+import ErrorBoundary from "../../components/common/ErrorBoundary.svelte";
 import { ErrorService } from "$lib/services/error.service";
 import * as skeletonSvelte from "@skeletonlabs/skeleton-svelte";
 
@@ -12,7 +12,7 @@ vi.mock("@skeletonlabs/skeleton-svelte", () => ({
     Toaster: vi.fn()
 }));
 
-describe("ErrorBoundry", () => {
+describe("ErrorBoundary", () => {
     let errorService: ErrorService;
     let handleErrorSpy: MockInstance;
     let mockToaster: { error: Mock };
@@ -42,17 +42,17 @@ describe("ErrorBoundry", () => {
     });
 
     it("should render without errors", () => {
-        const { container } = render(ErrorBoundry);
+        const { container } = render(ErrorBoundary);
         expect(container).toBeTruthy();
     });
 
     it("should handle global errors", () => {
         // Arrange
-        render(ErrorBoundry);
+        render(ErrorBoundary);
         
         // Act
         const errorEvent = new Error("Test error");
-        window.onerror("Test error", "test.js", 1, 1, errorEvent);
+        window.onerror && window.onerror("Test error", "test.js", 1, 1, errorEvent);
 
         // Assert
         expect(handleErrorSpy).toHaveBeenCalledWith(
@@ -64,7 +64,7 @@ describe("ErrorBoundry", () => {
 
     it("should handle unhandled promise rejections", async () => {
         // Arrange
-        render(ErrorBoundry);
+        render(ErrorBoundary);
         const error = new Error("Promise rejection");
         
         // Create a rejected promise that we handle right away
@@ -89,12 +89,12 @@ describe("ErrorBoundry", () => {
 
     it("should generate correct GitHub issue URL", () => {
         // Arrange
-        render(ErrorBoundry);
+        render(ErrorBoundary);
         
         // Act
         const error = new Error("Test error");
         error.stack = "Error: Test error\n    at test.js:1:1";
-        window.onerror("Test error", "test.js", 1, 1, error);
+        window.onerror && window.onerror("Test error", "test.js", 1, 1, error);
 
         // Assert
         const toasterCall = mockToaster.error.mock.calls[0][0];
@@ -116,10 +116,10 @@ describe("ErrorBoundry", () => {
 
     it("should show error toast with report action", () => {
         // Arrange
-        render(ErrorBoundry);
+        render(ErrorBoundary);
         
         // Act
-        window.onerror("Test error", "test.js", 1, 1, new Error("Test error"));
+        window.onerror && window.onerror("Test error", "test.js", 1, 1, new Error("Test error"));
 
         // Assert
         expect(mockToaster.error).toHaveBeenCalledWith(

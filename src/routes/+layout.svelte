@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { startUnleash } from "$lib/feature-flags";
 	import { ErrorService } from "$lib/services/error.service";
-	import ErrorBoundary from "../components/common/ErrorBoundry.svelte";
+	import ErrorBoundary from "../components/common/ErrorBoundary.svelte";
 	import "../app.css";
 
 	const errorService = ErrorService.getInstance();
