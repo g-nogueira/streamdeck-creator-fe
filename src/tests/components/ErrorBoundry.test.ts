@@ -1,82 +1,135 @@
-import { render, screen, fireEvent } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import ErrorBoundary from "../../components/common/ErrorBoundry.svelte";
+import ErrorBoundry from "../../components/common/ErrorBoundry.svelte";
+import { ErrorService } from "$lib/services/error.service";
+import * as skeletonSvelte from "@skeletonlabs/skeleton-svelte";
 
-describe("ErrorBoundary Component", () => {
-    let originalOnError: typeof window.onerror;
-    let originalUnhandledRejection: typeof window.addEventListener;
+// Mock the skeleton-svelte toaster
+vi.mock("@skeletonlabs/skeleton-svelte", () => ({
+    createToaster: vi.fn(() => ({
+        error: vi.fn()
+    })),
+    Toaster: vi.fn()
+}));
+
+describe("ErrorBoundry", () => {
+    let errorService: ErrorService;
+    let handleErrorSpy: vi.SpyInstance;
+    let mockToaster: { error: vi.Mock };
+    let windowSpy: any;
 
     beforeEach(() => {
-        // Mock global error handlers
-        originalOnError = window.onerror;
-        originalUnhandledRejection = window.addEventListener;
-        window.onerror = vi.fn();
-        window.addEventListener = vi.fn();
+        // Setup error service spy
+        errorService = ErrorService.getInstance();
+        handleErrorSpy = vi.spyOn(errorService, "handleError");
+
+        // Setup toaster spy
+        mockToaster = {
+            error: vi.fn()
+        };
+        (skeletonSvelte.createToaster as vi.Mock).mockReturnValue(mockToaster);
+
+        // Store original window.open
+        windowSpy = vi.spyOn(window, "open");
+        windowSpy.mockImplementation(() => {});
     });
 
     afterEach(() => {
-        // Restore original handlers
-        window.onerror = originalOnError;
-        window.addEventListener = originalUnhandledRejection;
-        vi.restoreAllMocks();
+        vi.clearAllMocks();
+        window.onerror = null;
+        window.onunhandledrejection = null;
+        windowSpy.mockRestore();
     });
 
-    it("renders the Toaster component", () => {
-        // Arrange & Act
-        render(ErrorBoundary);
+    it("should render without errors", () => {
+        const { container } = render(ErrorBoundry);
+        expect(container).toBeTruthy();
+    });
+
+    it("should handle global errors", () => {
+        // Arrange
+        render(ErrorBoundry);
+        
+        // Act
+        const errorEvent = new Error("Test error");
+        window.onerror("Test error", "test.js", 1, 1, errorEvent);
 
         // Assert
-        expect(screen.getByText("Report Issue")).toBeInTheDocument();
-    });
-
-    it("handles global errors and shows a toast", () => {
-        // Arrange
-        const mockError = new Error("Test Error");
-        const mockOnError = vi.fn();
-        window.onerror = mockOnError;
-
-        render(ErrorBoundary);
-
-        // Act
-        window.onerror("Test Error Message", "test.js", 10, 20, mockError);
-
-        // Assert
-        expect(mockOnError).toHaveBeenCalled();
-        expect(screen.getByText("Global Error at test.js:10:20")).toBeInTheDocument();
-    });
-
-    it("handles unhandled promise rejections and shows a toast", () => {
-        // Arrange
-        const mockRejection = new Error("Unhandled Rejection");
-        const mockUnhandledRejection = vi.fn();
-        window.addEventListener = mockUnhandledRejection;
-
-        render(ErrorBoundary);
-
-        // Act
-        window.dispatchEvent(
-            new PromiseRejectionEvent("unhandledrejection", { reason: mockRejection })
+        expect(handleErrorSpy).toHaveBeenCalledWith(
+            errorEvent,
+            "Global Error at test.js:1:1"
         );
-
-        // Assert
-        expect(mockUnhandledRejection).toHaveBeenCalled();
-        expect(screen.getByText("Unhandled Promise Rejection")).toBeInTheDocument();
+        expect(mockToaster.error).toHaveBeenCalled();
     });
 
-    it("generates a GitHub issue URL with error details", () => {
+    it("should handle unhandled promise rejections", async () => {
         // Arrange
-        const errorMessage = "Test Error";
-        const errorStack = "Error: Test Stack Trace";
-        const expectedUrl = `https://github.com/g-nogueira/streamdeck-creator-fe/issues/new?title=Bug%20Report%3A%20Test%20Error&body=${encodeURIComponent(
-            `### Error Details\n\n**Message:** Test Error\n\n**Stack Trace:**\n\`\`\`\nError: Test Stack Trace\n\`\`\`\n\n### Steps to Reproduce\n1. \n2. \n3. \n\n### Environment\n- Browser: ${navigator.userAgent}\n- URL: ${location.href}`
-        )}`;
+        render(ErrorBoundry);
+        const error = new Error("Promise rejection");
+        
+        // Create a rejected promise that we handle right away
+        const rejectedPromise = Promise.reject(error).catch(() => {});
+        
+        // Act - create a custom event with the required properties
+        const event = new CustomEvent("unhandledrejection") as any;
+        event.reason = error;
+        event.promise = rejectedPromise;
+        
+        window.dispatchEvent(event);
 
-        render(ErrorBoundary);
+        // Assert - wait for the async operations to complete
+        await waitFor(() => {
+            expect(handleErrorSpy).toHaveBeenCalledWith(
+                error,
+                "Unhandled Promise Rejection"
+            );
+            expect(mockToaster.error).toHaveBeenCalled();
+        });
+    });
 
+    it("should generate correct GitHub issue URL", () => {
+        // Arrange
+        render(ErrorBoundry);
+        
         // Act
-        const issueUrl = screen.getByText("Report Issue").getAttribute("href");
+        const error = new Error("Test error");
+        error.stack = "Error: Test error\n    at test.js:1:1";
+        window.onerror("Test error", "test.js", 1, 1, error);
 
         // Assert
-        expect(issueUrl).toBe(expectedUrl);
+        const toasterCall = mockToaster.error.mock.calls[0][0];
+        expect(toasterCall.action).toBeDefined();
+        expect(toasterCall.action.label).toBe("Report Issue");
+        
+        // Simulate clicking the "Report Issue" button
+        toasterCall.action.onClick();
+
+        expect(windowSpy).toHaveBeenCalledWith(
+            expect.stringContaining("https://github.com/g-nogueira/streamdeck-creator-fe/issues/new"),
+            "_blank"
+        );
+        expect(windowSpy).toHaveBeenCalledWith(
+            expect.stringContaining(encodeURIComponent("Test error")),
+            "_blank"
+        );
+    });
+
+    it("should show error toast with report action", () => {
+        // Arrange
+        render(ErrorBoundry);
+        
+        // Act
+        window.onerror("Test error", "test.js", 1, 1, new Error("Test error"));
+
+        // Assert
+        expect(mockToaster.error).toHaveBeenCalledWith(
+            expect.objectContaining({
+                title: expect.any(String),
+                action: expect.objectContaining({
+                    label: "Report Issue",
+                    onClick: expect.any(Function)
+                })
+            })
+        );
     });
 });
