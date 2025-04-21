@@ -218,4 +218,50 @@ describe("Toolbar UI", () => {
 		expect(screen.getByTestId("input-icon-color-picker")).toHaveValue("#0000ff");
 		expect(screen.getByTestId("input-icon-color")).toHaveValue("#0000FF");
 	});
+
+	it("renders typeface select with correct value", async () => {
+		// Arrange
+		const { customizedIcon } = await iconCustomizationsStorePromise;
+		customizedIcon.mockSetSubscribeValue(
+			_.merge(customizedIcon.mockGetSubscribeValue(), { styles: { labelTypeface: "VT323" } })
+		);
+
+		// Act
+		render(Toolbar);
+
+		// Assert
+		expect(screen.getByTestId("select-typography-typeface")).toHaveValue("VT323");
+	});
+
+	it("updates typeface when selection changes", async () => {
+		// Arrange
+		const { customizedIcon } = await iconCustomizationsStorePromise;
+		render(Toolbar);
+		const select = screen.getByTestId("select-typography-typeface");
+
+		// Act
+		await fireEvent.change(select, { target: { value: "Source Code Pro" } });
+
+		// Assert
+		expect(customizedIcon.set).toHaveBeenCalledWith(
+			expect.objectContaining({ styles: expect.objectContaining({ labelTypeface: "Source Code Pro" }) })
+		);
+	});
+
+	it("shows all available typeface options", async () => {
+		// Act
+		render(Toolbar);
+		const select = screen.getByTestId("select-typography-typeface");
+		const options = Array.from(select.getElementsByTagName("option"));
+
+		// Assert
+		expect(options.map(opt => opt.value)).toEqual([
+			"VT323",
+			"Arial",
+			"Monaco",
+			"Courier New",
+			"Consolas",
+			"Source Code Pro"
+		]);
+	});
 });

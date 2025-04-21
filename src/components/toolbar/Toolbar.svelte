@@ -45,8 +45,13 @@
 			<select
 				data-testid="select-typography-typeface"
 				class="select-toolbar select bg-surface-800"
-				placeholder="Typeface - Not Implemented">
-				<option>Typeface - Not Implemented</option>
+				bind:value={$customizedIcon.styles.labelTypeface}>
+				<option value="VT323">VT323 (Default)</option>
+				<option value="Arial">Arial</option>
+				<option value="Monaco">Monaco</option>
+				<option value="Courier New">Courier New</option>
+				<option value="Consolas">Consolas</option>
+				<option value="Source Code Pro">Source Code Pro</option>
 			</select>
 		</ToolbarSection>
 		<hr class="hr" />
