@@ -44,11 +44,11 @@
 	}
 </script>
 
-<div class="sticky bottom-3 left-2/4 w-fit rounded-md bg-surface-800">
+<div class="bg-surface-800 sticky bottom-3 left-2/4 w-fit rounded-md">
 	{#if customizableIcon}
 		<button
 			on:click={downloadIcon}
-			class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900"
+			class="btn btn-icon btn-sm hover:bg-secondary-900 h-auto w-auto rounded-md p-2"
 			data-testid="download-btn">
 			<Tooltip text="Download Icon">
 				<DownloadIcon />
@@ -56,7 +56,7 @@
 		</button>
 		<button
 			on:click={addIconToCollection}
-			class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900"
+			class="btn btn-icon btn-sm hover:bg-secondary-900 h-auto w-auto rounded-md p-2"
 			data-testid="add-to-collection-btn">
 			<Tooltip text="Add to Collection">
 				<AddToCollection />

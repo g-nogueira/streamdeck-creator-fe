@@ -1,5 +1,11 @@
-import type { GradientState, GradientStop, LinearDirection, RadialPosition, RadialShape, RadialSize } from "$lib/gradient";
-
+import type {
+	GradientState,
+	GradientStop,
+	LinearDirection,
+	RadialPosition,
+	RadialShape,
+	RadialSize
+} from "$lib/gradient";
 
 /**
  * Defines the internal state structure managed by the GradientBuilder.
@@ -13,7 +19,6 @@ export interface UserIconGradientDto {
 	size: RadialSize;
 	position: RadialPosition;
 }
-
 
 export function toDomain(userIconGradientDto: UserIconGradientDto): GradientState {
 	return userIconGradientDto as GradientState;

@@ -33,7 +33,7 @@
 </script>
 
 <div
-	class="flex h-full w-[375px] min-w-[375px] flex-col gap-3 border-[1px] p-3 border-surface-100-900 preset-filled-surface-50-950">
+	class="border-surface-100-900 preset-filled-surface-50-950 flex h-full w-[375px] min-w-[375px] flex-col gap-3 border-[1px] p-3">
 	{#if $customizedIcon}
 		<ToolbarSection title="Typography">
 			<input
@@ -139,7 +139,7 @@
 					on:click={() => (customizedIcon.setUseGradient(false), handleRecalculateGradientCss())}
 					class="{$customizedIcon.styles.useGradient
 						? ''
-						: 'bg-secondary-950'} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
+						: 'bg-secondary-950'} btn btn-icon btn-sm hover:bg-secondary-900 h-auto w-auto rounded-md p-2">
 					<Tooltip text="Solid Fill">
 						<IconPaint size={20} />
 					</Tooltip>
@@ -150,7 +150,7 @@
 					on:click={() => (customizedIcon.setUseGradient(true), handleRecalculateGradientCss())}
 					class="{!$customizedIcon.styles.useGradient
 						? ''
-						: 'bg-secondary-950'} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
+						: 'bg-secondary-950'} btn btn-icon btn-sm hover:bg-secondary-900 h-auto w-auto rounded-md p-2">
 					<Tooltip text="Gradient Fill">
 						<IconSprayCan size={20} />
 					</Tooltip>

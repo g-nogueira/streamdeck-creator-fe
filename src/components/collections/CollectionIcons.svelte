@@ -23,7 +23,7 @@
 					type="button"
 					onclick={() => onRemoveIcon(icon, collection)}
 					aria-label={`Remove icon ${icon.label}`}
-					class="badge-icon absolute -right-0 -top-0 z-10 hidden bg-error-900 hover:bg-error-950">
+					class="badge-icon bg-error-900 hover:bg-error-950 absolute -top-0 -right-0 z-10 hidden">
 					<RemoveFromCollectionIcon size={20} />
 				</button>
 				<button

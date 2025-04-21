@@ -6,7 +6,7 @@
 
 <div class="tooltip-handler" {...divProps}>
 	{@render children?.()}
-	<span class="tooltip border-surface-100-950 rounded-md border-[1px] p-1 preset-filled-surface-50-950">{text}</span>
+	<span class="tooltip border-surface-100-950 preset-filled-surface-50-950 rounded-md border-[1px] p-1">{text}</span>
 </div>
 
 <style lang="postcss">

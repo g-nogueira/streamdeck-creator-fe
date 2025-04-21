@@ -148,12 +148,12 @@ describe("Label Customization", () => {
 
 	it("applies default VT323 typeface when empty typeface is provided", () => {
 		// Arrange
-		const stateWithEmptyTypeface = { 
-			...mockState, 
-			styles: { 
-				...mockState.styles, 
-				labelTypeface: "" 
-			} 
+		const stateWithEmptyTypeface = {
+			...mockState,
+			styles: {
+				...mockState.styles,
+				labelTypeface: ""
+			}
 		};
 
 		// Act

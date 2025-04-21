@@ -50,7 +50,7 @@ describe("SelectedIcon", () => {
 				labelY: userIcon.labelY,
 
 				useGradient: userIcon.useGradient,
-				gradient:  userIcon.gradient ? new GradientBuilder(userIcon.gradient).getState() : undefined
+				gradient: userIcon.gradient ? new GradientBuilder(userIcon.gradient).getState() : undefined
 			},
 			iconOrigin: userIcon.origin,
 			contentType: userIcon.contentType
