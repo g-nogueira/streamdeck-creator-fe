@@ -11,6 +11,7 @@ export interface UserIconDto {
 	labelVisible: boolean;
 	labelColor: string;
 	labelTypeface: string;
+	labelSize: number;
 	glyphColor: string;
 	backgroundColor: string;
 	iconScale: number;
@@ -35,6 +36,7 @@ export function toUserIcon(userIconDto: UserIconDto): UserIcon {
 		labelVisible: userIconDto.labelVisible,
 		labelColor: userIconDto.labelColor,
 		labelTypeface: userIconDto.labelTypeface,
+		labelSize: userIconDto.labelSize,
 		glyphColor: userIconDto.glyphColor,
 		backgroundColor: userIconDto.backgroundColor,
 		iconScale: userIconDto.iconScale,
@@ -60,6 +62,7 @@ export function fromUserIcon(userIcon: UserIcon): UserIconDto {
 		labelVisible: userIcon.labelVisible,
 		labelColor: userIcon.labelColor,
 		labelTypeface: userIcon.labelTypeface,
+		labelSize: userIcon.labelSize,
 		glyphColor: userIcon.glyphColor,
 		backgroundColor: userIcon.backgroundColor,
 		iconScale: userIcon.iconScale,
