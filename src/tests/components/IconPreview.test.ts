@@ -148,12 +148,12 @@ describe("Label Customization", () => {
 
 	it("applies default VT323 typeface when empty typeface is provided", () => {
 		// Arrange
-		const stateWithEmptyTypeface = {
-			...mockState,
-			styles: {
-				...mockState.styles,
-				labelTypeface: ""
-			}
+		const stateWithEmptyTypeface = { 
+			...mockState, 
+			styles: { 
+				...mockState.styles, 
+				labelTypeface: "" 
+			} 
 		};
 
 		// Act
@@ -184,6 +184,18 @@ describe("Label Customization", () => {
 		expect(label).toBeVisible();
 		expect(label.style.fontFamily).toBe("Courier New");
 		expect(label.textContent).toBe("Test Label");
+	});
+
+	it("applies label size correctly", () => {
+		// Arrange
+		const labelSizeState = { ...mockState, styles: { ...mockState.styles, labelSize: 24 } };
+
+		// Act
+		render(IconPreview, { customizableIcon: labelSizeState });
+		const label = screen.getByTestId("icon-label");
+
+		// Assert
+		expect(label.style.fontSize).toBe("24px");
 	});
 });
 

@@ -18,6 +18,7 @@ export type CustomizableIcon = {
 		label: string;
 		labelVisible: boolean;
 		labelTypeface: string;
+		labelSize: number;
 		iconScale: number;
 
 		imgX: number;
@@ -53,6 +54,7 @@ export function mkEmpty(): CustomizableIcon {
 			label: "Label Text",
 			labelVisible: true,
 			labelTypeface: "VT323",
+			labelSize: 70,
 			iconScale: 1, // Scale factor for resizing the icon
 			imgX: 0,
 			imgY: 0,
@@ -78,6 +80,7 @@ export function fromUserIcon(userIcon: UserIcon, collectionId: string): Customiz
 			labelVisible: userIcon.labelVisible,
 			labelColor: userIcon.labelColor,
 			labelTypeface: userIcon.labelTypeface,
+			labelSize: userIcon.labelSize,
 			glyphColor: userIcon.glyphColor,
 			backgroundColor: userIcon.backgroundColor,
 
@@ -110,6 +113,7 @@ export function toUserIcon(customizableIcon: CustomizableIcon, base64Thumbnail: 
 		label: customizableIcon.styles.label,
 		labelVisible: customizableIcon.styles.labelVisible,
 		labelTypeface: customizableIcon.styles.labelTypeface,
+		labelSize: customizableIcon.styles.labelSize,
 		iconScale: customizableIcon.styles.iconScale,
 		imgX: customizableIcon.styles.imgX,
 		imgY: customizableIcon.styles.imgY,

@@ -15,7 +15,7 @@
 	$: fontFamily = customizableIcon?.styles.labelTypeface?.trim() || "VT323";
 </script>
 
-<div class="m-16 flex max-h-[371px] min-h-[371px] max-w-[371px] min-w-[371px] justify-center">
+<div class="m-16 flex max-h-[371px] min-h-[371px] min-w-[371px] max-w-[371px] justify-center">
 	{#if customizableIcon}
 		<div id="iconToCapture" class="relative h-[371px] w-[371px]">
 			<div
@@ -35,10 +35,8 @@
 				<!-- Label -->
 				{#if customizableIcon.styles.labelVisible}
 					<div
-						class="absolute w-full truncate px-2 text-center text-6xl"
-						style="color: {customizableIcon.styles
-							.labelColor}; font-family: {fontFamily}; transform: translate({customizableIcon.styles
-							.labelX}px, {customizableIcon.styles.labelY}px);"
+						class="absolute w-full truncate px-2 text-center"
+						style="color: {customizableIcon.styles.labelColor}; font-family: {fontFamily}; font-size: {customizableIcon.styles.labelSize}px; transform: translate({customizableIcon.styles.labelX}px, {customizableIcon.styles.labelY}px);"
 						data-testid="icon-label">
 						{customizableIcon.styles.label}
 					</div>

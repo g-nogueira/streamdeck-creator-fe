@@ -264,4 +264,33 @@ describe("Toolbar UI", () => {
 			"Source Code Pro"
 		]);
 	});
+
+	it("renders text size input with correct value", async () => {
+		// Arrange
+		const { customizedIcon } = await iconCustomizationsStorePromise;
+		customizedIcon.mockSetSubscribeValue(
+			_.merge(customizedIcon.mockGetSubscribeValue(), { styles: { labelSize: 18 } })
+		);
+
+		// Act
+		render(Toolbar);
+
+		// Assert
+		expect(screen.getByTestId("input-text-size")).toHaveValue(18);
+	});
+
+	it("updates text size when input changes", async () => {
+		// Arrange
+		const { customizedIcon } = await iconCustomizationsStorePromise;
+		render(Toolbar);
+		const input = screen.getByTestId("input-text-size");
+
+		// Act
+		await fireEvent.input(input, { target: { value: "24" } });
+
+		// Assert
+		expect(customizedIcon.set).toHaveBeenCalledWith(
+			expect.objectContaining({ styles: expect.objectContaining({ labelSize: 24 }) })
+		);
+	});
 });

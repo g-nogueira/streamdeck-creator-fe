@@ -14,6 +14,7 @@ export type UserIcon = {
 	labelVisible: boolean;
 	labelColor: string;
 	labelTypeface: string;
+	labelSize: number;
 	glyphColor: string;
 	backgroundColor: string;
 
@@ -49,6 +50,7 @@ export function createFromIcon(icon: Icon): UserIcon {
 		labelVisible: true,
 		labelColor: "#000000",
 		labelTypeface: "Arial",
+		labelSize: 70,
 		glyphColor: "#000000",
 		backgroundColor: "#FFFFFF",
 		iconScale: 1,
@@ -74,6 +76,7 @@ export function mkEmpty(): UserIcon {
 		labelVisible: false,
 		labelColor: "#000000",
 		labelTypeface: "Arial",
+		labelSize: 70,
 		glyphColor: "#000000",
 		backgroundColor: "#FFFFFF",
 		iconScale: 1,

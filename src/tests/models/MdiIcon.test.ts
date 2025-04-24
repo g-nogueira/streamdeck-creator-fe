@@ -26,6 +26,7 @@ describe("MdiIcon", () => {
 			glyphColor: "#000000",
 			backgroundColor: "#FFFFFF",
 			iconScale: 1,
+			labelSize: 70,
 			imgX: 0,
 			imgY: 0,
 			labelX: 0,

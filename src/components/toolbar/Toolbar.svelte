@@ -71,10 +71,12 @@
 					placeholder="Y" />
 			</div>
 			<input
-				data-testid="input-text-scale"
+				data-testid="input-text-size"
+				bind:value={$customizedIcon.styles.labelSize}
 				class="input-toolbar input bg-surface-800"
-				type="text"
-				placeholder="Scale - Not Implemented" />
+				type="number"
+				step="1"
+				placeholder="Text Size" />
 		</ToolbarSection>
 		<hr class="hr" />
 		<ToolbarSection title="Text Styling">
