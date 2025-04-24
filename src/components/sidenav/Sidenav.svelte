@@ -51,7 +51,7 @@
         </div> -->
 	</div>
 	<div
-		class="border-surface-100-900 preset-filled-surface-50-950 flex h-full w-[375px] flex-col gap-3 border-[1px] p-3">
+		class="border-surface-100-900 preset-filled-surface-50-950 flex h-full w-[420px] flex-col gap-3 border-[1px] p-3">
 		{#if selectedTile === "icons"}
 			<IconSearch
 				icons={$icons}

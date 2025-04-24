@@ -1,21 +1,22 @@
 <script lang="ts">
 	import { serviceBaseUrl } from "../../lib/constants";
+	import { HOMARR_API_URL } from "../../services/homarr-icon.service";
 	import type { Icon } from "../../models/Icon";
 
-	export let icon: Icon; // Icon data passed as a prop
-	export let onSelectIcon: (icon: Icon) => void; // Callback function to handle icon selection
+	export let icon: Icon;
+	export let onSelectIcon: (icon: Icon) => void;
 
-	// Intersection Observer options
-	let options = {
-		root: null,
-		rootMargin: "0px",
-		threshold: 0
-	};
+	$: iconUrl = icon.origin === "homarr" 
+		? `${HOMARR_API_URL}/${icon.contentType === "image/svg+xml" ? "svg" : "png"}/${icon.id}.${icon.contentType === "image/svg+xml" ? "svg" : "png"}`
+		: icon.origin === "streamdeck" 
+			? `${serviceBaseUrl}/icons/${icon.id}`
+				: "";
 
 	function lazyLoad(image: HTMLImageElement, src: string) {
 		const loaded = () => {
 			image.classList.add("visible");
 		};
+
 		const observer = new IntersectionObserver(entries => {
 			if (entries[0].isIntersecting) {
 				image.src = src;
@@ -24,13 +25,19 @@
 				} else {
 					image.addEventListener("load", loaded);
 				}
+				observer.disconnect(); // Disconnect after loading to save memory
 			}
-		}, options);
+		}, {
+			rootMargin: "50px", // Start loading when image is 50px away from viewport
+			threshold: 0.01
+		});
+
 		observer.observe(image);
 
 		return {
 			destroy() {
 				image.removeEventListener("load", loaded);
+				observer.disconnect();
 			}
 		};
 	}
@@ -38,20 +45,22 @@
 
 <button
 	type="button"
-	class="flex h-20 w-20 cursor-pointer flex-col items-center gap-3 p-1 transition-all hover:bg-gray-200"
+	class="flex h-20 w-20 flex-col items-center justify-center gap-1 rounded p-1 transition-colors hover:bg-surface-hover"
 	on:click={() => onSelectIcon(icon)}
 	aria-label={`Icon ${icon.label}`}
 	data-testid="icon-button">
 	{#if icon.origin === "mdi"}
 		<i class={`mdi mdi-24px mdi-${icon.label}`} title={icon.label} data-testid="mdi-icon"></i>
-		<span data-origin="mdi" class="w-full truncate text-sm font-semibold" data-testid="mdi-label">{icon.label}</span>
-	{:else if icon.origin === "streamdeck"}
+		<span data-origin="mdi" class="w-full truncate text-xs font-semibold text-center" data-testid="mdi-label">{icon.label}</span>
+	{:else if icon.origin === "streamdeck" || icon.origin === "homarr"}
 		<img
-			use:lazyLoad={`${serviceBaseUrl}/icons/${icon.id}`}
+			use:lazyLoad={iconUrl}
 			alt={icon.label}
-			class="h-10 w-10"
-			data-testid="streamdeck-icon-img" />
-		<span data-origin="streamdeck" class="w-full truncate text-sm font-semibold" data-testid="streamdeck-label">
+			loading="lazy"
+			class="h-8 w-8 opacity-0 transition-opacity"
+			class:opacity-100={true}
+			data-testid={`${icon.origin}-icon-img`} />
+		<span data-origin={icon.origin} class="w-full truncate text-xs font-semibold text-center" data-testid={`${icon.origin}-label`}>
 			{icon.label}
 		</span>
 	{/if}
