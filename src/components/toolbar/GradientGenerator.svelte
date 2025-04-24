@@ -218,7 +218,7 @@
 				<!-- Button to remove the stop -->
 				<button
 					onclick={() => removeStop(index)}
-					class="btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-warning-900"
+					class="btn btn-icon btn-sm hover:bg-warning-900 h-auto w-auto rounded-md p-2"
 					data-testid="delete-stop-button">
 					<DeleteIcon size={20} />
 				</button>

@@ -28,14 +28,14 @@
 
 	// This is a workaround to avoid the error "Object literal may only specify known properties, and '"data-testid"' does not exist in type 'NavTileProps'"
 	const testAttrbutes = {
-		"data-testid": "nav-tile",
+		"data-testid": "nav-tile"
 	} as any;
 </script>
 
 <div class="flex h-full flex-row">
-	<div class="card grid h-full w-[96px] grid-cols-[auto_1fr] border-[1px] border-surface-100-900">
+	<div class="card border-surface-100-900 grid h-full w-[96px] grid-cols-[auto_1fr] border-[1px]">
 		<!-- Component -->
-		<Navigation.Rail value={selectedTile} onValueChange={(newValue) => (selectedTile = newValue)}>
+		<Navigation.Rail value={selectedTile} onValueChange={newValue => (selectedTile = newValue)}>
 			{#snippet header()}
 				<Navigation.Tile id="icons" label="Icons" href="#" {...testAttrbutes}>
 					<Search />
@@ -51,7 +51,7 @@
         </div> -->
 	</div>
 	<div
-		class="flex h-full w-[375px] flex-col gap-3 border-[1px] p-3 border-surface-100-900 preset-filled-surface-50-950">
+		class="border-surface-100-900 preset-filled-surface-50-950 flex h-full w-[375px] flex-col gap-3 border-[1px] p-3">
 		{#if selectedTile === "icons"}
 			<IconSearch
 				icons={$icons}

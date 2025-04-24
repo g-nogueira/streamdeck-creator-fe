@@ -11,6 +11,7 @@ describe("SelectedIcon", () => {
 		labelVisible: true,
 		labelColor: "#FF0000",
 		labelTypeface: "Arial",
+		labelSize: 70,
 		glyphColor: "#00FF00",
 		backgroundColor: "#0000FF",
 		iconScale: 1.5,
@@ -42,6 +43,7 @@ describe("SelectedIcon", () => {
 				label: userIcon.label,
 				labelVisible: userIcon.labelVisible,
 				labelTypeface: userIcon.labelTypeface,
+				labelSize: userIcon.labelSize,
 				iconScale: userIcon.iconScale,
 
 				imgX: userIcon.imgX,
@@ -50,7 +52,7 @@ describe("SelectedIcon", () => {
 				labelY: userIcon.labelY,
 
 				useGradient: userIcon.useGradient,
-				gradient:  userIcon.gradient ? new GradientBuilder(userIcon.gradient).getState() : undefined
+				gradient: userIcon.gradient ? new GradientBuilder(userIcon.gradient).getState() : undefined
 			},
 			iconOrigin: userIcon.origin,
 			contentType: userIcon.contentType
@@ -78,6 +80,7 @@ describe("SelectedIcon", () => {
 				labelVisible: userIconWithoutGradient.labelVisible,
 				labelColor: userIconWithoutGradient.labelColor,
 				labelTypeface: userIconWithoutGradient.labelTypeface,
+				labelSize: userIconWithoutGradient.labelSize,
 				iconScale: userIconWithoutGradient.iconScale,
 				imgX: userIconWithoutGradient.imgX,
 				imgY: userIconWithoutGradient.imgY,

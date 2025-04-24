@@ -116,11 +116,7 @@ const pullIcons = async () => {
 			log(red(`Failed to download SVG ZIP: ${e.message || e}`));
 			return;
 		}
-		await extractZip(
-			svgZipPath,
-			svgExtractedZipPath,
-			`^MaterialDesign(Light)?-SVG-${escapedVersion}\/svg\/.+$`
-		);
+		await extractZip(svgZipPath, svgExtractedZipPath, `^MaterialDesign(Light)?-SVG-${escapedVersion}\/svg\/.+$`);
 		log(`Extracted SVG ZIP ✔️`);
 
 		const iconsMetas = await getMeta(version, flavour);

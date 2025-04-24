@@ -33,7 +33,7 @@
 </script>
 
 <div
-	class="flex h-full w-[375px] min-w-[375px] flex-col gap-3 border-[1px] p-3 border-surface-100-900 preset-filled-surface-50-950">
+	class="border-surface-100-900 preset-filled-surface-50-950 flex h-full w-[375px] min-w-[375px] flex-col gap-3 border-[1px] p-3">
 	{#if $customizedIcon}
 		<ToolbarSection title="Typography">
 			<input
@@ -45,8 +45,13 @@
 			<select
 				data-testid="select-typography-typeface"
 				class="select-toolbar select bg-surface-800"
-				placeholder="Typeface - Not Implemented">
-				<option>Typeface - Not Implemented</option>
+				bind:value={$customizedIcon.styles.labelTypeface}>
+				<option value="VT323">VT323 (Default)</option>
+				<option value="Arial">Arial</option>
+				<option value="Monaco">Monaco</option>
+				<option value="Courier New">Courier New</option>
+				<option value="Consolas">Consolas</option>
+				<option value="Source Code Pro">Source Code Pro</option>
 			</select>
 		</ToolbarSection>
 		<hr class="hr" />
@@ -66,10 +71,12 @@
 					placeholder="Y" />
 			</div>
 			<input
-				data-testid="input-text-scale"
+				data-testid="input-text-size"
+				bind:value={$customizedIcon.styles.labelSize}
 				class="input-toolbar input bg-surface-800"
-				type="text"
-				placeholder="Scale - Not Implemented" />
+				type="number"
+				step="1"
+				placeholder="Text Size" />
 		</ToolbarSection>
 		<hr class="hr" />
 		<ToolbarSection title="Text Styling">
@@ -134,7 +141,7 @@
 					on:click={() => (customizedIcon.setUseGradient(false), handleRecalculateGradientCss())}
 					class="{$customizedIcon.styles.useGradient
 						? ''
-						: 'bg-secondary-950'} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
+						: 'bg-secondary-950'} btn btn-icon btn-sm hover:bg-secondary-900 h-auto w-auto rounded-md p-2">
 					<Tooltip text="Solid Fill">
 						<IconPaint size={20} />
 					</Tooltip>
@@ -145,7 +152,7 @@
 					on:click={() => (customizedIcon.setUseGradient(true), handleRecalculateGradientCss())}
 					class="{!$customizedIcon.styles.useGradient
 						? ''
-						: 'bg-secondary-950'} btn btn-icon btn-sm h-auto w-auto rounded-md p-2 hover:bg-secondary-900">
+						: 'bg-secondary-950'} btn btn-icon btn-sm hover:bg-secondary-900 h-auto w-auto rounded-md p-2">
 					<Tooltip text="Gradient Fill">
 						<IconSprayCan size={20} />
 					</Tooltip>

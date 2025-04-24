@@ -11,6 +11,8 @@
 	} else {
 		backgroundStyle = `background: ${customizableIcon?.styles.backgroundColor};`;
 	}
+
+	$: fontFamily = customizableIcon?.styles.labelTypeface?.trim() || "VT323";
 </script>
 
 <div class="m-16 flex max-h-[371px] min-h-[371px] min-w-[371px] max-w-[371px] justify-center">
@@ -33,10 +35,8 @@
 				<!-- Label -->
 				{#if customizableIcon.styles.labelVisible}
 					<div
-						class="absolute w-full truncate px-2 text-center text-6xl"
-						style="color: {customizableIcon.styles.labelColor}; font-family: {customizableIcon.styles
-							.labelTypeface}; transform: translate({customizableIcon.styles.labelX}px, {customizableIcon.styles
-							.labelY}px);"
+						class="absolute w-full truncate px-2 text-center"
+						style="color: {customizableIcon.styles.labelColor}; font-family: {fontFamily}; font-size: {customizableIcon.styles.labelSize}px; transform: translate({customizableIcon.styles.labelX}px, {customizableIcon.styles.labelY}px);"
 						data-testid="icon-label">
 						{customizableIcon.styles.label}
 					</div>

@@ -133,6 +133,70 @@ describe("Label Customization", () => {
 		// Assert
 		expect(label.style.fontFamily).toBe("Arial");
 	});
+
+	it("applies label typeface with correct font family", () => {
+		// Arrange
+		const labelTypefaceState = { ...mockState, styles: { ...mockState.styles, labelTypeface: "Source Code Pro" } };
+
+		// Act
+		render(IconPreview, { customizableIcon: labelTypefaceState });
+		const label = screen.getByTestId("icon-label");
+
+		// Assert
+		expect(label.style.fontFamily).toBe("Source Code Pro");
+	});
+
+	it("applies default VT323 typeface when empty typeface is provided", () => {
+		// Arrange
+		const stateWithEmptyTypeface = { 
+			...mockState, 
+			styles: { 
+				...mockState.styles, 
+				labelTypeface: "" 
+			} 
+		};
+
+		// Act
+		render(IconPreview, { customizableIcon: stateWithEmptyTypeface });
+		const label = screen.getByTestId("icon-label");
+
+		// Assert
+		expect(label.style.fontFamily).toBe("VT323");
+	});
+
+	it("renders label with the applied typeface style", () => {
+		// Arrange
+		const stateWithLabel = {
+			...mockState,
+			styles: {
+				...mockState.styles,
+				label: "Test Label",
+				labelVisible: true,
+				labelTypeface: "Courier New"
+			}
+		};
+
+		// Act
+		render(IconPreview, { customizableIcon: stateWithLabel });
+		const label = screen.getByTestId("icon-label");
+
+		// Assert
+		expect(label).toBeVisible();
+		expect(label.style.fontFamily).toBe("Courier New");
+		expect(label.textContent).toBe("Test Label");
+	});
+
+	it("applies label size correctly", () => {
+		// Arrange
+		const labelSizeState = { ...mockState, styles: { ...mockState.styles, labelSize: 24 } };
+
+		// Act
+		render(IconPreview, { customizableIcon: labelSizeState });
+		const label = screen.getByTestId("icon-label");
+
+		// Assert
+		expect(label.style.fontSize).toBe("24px");
+	});
 });
 
 describe("Icon Customization", () => {
