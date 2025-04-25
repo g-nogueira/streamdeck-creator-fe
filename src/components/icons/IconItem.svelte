@@ -10,7 +10,14 @@
 		? `${HOMARR_API_URL}/${icon.contentType === "image/svg+xml" ? "svg" : "png"}/${icon.id}.${icon.contentType === "image/svg+xml" ? "svg" : "png"}`
 		: icon.origin === "streamdeck" 
 			? `${serviceBaseUrl}/icons/${icon.id}`
-				: "";
+			: "";
+
+	// Always set src on mount, fallback to eager if not in viewport
+	function setSrc(image: HTMLImageElement, src: string) {
+		if (image && src) {
+			image.src = src;
+		}
+	}
 
 	function lazyLoad(image: HTMLImageElement, src: string) {
 		const loaded = () => {
@@ -34,6 +41,11 @@
 
 		observer.observe(image);
 
+		// Fallback: set src directly if not set after short delay
+		setTimeout(() => {
+			if (!image.src) setSrc(image, src);
+		}, 200);
+
 		return {
 			destroy() {
 				image.removeEventListener("load", loaded);
@@ -54,12 +66,13 @@
 		<span data-origin="mdi" class="w-full truncate text-xs font-semibold text-center" data-testid="mdi-label">{icon.label}</span>
 	{:else if icon.origin === "streamdeck" || icon.origin === "homarr"}
 		<img
-			use:lazyLoad={iconUrl}
 			alt={icon.label}
 			loading="lazy"
 			class="h-8 w-8 opacity-0 transition-opacity"
 			class:opacity-100={true}
-			data-testid={`${icon.origin}-icon-img`} />
+			data-testid={`${icon.origin}-icon-img`}
+			src={iconUrl}
+		/>
 		<span data-origin={icon.origin} class="w-full truncate text-xs font-semibold text-center" data-testid={`${icon.origin}-label`}>
 			{icon.label}
 		</span>

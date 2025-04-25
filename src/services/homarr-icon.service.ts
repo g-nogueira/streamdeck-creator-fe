@@ -83,7 +83,23 @@ export class HomarrIconService {
         }
     }
 
-    static async fetchIconWithContentType(iconId: string): Promise<[string, string]> {
+    static async fetchSvgIcon(iconId: string): Promise<string> {
+        try {
+            const iconPath = await this.mkIconUrl(iconId);
+            const response = await fetch(iconPath);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch Homarr icon: ${iconId}`);
+            }
+
+            const content = await response.text();
+            return content;
+        } catch (error) {
+            console.error("Error fetching Homarr icon:", error);
+            throw error;
+        }
+    }
+
+    static async mkIconUrl(iconId: string): Promise<string> {
         try {
             const metadata = await this.fetchIconMetadata();
             const iconInfo = metadata[iconId];
@@ -92,15 +108,9 @@ export class HomarrIconService {
             }
 
             const iconPath = this.getIconPath(iconId, metadata);
-            const response = await fetch(`${HOMARR_API_URL}/${iconPath}`);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch Homarr icon: ${iconId}`);
-            }
-
-            const content = await response.text();
-            return [content, iconInfo.base === "svg" ? "image/svg+xml" : "image/png"];
+            return `${HOMARR_API_URL}/${iconPath}`;
         } catch (error) {
-            console.error("Error fetching Homarr icon:", error);
+            console.error("Error creating Homarr icon URL:", error);
             throw error;
         }
     }

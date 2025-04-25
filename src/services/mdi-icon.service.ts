@@ -20,7 +20,7 @@ export class MdiIconService {
 		return icons.map(_mdiIcon.toIcon);
 	}
 
-	static async fetchSvgData(iconId: string): Promise<string> {
+	static async fetchSvgIcon(iconId: string): Promise<string> {
 		try {
 			const icon = await fetch(`/data/svg/${iconId}.svg`).then(res => res.text());
 

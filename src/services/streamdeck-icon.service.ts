@@ -40,7 +40,7 @@ export class StreamDeckIconService {
 		}
 	}
 
-	static async fetchIconWithContentType(iconId: string): Promise<[string, string]> {
+	static async fetchIconWithContentType(iconId: string): Promise<string> {
 		try {
 			if (iconId === UUID.empty || iconId === "") {
 				throw new Error("Icon ID is empty");
@@ -59,7 +59,7 @@ export class StreamDeckIconService {
 				throw new Error("Failed to get content type.");
 			}
 
-			return [iconContent, contentType];
+			return iconContent;
 		} catch (error) {
 			console.error("Error fetching icon:", error);
 			throw error;

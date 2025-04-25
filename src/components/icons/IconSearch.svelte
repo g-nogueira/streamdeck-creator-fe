@@ -20,7 +20,7 @@
 	let placeholder = $state("");
 	let isLoading = $state(false);
 	let error = $state("");
-	let expandedGroups = $state<string[]>([]);
+	let expandedGroups = $state<string[]>(["mdi", "homarr", "streamdeck"]);
 
 	const placeholders = [
 		"Search for icons...",

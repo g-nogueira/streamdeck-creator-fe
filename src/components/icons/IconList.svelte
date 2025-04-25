@@ -45,7 +45,7 @@
 </script>
 
 <div class="flex flex-wrap gap-2">
-	{#each visibleIcons as icon (icon.id)}
+	{#each visibleIcons as icon, i (icon.id + '-' + i)}
 		<IconItem {icon} {onSelectIcon} />
 	{/each}
 </div>

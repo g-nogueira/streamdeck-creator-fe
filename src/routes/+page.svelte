@@ -1,20 +1,13 @@
 <script lang="ts">
-	import IconCustomizer from "../components/icons/IconCustomizer.svelte";
 	import "../app.css";
 	import Sidenav from "../components/sidenav/Sidenav.svelte";
 	import IconPreview from "../components/icons/IconPreview.svelte";
 	import Toolbar from "../components/toolbar/Toolbar.svelte";
-	import { IconService } from "../services/icon.service";
 	import { toUserIcon, type CustomizableIcon } from "../models/CustomizableIcon";
 	import { customizedIcon } from "../stores/icon-customizations.store";
 	import _ from "lodash";
 	import { selectedCollection } from "../stores/selected-collection.store";
 	import ShortcutsBar from "../components/shortcuts/ShortcutsBar.svelte";
-
-	const selectSvgIcon = customizedIcon.selectSvgIcon;
-	const selectImageIcon = customizedIcon.selectImageIcon;
-	const setSvgFillColor = customizedIcon.setSvgFillColor;
-	const fetchIconWithContentType = IconService.fetchIconWithContentType;
 
 	const handleAddIconToCollection = async (icon: CustomizableIcon, png: string, thumbnail: string) => {
 		_.flow(toUserIcon, selectedCollection.addIconToSelectedCollection)(icon, thumbnail, png);
@@ -31,12 +24,6 @@
 	<Sidenav />
 	<main class="flex h-screen w-screen flex-col overflow-hidden">
 		<div class="flex h-full w-full items-center justify-center">
-			<IconCustomizer
-				customizableIcon={$customizedIcon}
-				{selectSvgIcon}
-				{selectImageIcon}
-				{setSvgFillColor}
-				{fetchIconWithContentType} />
 			<IconPreview customizableIcon={$customizedIcon} />
 		</div>
 		<!-- <Footer /> -->

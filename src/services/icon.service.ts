@@ -34,14 +34,14 @@ export class IconService {
 		}
 	}
 
-	static async fetchIconWithContentType(iconId: string, iconOrigin: IconOrigin): Promise<[string, string]> {
+	static async fetchSvgIcon(iconId: string, iconOrigin: IconOrigin): Promise<string> {
 		try {
 			if (iconOrigin === "mdi") {
-				const svgPromise = _.flow(_.toUpper, MdiIconService.fetchSvgData)(iconId);
-				return [await svgPromise, "image/svg+xml"];
+				const svgPromise = _.flow(_.toUpper, MdiIconService.fetchSvgIcon)(iconId);
+				return svgPromise;
 			}
 			if (iconOrigin === "homarr") {
-				return HomarrIconService.fetchIconWithContentType(iconId);
+				return HomarrIconService.fetchSvgIcon(iconId);
 			}
 			return USE_STREAM_DECK_ICONS()
 				? await StreamDeckIconService.fetchIconWithContentType(iconId)
@@ -52,7 +52,21 @@ export class IconService {
 		}
 	}
 
-	static mkIconUrl(iconId: string): string {
-		return `${iconsEndpoint}/${iconId}`;
+	static mkIconUrl(iconId: string, iconOrigin: IconOrigin): Promise<string> {
+		try {
+			if (iconId === "") {
+				throw new Error("Icon ID is empty");
+			}
+
+			switch (iconOrigin) {
+				case "homarr":
+					return HomarrIconService.mkIconUrl(iconId);
+				default:
+					return Promise.reject("Icon origin not supported");
+			}
+		} catch (error) {
+			console.error("Error creating icon URL:", error);
+			throw error;
+		}
 	}
 }

@@ -64,7 +64,7 @@ describe("HomarrIconService", () => {
                 text: () => Promise.resolve(mockSvgContent)
             });
 
-        const [content, contentType] = await HomarrIconService.fetchIconWithContentType("homarr-1");
+        const [content, contentType] = await HomarrIconService.fetchSvgIcon("homarr-1");
 
         expect(content).toBe(mockSvgContent);
         expect(contentType).toBe("image/svg+xml");
@@ -76,6 +76,6 @@ describe("HomarrIconService", () => {
             json: () => Promise.resolve(mockMetadata)
         });
 
-        await expect(HomarrIconService.fetchIconWithContentType("non-existent")).rejects.toThrow("Homarr icon not found");
+        await expect(HomarrIconService.fetchSvgIcon("non-existent")).rejects.toThrow("Homarr icon not found");
     });
 });
