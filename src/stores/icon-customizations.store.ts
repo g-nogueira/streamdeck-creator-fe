@@ -6,6 +6,7 @@ import * as _iconPreview from "../models/CustomizableIcon";
 import _ from "lodash";
 import { GradientBuilder } from "../lib/gradient/gradientBuilder";
 import type { GradientState, GradientStop } from "$lib/gradient";
+import { SVG } from '@svgdotjs/svg.js';
 
 let fromIcon = (icon: Icon) => {
 	let iconPreview = _iconPreview.mkEmpty();
@@ -24,25 +25,37 @@ let fromUserIcon = (userIcon: UserIcon) => {
 
 /**
  * Update the outer SVG fill attribute with the given color
- * @param svgContent
  * @param color
  */
 const updateSvgFill =
 	(color: string) =>
 	(svgContent: string): string => {
 		if (typeof window === "undefined") {
-			console.error("Trying to use DomParser on the server side. Returning the SVG content as is.");
+			console.error("Trying to use SVG parsing on the server side. Returning the SVG content as is.");
 			return svgContent;
 		}
-		const parser = new DOMParser();
-		const doc = parser.parseFromString(svgContent, "image/svg+xml");
-		const svgElement = doc.querySelectorAll("svg");
 
-		_.forEach(svgElement, element => {
-			element.setAttribute("fill", color);
-		});
+		try {
+			// Parse SVG with SVG.js
+			const draw = SVG(svgContent);
+			
+			// Set fill on the root SVG
+			draw.fill(color);
 
-		return new XMLSerializer().serializeToString(doc);
+			// Remove fill from child paths except those with fill="none"
+			draw.find('path').forEach(path => {
+				if (path.attr('fill') && path.attr('fill') !== 'none') {
+					path.attr('fill', null);
+				}
+			});
+
+			const cleanedSvg = draw.svg();
+			
+			return cleanedSvg;
+		} catch (error) {
+			console.error("Error parsing SVG:", error);
+			return svgContent; // Return original content if parsing fails
+		}
 	};
 
 const removeSvgSizeAttributes = (svgContent: string): string => {
@@ -65,8 +78,17 @@ function createIconCustomizationsStore() {
 
 				verboseMode && console.log("Setting SVG icon");
 
-				const cleanedSvg = _.flow(updateSvgFill(state.styles.glyphColor), removeSvgSizeAttributes)(svg);
+				let cleanedSvg;
 
+				switch (state.iconOrigin) {
+					case "homarr":
+						cleanedSvg = _.flow(() => svg, removeSvgSizeAttributes)();
+						break;
+					default:
+						cleanedSvg = _.flow(() => svg, updateSvgFill(state.styles.glyphColor), removeSvgSizeAttributes)();
+						break;
+				}
+						
 				state.svgContent = cleanedSvg;
 
 				return state;
@@ -109,6 +131,9 @@ function createIconCustomizationsStore() {
 				if (!state) return state;
 
 				verboseMode && console.log("Setting SVG fill color");
+
+				if (!state.svgContent)
+					throw new Error("SVG content is not defined");
 
 				state.svgContent = updateSvgFill(color)(state.svgContent!);
 				return state;

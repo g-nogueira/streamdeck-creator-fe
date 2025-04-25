@@ -44,7 +44,7 @@
 		}
 	}
 
-	$: if (customizableIcon?.styles?.glyphColor) {
+	$: if (customizableIcon?.styles?.glyphColor && customizableIcon.svgContent) {
 		setSvgFillColor(customizableIcon.styles.glyphColor);
 	}
 
