@@ -3,6 +3,7 @@ import { iconsEndpoint } from "../lib/constants";
 import type { Icon } from "../models/Icon";
 import * as _userIconDto from "./dto/UserIconDto";
 import * as _iconDto from "./dto/IconDto";
+import type { IconDto } from "./dto/IconDto";
 
 export class StreamDeckIconService {
 	// const response = await fetch(`${serviceBaseUrl}/icons?page=1&pageSize=100`);
@@ -16,7 +17,7 @@ export class StreamDeckIconService {
 				throw new Error("Failed to fetch icons");
 			}
 
-			const icons: Icon[] = await response.json();
+			const icons: IconDto[] = await response.json();
 			return icons.map(_iconDto.toIcon);
 		} catch (error) {
 			console.error("Error fetching icons:", error);
@@ -32,7 +33,7 @@ export class StreamDeckIconService {
 				throw new Error("Failed to search icons with term: " + searchTerm);
 			}
 
-			const icons: Icon[] = await response.json();
+			const icons: IconDto[] = await response.json();
 			return icons.map(_iconDto.toIcon);
 		} catch (error) {
 			console.error("Error searching icons:", error);
