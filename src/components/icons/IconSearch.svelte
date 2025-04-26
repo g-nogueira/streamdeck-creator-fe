@@ -6,6 +6,7 @@
 	import type { IconOrigin } from "../../models/Icon";
 	import { Accordion } from "@skeletonlabs/skeleton-svelte";
 	import ChevronDown from "lucide-svelte/icons/chevron-down";
+	import ChevronRight from "lucide-svelte/icons/chevron-right";
 
 	const { icons = [], onSearchIcons, onLoadDefaultIcons, onSetEmptyIcons, onSelectIcon, debounceTimeMs = 500 } = $props<{
 		icons: Icon[];
@@ -96,10 +97,11 @@
 	{:else}
 		<div class="flex flex-1 flex-col gap-4 overflow-y-auto">
 			<Accordion value={expandedGroups} onValueChange={(e) => (expandedGroups = e.value)} multiple>
+				{#snippet iconOpen()}<ChevronDown size={20} />{/snippet}
+				{#snippet iconClosed()}<ChevronRight size={20} />{/snippet}
 				{#each Object.entries(groupedIcons) as [origin, groupIcons] (origin)}
 					{#if (groupIcons as Icon[]).length > 0}
 						<Accordion.Item value={origin}>
-							{#snippet lead()}<ChevronDown size={20} />{/snippet}
 							{#snippet control()}<span class="capitalize">{origin} Icons ({(groupIcons as Icon[]).length})</span>{/snippet}
 							{#snippet panel()}
 								<div class="pt-2">
