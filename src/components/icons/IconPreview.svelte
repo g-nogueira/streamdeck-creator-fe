@@ -29,7 +29,7 @@
 					style="color: {customizableIcon.styles.glyphColor}; transform: scale({customizableIcon.styles
 						.iconScale}) translate({customizableIcon.styles.imgX}px, {customizableIcon.styles.imgY}px);">
 					{#if customizableIcon.contentType === "image/svg+xml" && customizableIcon.svgContent}
-						{@html DOMPurify.sanitize(customizableIcon.svgContent)}
+						{@html customizableIcon.svgContent}
 					{:else if customizableIcon.contentType === "image/png"}
 						<img src={customizableIcon.imageIconUrl} alt="icon preview" style="max-width:100%;max-height:100%;" />
 					{/if}
