@@ -55,7 +55,7 @@ export class HomarrIconService {
             }));
         } catch (error) {
             console.error("Error fetching Homarr icons:", error);
-            throw error;
+            throw new Error("Error fetching Homarr icons: " + error);
         }
     }
 
@@ -68,7 +68,6 @@ export class HomarrIconService {
                 .filter(([name, info]) => 
                     name.toLowerCase().includes(normalizedSearch) ||
                     info.aliases.some(alias => alias.toLowerCase().includes(normalizedSearch))
-                    // || info.categories.some(category => category.toLowerCase().includes(normalizedSearch))
                 )
                 .map(([name, info]) => ({
                     id: name,
@@ -79,7 +78,7 @@ export class HomarrIconService {
                 }));
         } catch (error) {
             console.error("Error searching Homarr icons:", error);
-            throw error;
+            throw new Error("Error searching Homarr icons: " + error);
         }
     }
 
@@ -95,23 +94,18 @@ export class HomarrIconService {
             return content;
         } catch (error) {
             console.error("Error fetching Homarr icon:", error);
-            throw error;
+            throw new Error(`Error fetching Homarr icon '${iconId}': ${error}`);
         }
     }
 
     static async mkIconUrl(iconId: string): Promise<string> {
-        try {
-            const metadata = await this.fetchIconMetadata();
-            const iconInfo = metadata[iconId];
-            if (!iconInfo) {
-                throw new Error(`Homarr icon not found: ${iconId}`);
-            }
-
-            const iconPath = this.getIconPath(iconId, metadata);
-            return `${HOMARR_API_URL}/${iconPath}`;
-        } catch (error) {
-            console.error("Error creating Homarr icon URL:", error);
-            throw error;
+        const metadata = await this.fetchIconMetadata();
+        const iconInfo = metadata[iconId];
+        if (!iconInfo) {
+            throw new Error(`Homarr icon not found: ${iconId}`);
         }
+
+        const iconPath = this.getIconPath(iconId, metadata);
+        return `${HOMARR_API_URL}/${iconPath}`;
     }
 }
