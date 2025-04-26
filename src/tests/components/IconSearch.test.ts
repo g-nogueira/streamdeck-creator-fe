@@ -55,7 +55,7 @@ describe("IconSearch", () => {
     });
 
     it("shows loading state during search", async () => {
-        const mockOnSearchIcons = vi.fn(() => new Promise(resolve => setTimeout(resolve, 100)));
+        const mockOnSearchIcons = vi.fn(() => new Promise<void>(resolve => setTimeout(resolve, 100)));
         
         render(IconSearch, {
             icons: [],
