@@ -124,12 +124,14 @@
 					data-testid="input-icon-color-picker"
 					class="input-toolbar input"
 					bind:value={$customizedIcon.styles.glyphColor}
-					type="color" />
+					type="color"
+					disabled={$customizedIcon.iconOrigin !== "mdi"} />
 				<input
 					data-testid="input-icon-color"
 					class="input-toolbar input bg-surface-800"
 					type="text"
-					bind:value={$customizedIcon.styles.glyphColor} />
+					bind:value={$customizedIcon.styles.glyphColor} 
+					disabled={$customizedIcon.iconOrigin !== "mdi"} />
 			</div>
 		</ToolbarSection>
 		<hr class="hr" />

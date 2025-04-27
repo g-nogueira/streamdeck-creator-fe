@@ -1,4 +1,4 @@
-export type IconOrigin = "mdi" | "streamdeck";
+export type IconOrigin = "mdi" | "streamdeck" | "homarr";
 
 export interface Icon {
 	id: string;

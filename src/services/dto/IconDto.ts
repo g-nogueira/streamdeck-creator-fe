@@ -1,6 +1,6 @@
 import type { Icon } from "../../models/Icon";
 
-export type IconOriginDto = "mdi" | "streamdeck";
+export type IconOriginDto = "mdi" | "streamdeck" | "homarr";
 
 export interface IconDto {
 	id: string;
