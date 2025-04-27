@@ -64,6 +64,15 @@ const removeSvgSizeAttributes = (svgContent: string): string => {
 	return svgContent.replace(/(width|height)="[^"]*"/g, "");
 };
 
+/**
+ * Creates a Svelte store for managing the state and customization of icons, including SVG content, image URLs, styles, and gradients.
+ *
+ * The store provides methods to select and update icons, manipulate SVG content and fill color, manage gradient stops and types, and update icon styles such as labels and gradient usage. It supports asynchronous fetching of icon content based on type and includes error handling for invalid operations.
+ *
+ * @returns A store with subscription and a suite of methods for icon customization and state management.
+ *
+ * @throws {Error} If an icon is undefined when selecting, if SVG content is missing when updating fill color, or if gradient operations are attempted without a defined gradient.
+ */
 function createIconCustomizationsStore() {
 	const { subscribe, set, update } = writable<CustomizableIcon | null>(null);
 	const verboseMode = true;
