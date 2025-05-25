@@ -3,16 +3,17 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import IconSearch from "../../components/icons/IconSearch.svelte";
 import { setupIntersectionObserverMock } from "../utils/interceptionObserverHelper";
 import { flushPromises } from "../utils/flushPromises";
+import type { Icon } from "../../models/Icon";
 
 beforeEach(() => setupIntersectionObserverMock({ observe: vi.fn() }));
 
 describe("IconSearch", () => {
-    const mockIcons = [
+    const mockIcons: Partial<Icon>[] = [
         { id: "mdi1", label: "MDI Icon 1", origin: "mdi" },
         { id: "mdi2", label: "MDI Icon 2", origin: "mdi" },
         { id: "homarr1", label: "Homarr Icon 1", origin: "homarr" },
         { id: "streamdeck1", label: "StreamDeck Icon 1", origin: "streamdeck" }
-    ] as any[];
+    ];
 
     it("calls onSearchIcons when the search input changes", async () => {
         const mockOnSearchIcons = vi.fn();

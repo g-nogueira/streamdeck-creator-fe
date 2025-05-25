@@ -98,7 +98,7 @@ describe("IconItem Component - MDI Icon", () => {
 });
 
 describe("IconItem Component - Homarr Icon", () => {
-	const mockIcon = { id: "app-icon", label: "App Icon", keywords: [], contentType: "image/svg+xml", origin: "homarr" } as Icon;
+	const mockIcon = { id: "app-icon", label: "App Icon", keywords: [], contentType: "image/svg+xml", origin: "homarr", url: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/app-icon.svg" } as Icon;
 
 	const getIconButton = () => screen.getByTestId("icon-button");
 

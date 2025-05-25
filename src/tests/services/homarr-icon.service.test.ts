@@ -52,14 +52,16 @@ describe("HomarrIconService", () => {
             label: "App Icon 1",
             keywords: ["app", "icon", "test", "app", "test"],
             origin: "homarr",
-            contentType: "image/svg+xml"
+            contentType: "image/svg+xml",
+            url: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/app-icon-1.svg",
         });
         expect(icons[1]).toEqual({
             id: "app-icon-2",
             label: "App Icon 2",
             keywords: ["app", "sample", "app", "test"],
             origin: "homarr",
-            contentType: "image/png"
+            contentType: "image/png",
+            url: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/app-icon-2.png",
         });
     });
 
