@@ -45,14 +45,6 @@
 	const groupedIcons = $derived(groupIconsByOrigin(icons));
 
 	const performSearch = async (term: string) => {
-		if (!term) {
-			onLoadDefaultIcons();
-			return;
-		} else if (term.length <= 2) {
-			onSetEmptyIcons();
-			return;
-		}
-
 		try {
 			await onSearchIcons(term);
 		} catch (e: any) {
@@ -65,8 +57,15 @@
 	const searchIcons = debounce(performSearch, debounceTimeMs);
 
 	const handleSearchInput = () => {
-		isLoading = true;
 		error = "";
+		isLoading = true;
+		
+		if (!searchTerm || searchTerm.length <= 2) {
+			onLoadDefaultIcons();
+			isLoading = false;
+			return;
+		}
+
 		searchIcons(searchTerm);
 	};
 
