@@ -1,5 +1,4 @@
 <script lang="ts">
-	import DOMPurify from "dompurify";
 	import type { CustomizableIcon } from "../../models/CustomizableIcon";
 
 	export let customizableIcon: CustomizableIcon | null;
