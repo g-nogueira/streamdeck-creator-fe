@@ -45,13 +45,6 @@ const updateSvgFill =
 			// Set fill on the root SVG
 			draw.fill(color);
 
-			// Remove fill from child paths except those with fill="none"
-			draw.find('path').forEach(path => {
-				if (path.attr('fill') && path.attr('fill') !== 'none') {
-					path.attr('fill', null);
-				}
-			});
-
 			const cleanedSvg = draw.svg();
 			
 			return cleanedSvg;
