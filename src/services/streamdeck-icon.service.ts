@@ -3,6 +3,7 @@ import { iconsEndpoint } from "../lib/constants";
 import type { Icon } from "../models/Icon";
 import * as _userIconDto from "./dto/UserIconDto";
 import * as _iconDto from "./dto/IconDto";
+import type { IconDto } from "./dto/IconDto";
 
 export class StreamDeckIconService {
 	// const response = await fetch(`${serviceBaseUrl}/icons?page=1&pageSize=100`);
@@ -16,7 +17,7 @@ export class StreamDeckIconService {
 				throw new Error("Failed to fetch icons");
 			}
 
-			const icons: Icon[] = await response.json();
+			const icons: IconDto[] = await response.json();
 			return icons.map(_iconDto.toIcon);
 		} catch (error) {
 			console.error("Error fetching icons:", error);
@@ -32,7 +33,7 @@ export class StreamDeckIconService {
 				throw new Error("Failed to search icons with term: " + searchTerm);
 			}
 
-			const icons: Icon[] = await response.json();
+			const icons: IconDto[] = await response.json();
 			return icons.map(_iconDto.toIcon);
 		} catch (error) {
 			console.error("Error searching icons:", error);
@@ -40,7 +41,7 @@ export class StreamDeckIconService {
 		}
 	}
 
-	static async fetchIconWithContentType(iconId: string): Promise<[string, string]> {
+	static async fetchIconWithContentType(iconId: string): Promise<string> {
 		try {
 			if (iconId === UUID.empty || iconId === "") {
 				throw new Error("Icon ID is empty");
@@ -59,7 +60,7 @@ export class StreamDeckIconService {
 				throw new Error("Failed to get content type.");
 			}
 
-			return [iconContent, contentType];
+			return iconContent;
 		} catch (error) {
 			console.error("Error fetching icon:", error);
 			throw error;

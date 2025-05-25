@@ -4,6 +4,7 @@ import type { Icon, IconOrigin } from "../models/Icon";
 import * as _userIconDto from "./dto/UserIconDto";
 import { MdiIconService } from "./mdi-icon.service";
 import { StreamDeckIconService } from "./streamdeck-icon.service";
+import { HomarrIconService } from "./homarr-icon.service";
 import { USE_STREAM_DECK_ICONS } from "$lib/feature-flags";
 
 export class IconService {
@@ -11,8 +12,9 @@ export class IconService {
 		try {
 			let streamDeckIcons = USE_STREAM_DECK_ICONS() ? await StreamDeckIconService.fetchList() : [];
 			let mdiIcons = MdiIconService.fetchList();
+			let homarrIcons = await HomarrIconService.fetchList();
 
-			return [...streamDeckIcons, ...mdiIcons];
+			return [...streamDeckIcons, ...mdiIcons, ...homarrIcons];
 		} catch (error) {
 			console.error("Error fetching icons:", error);
 			throw error;
@@ -23,21 +25,23 @@ export class IconService {
 		try {
 			let streamDeckIcons = USE_STREAM_DECK_ICONS() ? await StreamDeckIconService.search(searchTerm) : [];
 			let mdiIcons = MdiIconService.search(searchTerm);
+			let homarrIcons = await HomarrIconService.search(searchTerm);
 
-			return [...streamDeckIcons, ...mdiIcons];
+			return [...streamDeckIcons, ...mdiIcons, ...homarrIcons];
 		} catch (error) {
 			console.error("Error searching icons:", error);
 			throw error;
 		}
 	}
 
-	static async fetchIconWithContentType(iconId: string, iconOrigin: IconOrigin): Promise<[string, string]> {
-		// File names are case sensitive. Not sure if I'm able to change the behavior, so I'm just going to uppercase the iconId
+	static async fetchSvgIcon(iconId: string, iconOrigin: IconOrigin): Promise<string> {
 		try {
 			if (iconOrigin === "mdi") {
-				const svgPromise = _.flow(_.toUpper, MdiIconService.fetchSvgData)(iconId);
-
-				return [await svgPromise, "image/svg+xml"];
+				const svgPromise = _.flow(_.toUpper, MdiIconService.fetchSvgIcon)(iconId);
+				return svgPromise;
+			}
+			if (iconOrigin === "homarr") {
+				return HomarrIconService.fetchSvgIcon(iconId);
 			}
 			return USE_STREAM_DECK_ICONS()
 				? await StreamDeckIconService.fetchIconWithContentType(iconId)
@@ -48,7 +52,21 @@ export class IconService {
 		}
 	}
 
-	static mkIconUrl(iconId: string): string {
-		return `${iconsEndpoint}/${iconId}`;
+	static mkIconUrl(iconId: string, iconOrigin: IconOrigin): Promise<string> {
+		try {
+			if (iconId === "") {
+				throw new Error("Icon ID is empty");
+			}
+
+			switch (iconOrigin) {
+				case "homarr":
+					return HomarrIconService.mkIconUrl(iconId);
+				default:
+					return Promise.reject("Icon origin not supported");
+			}
+		} catch (error) {
+			console.error("Error creating icon URL:", error);
+			throw error;
+		}
 	}
 }

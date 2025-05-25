@@ -13,6 +13,10 @@ const DB_VERSION = 1;
 const COLLECTIONS_STORE = "userIconCollections";
 export const DEFAULT_COLLECTION_ID = "2f9c5e71-a249-4c01-b472-29757d9d69d8";
 
+/**
+ * Database service for managing user icon collections using IndexedDB
+ * Implements singleton pattern and provides reactive updates through subscribers
+ */
 class UserIconCollectionIndexedDBService {
 	private static instance: UserIconCollectionIndexedDBService;
 	private db: Promise<IDBPDatabase<UserIconCollectionDB>>;
@@ -30,6 +34,10 @@ class UserIconCollectionIndexedDBService {
 		});
 	}
 
+	/**
+	 * Gets the singleton instance of the service
+	 * @returns The UserIconCollectionIndexedDBService instance
+	 */
 	public static getInstance(): UserIconCollectionIndexedDBService {
 		if (!UserIconCollectionIndexedDBService.instance) {
 			UserIconCollectionIndexedDBService.instance = new UserIconCollectionIndexedDBService();
@@ -37,10 +45,19 @@ class UserIconCollectionIndexedDBService {
 		return UserIconCollectionIndexedDBService.instance;
 	}
 
+	/**
+	 * Gets the IndexedDB database instance
+	 * @private
+	 */
 	private async getDB() {
 		return this.db;
 	}
 
+	/**
+	 * Subscribes to changes in the collections
+	 * @param callback Function called when collections change
+	 * @returns Unsubscribe function
+	 */
 	public subscribe(callback: (collections: UserIconCollection[]) => void): () => void {
 		this.subscribers.add(callback);
 
@@ -53,7 +70,10 @@ class UserIconCollectionIndexedDBService {
 		};
 	}
 
-	// Notify all subscribers
+	/**
+	 * Notifies all subscribers of changes
+	 * @private
+	 */
 	private async notifySubscribers() {
 		const collections = await this.getList();
 		for (const callback of this.subscribers) {
@@ -61,6 +81,11 @@ class UserIconCollectionIndexedDBService {
 		}
 	}
 
+	/**
+	 * Initializes the database with a default collection if empty
+	 * @private
+	 * @param db The IndexedDB database instance
+	 */
 	private async initializeWithDefaultIfEmpty(db: IDBPDatabase<UserIconCollectionDB>): Promise<void> {
 		try {
 			// Check if the database is empty
@@ -82,6 +107,12 @@ class UserIconCollectionIndexedDBService {
 		}
 	}
 
+	/**
+	 * Adds a new icon to a collection
+	 * @param collectionId ID of the collection
+	 * @param icon Icon to add
+	 * @returns The added icon
+	 */
 	async addIcon(collectionId: string, icon: UserIcon): Promise<UserIcon> {
 		try {
 			const db = await this.getDB();
@@ -115,6 +146,11 @@ class UserIconCollectionIndexedDBService {
 		}
 	}
 
+	/**
+	 * Removes an icon from a collection
+	 * @param collectionId ID of the collection
+	 * @param iconId ID of the icon to remove
+	 */
 	async removeIcon(collectionId: string, iconId: string): Promise<void> {
 		try {
 			const db = await this.getDB();
@@ -135,6 +171,12 @@ class UserIconCollectionIndexedDBService {
 		}
 	}
 
+	/**
+	 * Updates an existing icon in a collection
+	 * @param collectionId ID of the collection
+	 * @param updatedIcon Updated icon data
+	 * @returns The updated icon
+	 */
 	async updateIcon(collectionId: string, updatedIcon: UserIcon): Promise<UserIcon> {
 		try {
 			const db = await this.getDB();

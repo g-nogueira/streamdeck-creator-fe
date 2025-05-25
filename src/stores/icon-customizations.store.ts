@@ -6,12 +6,16 @@ import * as _iconPreview from "../models/CustomizableIcon";
 import _ from "lodash";
 import { GradientBuilder } from "../lib/gradient/gradientBuilder";
 import type { GradientState, GradientStop } from "$lib/gradient";
+import { SVG } from '@svgdotjs/svg.js';
+import { IconService } from "../services/icon.service";
 
 let fromIcon = (icon: Icon) => {
 	let iconPreview = _iconPreview.mkEmpty();
 
 	iconPreview.iconId = icon.id;
 	iconPreview.iconOrigin = icon.origin;
+	iconPreview.contentType = icon.contentType;
+	iconPreview.imageIconUrl = icon.url;
 
 	return iconPreview;
 };
@@ -23,67 +27,170 @@ let fromUserIcon = (userIcon: UserIcon) => {
 };
 
 /**
- * Update the outer SVG fill attribute with the given color
- * @param svgContent
- * @param color
+ * Updates the outer SVG fill attribute with the given color
+ * @param color The fill color to apply
  */
 const updateSvgFill =
 	(color: string) =>
 	(svgContent: string): string => {
 		if (typeof window === "undefined") {
-			console.error("Trying to use DomParser on the server side. Returning the SVG content as is.");
+			console.error("Trying to use SVG parsing on the server side. Returning the SVG content as is.");
 			return svgContent;
 		}
-		const parser = new DOMParser();
-		const doc = parser.parseFromString(svgContent, "image/svg+xml");
-		const svgElement = doc.querySelectorAll("svg");
 
-		_.forEach(svgElement, element => {
-			element.setAttribute("fill", color);
-		});
+		try {
+			// Parse SVG with SVG.js
+			const draw = SVG(svgContent);
+			
+			// Set fill on the root SVG
+			draw.fill(color);
 
-		return new XMLSerializer().serializeToString(doc);
+			const cleanedSvg = draw.svg();
+			
+			return cleanedSvg;
+		} catch (error) {
+			console.error("Error parsing SVG:", error);
+			return svgContent; // Return original content if parsing fails
+		}
 	};
 
-const removeSvgSizeAttributes = (svgContent: string): string => {
-	return svgContent.replace(/(width|height)="[^"]*"/g, "");
+/**
+ * Sets SVG size attributes to 'auto'
+ * @param svg SVG content to modify
+ */
+const setSvgSizeAuto = (svgContent: string): string => {
+	// Parse SVG with SVG.js
+	const draw = SVG(svgContent);
+
+	draw.width("auto");
+	draw.height("auto");
+
+	return draw.svg();
+	
 };
 
+/**
+ * Creates and manages the state for icon customization
+ * Handles SVG modifications, gradient management, and style updates
+ */
 function createIconCustomizationsStore() {
 	const { subscribe, set, update } = writable<CustomizableIcon | null>(null);
 	const verboseMode = true;
 
+	function selectSvgIcon(svg: string) {
+		return update(state => {
+			if (!state) return state;
+
+			verboseMode && console.log("Setting SVG icon");
+
+			let cleanedSvg;
+
+			switch (state.iconOrigin) {
+				case "homarr":
+					// We have more success when we don't modify the SVG for Homarr icons.
+					cleanedSvg = svg;
+					break;
+				default:
+					cleanedSvg = _.flow(() => svg, updateSvgFill(state.styles.glyphColor), setSvgSizeAuto)();
+					break;
+			}
+					
+			state.svgContent = cleanedSvg;
+
+			return state;
+		});
+	}
+
+	function selectImageIcon(url: string) {
+		return update(state => {
+			if (!state) return state;
+
+			verboseMode && console.log("Setting image icon");
+
+			state.svgContent = undefined;
+			state.imageIconUrl = url;
+
+			return state;
+		});
+	}
+
+	function setSvgFillColor(color: string) {
+		return update(state => {
+			if (!state) return state;
+
+			verboseMode && console.log("Setting SVG fill color");
+
+			if (!state.svgContent)
+				throw new Error("SVG content is not defined");
+
+			state.svgContent = updateSvgFill(color)(state.svgContent!);
+			return state;
+		});
+	}
+
 	return {
 		subscribe,
-		selectIcon: (icon: Icon) => set(fromIcon(icon)),
+		
+		/**
+		 * Selects an icon for customization
+		 * @param icon The icon to customize
+		 */
+		selectIcon: (icon: Icon) => {
+			verboseMode && console.log("Selecting icon");
+
+			if (!icon) {
+				throw new Error("Icon is undefined");
+			}
+
+			let customizableIcon = fromIcon(icon);
+
+			if (icon.contentType === "image/svg+xml") {
+				IconService.fetchSvgIcon(customizableIcon.iconId, customizableIcon.iconOrigin)
+				.then(selectSvgIcon)
+				.catch(error => {
+					throw new Error("Error fetching icon", error);
+				});
+
+			}
+			if (icon.contentType === "image/png") {
+				// Set the SVG content to the icon content
+				IconService.mkIconUrl(customizableIcon.iconId, customizableIcon.iconOrigin)
+				.then(selectImageIcon)
+				.catch(error => {
+					throw new Error("Error fetching icon", error);
+				});
+			}
+
+			set(customizableIcon);
+
+		},
+		/**
+		 * Selects a user icon for customization
+		 * @param userIcon The user icon to customize
+		 */
 		selectUserIcon: (userIcon: UserIcon) => set(fromUserIcon(userIcon)),
+		
+		/**
+		 * Clears the current icon selection
+		 */
 		clear: () => set(null),
 
-		selectSvgIcon: (svg: string) =>
-			update(state => {
-				if (!state) return state;
+		/**
+		 * Updates the icon's SVG content
+		 * @param svg The new SVG content
+		 */
+		selectSvgIcon,
 
-				verboseMode && console.log("Setting SVG icon");
+		/**
+		 * Updates the icon's image URL
+		 * @param url The new image URL
+		 */
+		selectImageIcon,
 
-				const cleanedSvg = _.flow(updateSvgFill(state.styles.glyphColor), removeSvgSizeAttributes)(svg);
-
-				state.svgContent = cleanedSvg;
-
-				return state;
-			}),
-
-		/** @deprecated A way to handle image icons will be implemented */
-		selectImageIcon: (url: string) =>
-			update(state => {
-				if (!state) return state;
-
-				verboseMode && console.log("Setting image icon");
-
-				state.svgContent = "";
-
-				return state;
-			}),
-
+		/**
+		 * Sets the icon's display title
+		 * @param title The new title
+		 */
 		setIconTitle: (title: string) =>
 			update(state => {
 				if (!state) return state;
@@ -94,6 +201,10 @@ function createIconCustomizationsStore() {
 				return state;
 			}),
 
+		/**
+		 * Updates multiple style properties at once
+		 * @param styles Partial style object to merge
+		 */
 		upsertStyles: (styles: Partial<CustomizableIcon["styles"]>) =>
 			update(state => {
 				if (!state) return state;
@@ -104,16 +215,16 @@ function createIconCustomizationsStore() {
 				return state;
 			}),
 
-		setSvgFillColor: (color: string) =>
-			update(state => {
-				if (!state) return state;
+		/**
+		 * Updates the SVG fill color
+		 * @param color The new fill color
+		 */
+		setSvgFillColor,
 
-				verboseMode && console.log("Setting SVG fill color");
-
-				state.svgContent = updateSvgFill(color)(state.svgContent!);
-				return state;
-			}),
-
+		/**
+		 * Toggles gradient usage
+		 * @param value Whether to use gradient
+		 */
 		setUseGradient: (value: boolean) =>
 			update(state => {
 				if (!state) return state;
@@ -255,6 +366,11 @@ function createIconCustomizationsStore() {
 			verboseMode && console.log("Setting store value");
 
 			set(value);
+
+			if (value?.styles?.glyphColor && value.svgContent) {
+				setSvgFillColor(value.styles.glyphColor);
+			}
+
 		}
 	};
 }

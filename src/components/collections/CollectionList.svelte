@@ -25,39 +25,6 @@
 		}
 	});
 
-	/**
-	 * Selects a collection by its id
-	 * @param id
-	 */
-	function selectCollectionById(id: string) {
-		const collections = $userIconCollections;
-		const collection = collections.find(c => c.id === id);
-
-		if (!collection) {
-			throw new Error(`Collection with id ${id} not found`);
-		}
-
-		selectedCollection.selectCollection(collection.id);
-	}
-
-	let lastSelectedCollectionId: string = "";
-
-	// Watch for changes in the selected collection
-	$effect(() => {
-		if (!selectedCollectionId[0]) return;
-		if (lastSelectedCollectionId === selectedCollectionId[0]) return;
-
-		$inspect("selectedAccordionItem:", selectedCollectionId);
-		selectCollectionById(selectedCollectionId[0]);
-		lastSelectedCollectionId = selectedCollectionId[0];
-	});
-
-	$effect(() => {
-		if (!$selectedCollection) return;
-
-		selectedCollectionId = [$selectedCollection.id];
-	});
-
 	function handleRemoveIcon(icon: UserIcon, collection: _userIconCollection.UserIconCollection) {
 		UserIconCollectionDBService.removeIcon(collection.id, icon.id);
 	}
@@ -79,7 +46,7 @@
 	}
 </script>
 
-<Accordion value={selectedCollectionId} onValueChange={e => (selectedCollectionId = e.value)} collapsible>
+<Accordion value={selectedCollectionId} onValueChange={e => (selectedCollectionId = e.value)} multiple>
 	{#each $userIconCollections as collection}
 		<Accordion.Item value={collection.id}>
 			<!-- Control -->

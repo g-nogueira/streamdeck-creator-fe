@@ -1,5 +1,4 @@
 <script lang="ts">
-	import DOMPurify from "dompurify";
 	import type { CustomizableIcon } from "../../models/CustomizableIcon";
 
 	export let customizableIcon: CustomizableIcon | null;
@@ -24,12 +23,12 @@
 				data-testid="icon-background">
 				<!-- Icon -->
 				<div
-					data-testid="icon-wrapper"
-					class="flex max-h-[223px] w-full flex-grow justify-center p-5"
-					style="color: {customizableIcon.styles.glyphColor}; transform: scale({customizableIcon.styles
-						.iconScale}) translate({customizableIcon.styles.imgX}px, {customizableIcon.styles.imgY}px);">
-					{#if customizableIcon.svgContent}
-						{@html DOMPurify.sanitize(customizableIcon.svgContent)}
+				data-testid="icon-wrapper"
+				class="h-[223px] w-full p-5 flex" style="color: {customizableIcon.styles.glyphColor}; transform: scale({customizableIcon.styles.iconScale}) translate({customizableIcon.styles.imgX}px, {customizableIcon.styles.imgY}px);">
+					{#if customizableIcon.contentType === "image/svg+xml" && customizableIcon.svgContent && customizableIcon.iconOrigin !== "homarr"}
+						{@html customizableIcon.svgContent}
+					{:else if customizableIcon.iconOrigin === "homarr"}
+						<img src={customizableIcon.imageIconUrl} alt="icon preview" class="h-full m-auto max-h-full" style="width: 100%;height: auto;object-fit: contain;" />
 					{/if}
 				</div>
 				<!-- Label -->
