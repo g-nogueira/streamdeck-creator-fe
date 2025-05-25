@@ -8,11 +8,31 @@ import type { Icon } from "../../models/Icon";
 beforeEach(() => setupIntersectionObserverMock({ observe: vi.fn() }));
 
 describe("IconSearch", () => {
-    const mockIcons: Partial<Icon>[] = [
-        { id: "mdi1", label: "MDI Icon 1", origin: "mdi" },
-        { id: "mdi2", label: "MDI Icon 2", origin: "mdi" },
-        { id: "homarr1", label: "Homarr Icon 1", origin: "homarr" },
-        { id: "streamdeck1", label: "StreamDeck Icon 1", origin: "streamdeck" }
+    const mockIcons: Icon[] = [
+        {
+            id: "mdi1", label: "MDI Icon 1", origin: "mdi",
+            keywords: [],
+            contentType: "",
+            url: undefined
+        },
+        {
+            id: "mdi2", label: "MDI Icon 2", origin: "mdi",
+            keywords: [],
+            contentType: "",
+            url: undefined
+        },
+        {
+            id: "homarr1", label: "Homarr Icon 1", origin: "homarr",
+            keywords: [],
+            contentType: "",
+            url: undefined
+        },
+        {
+            id: "streamdeck1", label: "StreamDeck Icon 1", origin: "streamdeck",
+            keywords: [],
+            contentType: "",
+            url: undefined
+        }
     ];
 
     it("calls onSearchIcons when the search input changes", async () => {
