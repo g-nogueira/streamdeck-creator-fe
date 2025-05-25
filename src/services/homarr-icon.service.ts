@@ -1,5 +1,4 @@
 import type { Icon } from "../models/Icon";
-import * as _iconDto from "./dto/IconDto";
 
 // Using jsDelivr CDN as recommended in the docs
 export const HOMARR_API_URL = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons";
