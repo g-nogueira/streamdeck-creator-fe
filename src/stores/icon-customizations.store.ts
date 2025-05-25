@@ -27,8 +27,8 @@ let fromUserIcon = (userIcon: UserIcon) => {
 };
 
 /**
- * Update the outer SVG fill attribute with the given color
- * @param color
+ * Updates the outer SVG fill attribute with the given color
+ * @param color The fill color to apply
  */
 const updateSvgFill =
 	(color: string) =>
@@ -61,6 +61,10 @@ const updateSvgFill =
 		}
 	};
 
+/**
+ * Sets SVG size attributes to 'auto'
+ * @param svg SVG content to modify
+ */
 const setSvgSizeAuto = (svgContent: string): string => {
 	// Parse SVG with SVG.js
 	const draw = SVG(svgContent);
@@ -72,6 +76,10 @@ const setSvgSizeAuto = (svgContent: string): string => {
 	
 };
 
+/**
+ * Creates and manages the state for icon customization
+ * Handles SVG modifications, gradient management, and style updates
+ */
 function createIconCustomizationsStore() {
 	const { subscribe, set, update } = writable<CustomizableIcon | null>(null);
 	const verboseMode = true;
@@ -129,6 +137,11 @@ function createIconCustomizationsStore() {
 
 	return {
 		subscribe,
+		
+		/**
+		 * Selects an icon for customization
+		 * @param icon The icon to customize
+		 */
 		selectIcon: (icon: Icon) => {
 			verboseMode && console.log("Selecting icon");
 
@@ -158,13 +171,33 @@ function createIconCustomizationsStore() {
 			set(customizableIcon);
 
 		},
+		/**
+		 * Selects a user icon for customization
+		 * @param userIcon The user icon to customize
+		 */
 		selectUserIcon: (userIcon: UserIcon) => set(fromUserIcon(userIcon)),
+		
+		/**
+		 * Clears the current icon selection
+		 */
 		clear: () => set(null),
 
+		/**
+		 * Updates the icon's SVG content
+		 * @param svg The new SVG content
+		 */
 		selectSvgIcon,
 
+		/**
+		 * Updates the icon's image URL
+		 * @param url The new image URL
+		 */
 		selectImageIcon,
 
+		/**
+		 * Sets the icon's display title
+		 * @param title The new title
+		 */
 		setIconTitle: (title: string) =>
 			update(state => {
 				if (!state) return state;
@@ -175,6 +208,10 @@ function createIconCustomizationsStore() {
 				return state;
 			}),
 
+		/**
+		 * Updates multiple style properties at once
+		 * @param styles Partial style object to merge
+		 */
 		upsertStyles: (styles: Partial<CustomizableIcon["styles"]>) =>
 			update(state => {
 				if (!state) return state;
@@ -185,8 +222,16 @@ function createIconCustomizationsStore() {
 				return state;
 			}),
 
+		/**
+		 * Updates the SVG fill color
+		 * @param color The new fill color
+		 */
 		setSvgFillColor,
 
+		/**
+		 * Toggles gradient usage
+		 * @param value Whether to use gradient
+		 */
 		setUseGradient: (value: boolean) =>
 			update(state => {
 				if (!state) return state;
