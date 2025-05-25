@@ -6,6 +6,7 @@ export interface Icon {
 	keywords: string[];
 	origin: IconOrigin;
 	contentType: string;
+	url: string | undefined;
 }
 
 export function mkEmpty(): Icon {
@@ -14,6 +15,7 @@ export function mkEmpty(): Icon {
 		label: "",
 		keywords: [],
 		origin: "mdi",
-		contentType: "img/svg+xml"
+		contentType: "img/svg+xml",
+		url: undefined,
 	};
 }

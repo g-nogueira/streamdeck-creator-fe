@@ -51,7 +51,8 @@ export class HomarrIconService {
                 label: name.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
                 keywords: [...info.aliases, ...info.categories],
                 origin: "homarr",
-                contentType: info.base === "svg" ? "image/svg+xml" : "image/png"
+                contentType: info.base === "svg" ? "image/svg+xml" : "image/png",
+                url: `${HOMARR_API_URL}/${this.getIconPath(name, metadata)}`
             }));
         } catch (error) {
             console.error("Error fetching Homarr icons:", error);
@@ -74,7 +75,8 @@ export class HomarrIconService {
                     label: name.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
                     keywords: [...info.aliases, ...info.categories],
                     origin: "homarr",
-                    contentType: info.base === "svg" ? "image/svg+xml" : "image/png"
+                    contentType: info.base === "svg" ? "image/svg+xml" : "image/png",
+                    url: `${HOMARR_API_URL}/${this.getIconPath(name, metadata)}`
                 }));
         } catch (error) {
             console.error("Error searching Homarr icons:", error);

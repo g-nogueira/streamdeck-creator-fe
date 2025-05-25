@@ -15,6 +15,7 @@ let fromIcon = (icon: Icon) => {
 	iconPreview.iconId = icon.id;
 	iconPreview.iconOrigin = icon.origin;
 	iconPreview.contentType = icon.contentType;
+	iconPreview.imageIconUrl = icon.url;
 
 	return iconPreview;
 };
