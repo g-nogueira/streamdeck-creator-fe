@@ -61,8 +61,15 @@ const updateSvgFill =
 		}
 	};
 
-const removeSvgSizeAttributes = (svgContent: string): string => {
-	return svgContent.replace(/(width|height)="[^"]*"/g, "");
+const setSvgSizeAuto = (svgContent: string): string => {
+	// Parse SVG with SVG.js
+	const draw = SVG(svgContent);
+
+	draw.width("auto");
+	draw.height("auto");
+
+	return draw.svg();
+	
 };
 
 function createIconCustomizationsStore() {
@@ -79,10 +86,11 @@ function createIconCustomizationsStore() {
 
 			switch (state.iconOrigin) {
 				case "homarr":
-					cleanedSvg = _.flow(() => svg, removeSvgSizeAttributes)();
+					// We have more success when we don't modify the SVG for Homarr icons.
+					cleanedSvg = svg;
 					break;
 				default:
-					cleanedSvg = _.flow(() => svg, updateSvgFill(state.styles.glyphColor), removeSvgSizeAttributes)();
+					cleanedSvg = _.flow(() => svg, updateSvgFill(state.styles.glyphColor), setSvgSizeAuto)();
 					break;
 			}
 					
