@@ -33,10 +33,13 @@ export type CustomizableIcon = {
 
 	/** For ex, 'image/svg+xml' */
 	contentType: string;
+	iconOrigin: IconOrigin;
+
 	/** The SVG string content of the icon */
 	svgContent?: string;
 
-	iconOrigin: IconOrigin;
+	imageIconUrl?: string;
+
 };
 
 export type CustomizableIconStyles = CustomizableIcon["styles"];

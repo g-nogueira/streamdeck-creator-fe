@@ -43,23 +43,6 @@ describe("IconItem Component", () => {
 		await fireEvent.click(button);
 		expect(mockOnSelectIcon).toHaveBeenCalledWith(mdiIcon);
 	});
-
-	// it('lazy loads image for streamdeck origin', async () => {
-	//     const streamdeckIcon = { ...mockIcon, id: '1', origin: 'streamdeck' } as Icon;
-	//     setupIntersectionObserverMock({observe: vi.fn(), takeRecords: () => [{ isIntersecting: true } as never]})
-	//     render(IconItem, { icon: streamdeckIcon });
-	//     const img = screen.getByTestId("streamdeck-icon-img");
-
-	//     // Simulate intersection
-	//     // const observerInstance = IntersectionObserver.mock.instances[0];
-	//     // const callback = observerInstance.observe.mock.calls[0][0];
-	//     // callback([{ isIntersecting: true }]);
-
-	//     // Verify image source and class
-	//     expect(img).toHaveAttribute('src', `${serviceBaseUrl}/icons/${mockIcon.id}`);
-	//     await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for the next tick
-	//     expect(img).toHaveClass('visible');
-	//   });
 });
 
 describe("IconItem Component - MDI Icon", () => {
@@ -108,6 +91,40 @@ describe("IconItem Component - MDI Icon", () => {
 		});
 
 		const button = getByTestId("icon-button");
+		await fireEvent.click(button);
+
+		expect(mockOnSelectIcon).toHaveBeenCalledWith(mockIcon);
+	});
+});
+
+describe("IconItem Component - Homarr Icon", () => {
+	const mockIcon = { id: "app-icon", label: "App Icon", keywords: [], contentType: "image/svg+xml", origin: "homarr", url: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/app-icon.svg" } as Icon;
+
+	const getIconButton = () => screen.getByTestId("icon-button");
+
+	it("renders Homarr icon correctly", () => {
+		const mockOnSelectIcon = vi.fn();
+		render(IconItem, { icon: mockIcon, onSelectIcon: mockOnSelectIcon });
+
+		const button = getIconButton();
+		const iconName = screen.getByText(mockIcon.label);
+		const iconImg = screen.getByTestId("homarr-icon-img");
+
+		expect(button).toBeVisible();
+		expect(iconName).toBeVisible();
+		expect(iconImg).toBeVisible();
+		expect(iconImg).toHaveAttribute("alt", mockIcon.label);
+		expect(iconImg).toHaveAttribute(
+			"src", 
+			"https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/app-icon.svg"
+		);
+	});
+
+	it("calls selectIcon when Homarr icon is clicked", async () => {
+		const mockOnSelectIcon = vi.fn();
+		render(IconItem, { icon: mockIcon, onSelectIcon: mockOnSelectIcon });
+
+		const button = getIconButton();
 		await fireEvent.click(button);
 
 		expect(mockOnSelectIcon).toHaveBeenCalledWith(mockIcon);

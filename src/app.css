@@ -8,11 +8,11 @@
 
 .input-toolbar,
 .input-toolbar[type="color"] {
-	height: calc(1.75rem * var(--space-scale-factor));
+	height: calc(8 * var(--spacing));
 }
 .input-toolbar[type="color"] {
-	width: calc(1.75rem * var(--space-scale-factor));
-	min-width: calc(1.75rem * var(--space-scale-factor));
+	width: calc(8 * var(--spacing));
+	min-width: calc(8 * var(--spacing));
 }
 
 .select-toolbar {
