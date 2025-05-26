@@ -15,6 +15,7 @@ export function toIcon(iconDto: IconDto): Icon {
 		label: iconDto.label,
 		keywords: iconDto.label.split(" "),
 		origin: iconDto.origin,
-		contentType: iconDto.origin === "mdi" ? "image/svg+xml" : "image/png"
+		contentType: iconDto.origin === "mdi" ? "image/svg+xml" : "image/png",
+		url: undefined
 	};
 }

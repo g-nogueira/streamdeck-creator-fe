@@ -29,6 +29,7 @@ export function toIcon(icon: MdiIcon): Icon {
 		label: icon.name,
 		keywords: [...icon.keywords1.split(" "), ...icon.keywords2.split(" ")],
 		origin: "mdi",
-		contentType: "image/svg+xml"
+		contentType: "image/svg+xml",
+		url: undefined
 	};
 }
