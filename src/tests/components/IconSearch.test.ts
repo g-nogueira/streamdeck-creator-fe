@@ -112,14 +112,14 @@ describe("IconSearch", () => {
         expect(mockOnLoadDefaultIcons).toHaveBeenCalled();
     });
 
-    it("calls onSetEmptyIcons when search term is too short", async () => {
-        const mockOnSetEmptyIcons = vi.fn();
+    it("calls onLoadDefaultIcons when search term is too short", async () => {
+        const mockOnLoadDefaultIcons = vi.fn();
         
         render(IconSearch, {
             icons: [],
             onSearchIcons: vi.fn(),
-            onLoadDefaultIcons: vi.fn(),
-            onSetEmptyIcons: mockOnSetEmptyIcons,
+            onLoadDefaultIcons: mockOnLoadDefaultIcons,
+            onSetEmptyIcons: vi.fn(),
             onSelectIcon: vi.fn(),
             debounceTimeMs: 0
         });
@@ -128,6 +128,6 @@ describe("IconSearch", () => {
         await act(() => fireEvent.input(searchInput, { target: { value: "a" } }));
         await flushPromises();
 
-        expect(mockOnSetEmptyIcons).toHaveBeenCalled();
+        expect(mockOnLoadDefaultIcons).toHaveBeenCalled();
     });
 });
