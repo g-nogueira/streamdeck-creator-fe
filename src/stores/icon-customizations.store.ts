@@ -8,6 +8,9 @@ import { GradientBuilder } from "../lib/gradient/gradientBuilder";
 import type { GradientState, GradientStop } from "$lib/gradient";
 import { SVG } from '@svgdotjs/svg.js';
 import { IconService } from "../services/icon.service";
+import { ErrorService } from "$lib/services/error.service";
+
+const logger = ErrorService.getInstance();
 
 let fromIcon = (icon: Icon) => {
 	let iconPreview = _iconPreview.mkEmpty();
@@ -49,8 +52,9 @@ const updateSvgFill =
 			
 			return cleanedSvg;
 		} catch (error) {
-			console.error("Error parsing SVG:", error);
-			return svgContent; // Return original content if parsing fails
+			logger.handleError(error, "Error updating SVG fill color");
+
+			return svgContent;
 		}
 	};
 
@@ -59,14 +63,20 @@ const updateSvgFill =
  * @param svg SVG content to modify
  */
 const setSvgSizeAuto = (svgContent: string): string => {
-	// Parse SVG with SVG.js
-	const draw = SVG(svgContent);
+	try {
+		// Parse SVG with SVG.js
+		const draw = SVG(svgContent);
 
-	draw.width("auto");
-	draw.height("auto");
+		draw.width("auto");
+		draw.height("auto");
 
-	return draw.svg();
-	
+		return draw.svg();
+	} catch (error) {
+		logger.handleError(error, "Error setting SVG size to auto");
+
+		return svgContent;
+		
+	}
 };
 
 /**
@@ -148,7 +158,7 @@ function createIconCustomizationsStore() {
 				IconService.fetchSvgIcon(customizableIcon.iconId, customizableIcon.iconOrigin)
 				.then(selectSvgIcon)
 				.catch(error => {
-					throw new Error("Error fetching icon", error);
+					logger.handleError(error, "Error fetching icon");
 				});
 
 			}
@@ -157,7 +167,7 @@ function createIconCustomizationsStore() {
 				IconService.mkIconUrl(customizableIcon.iconId, customizableIcon.iconOrigin)
 				.then(selectImageIcon)
 				.catch(error => {
-					throw new Error("Error fetching icon", error);
+					logger.handleError(error, "Error fetching icon");
 				});
 			}
 
