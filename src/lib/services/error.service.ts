@@ -70,10 +70,21 @@ export class ErrorService {
 	 * @param error The error to handle
 	 * @param context Optional context where the error occurred
 	 */
-	handleError(error: Error, context?: string) {
+	handleError(error: Error | any, context?: string) {
+
+		let errorInstance: Error;
+
+		if (error instanceof Error) {
+			errorInstance = error;
+		} else if (typeof error === "string") {
+			errorInstance = new Error(error);
+		} else {
+			errorInstance = new Error("An unknown error occurred: " + JSON.stringify(error));
+		}
+
 		this.errorHandlers.forEach(handler => {
 			try {
-				handler.handleError(error, context);
+				handler.handleError(errorInstance, context);
 			} catch (handlerError) {
 				console.error("Error in error handler:", handlerError);
 			}
